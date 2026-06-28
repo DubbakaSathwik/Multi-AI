@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Multi AI - Account Settings</title>
+    <style>
+        :root {
+            --bg: #030712;
+            --sidebar-bg: #090d1a;
+            --card-bg: rgba(17, 24, 39, 0.7);
+            --card-hover: rgba(31, 41, 55, 0.8);
+            --text: #f3f4f6;
+            --text-muted: #9ca3af;
+            --accent: #6366f1;
+            --accent-hover: #4f46e5;
+            --border: rgba(99, 102, 241, 0.15); 
+            --glow: rgba(99, 102, 241, 0.35);
+            --input-bg: #050812;
+        }
+
+        body.light-mode {
+            --bg: #f8fafc;
+            --sidebar-bg: #ffffff;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --card-hover: rgba(241, 245, 249, 1);
+            --text: #0f172a;
+            --text-muted: #64748b;
+            --accent: #4f46e5;
+            --accent-hover: #4338ca;
+            --border: rgba(99, 102, 241, 0.2);
+            --glow: rgba(99, 102, 241, 0.15);
+            --input-bg: #f1f5f9;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: var(--bg); 
+            color: var(--text); 
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* Side Navigation */
+        .settings-sidebar {
+            width: 280px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 30px 20px;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .back-home {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: color 0.2s;
+        }
+        .back-home:hover { color: var(--accent); }
+        .back-home svg { stroke: currentColor; fill: none; transition: transform 0.2s; }
+        .back-home:hover svg { transform: translateX(-2px); }
+
+        .nav-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+	    	
+        }
+
+        .nav-item {
+            padding: 14px 18px;
+            border-radius: 12px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .nav-item i { font-size: 1.05rem; width: 20px; text-align: center; }
+
+        .nav-item:hover {
+            background: rgba(99, 102, 241, 0.06);
+            color: var(--text);
+        }
+
+        .nav-item.active {
+            background: rgba(99, 102, 241, 0.08);
+            border-color: var(--border);
+            color: var(--accent);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.03);
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            padding: 50px 80px;
+            overflow-y: auto;
+            background: radial-gradient(circle at 80% 10%, rgba(99, 102, 241, 0.04), transparent 40%);
+        }
+
+        .tab-content { display: none; animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .tab-content.active { display: block; }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        header h1 { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; }
+        header p { color: var(--text-muted); font-size: 0.95rem; font-weight: 500; margin-bottom: 40px; }
+
+        .settings-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 36px;
+            max-width: 720px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            margin-bottom: 12px;
+        }
+
+        .avatar-edit-container { position: relative; width: 88px; height: 88px; }
+       .avatar-large {
+    width: 100%; 
+    height: 100%;
+    /* Use background-image explicitly so it falls back correctly */
+    background-image: linear-gradient(135deg, var(--accent), #818cf8);
+    background-color: var(--accent); /* Extra safety fallback */
+    color: white;
+    border-radius: 50%;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    font-size: 2.2rem; 
+    font-weight: 800;
+    background-size: cover; 
+    background-position: center;
+    box-shadow: 0 8px 24px var(--glow);
+    transition: transform 0.3s ease;
+}
+
+        .avatar-badge {
+            position: absolute; bottom: -2px; right: -2px;
+            background: var(--accent); width: 30px; height: 30px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem; cursor: pointer; border: 3px solid var(--bg);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: all 0.2s ease;
+        }
+        .avatar-badge:hover { background: var(--accent-hover); transform: scale(1.1); }
+
+        .profile-info h3 { font-size: 1.4rem; font-weight: 700; margin-bottom: 4px; }
+        .profile-info p { font-size: 0.9rem; color: var(--text-muted); font-weight: 500; }
+
+        .form-group { margin-bottom: 24px; }
+        .form-group:last-of-type { margin-bottom: 12px; }
+        
+        label { display: block; font-size: 0.75rem; text-transform: uppercase; color: var(--accent); font-weight: 800; margin-bottom: 10px; letter-spacing: 0.05em; }
+        
+        input, .custom-select {
+            width: 100%; background: var(--input-bg); border: 1px solid var(--border);
+            padding: 14px 18px; border-radius: 12px; color: var(--text); outline: none;
+            font-size: 0.95rem; font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        input:focus, .custom-select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15); }
+
+        .btn-wrapper { display: flex; gap: 12px; margin-top: 10px; }
+
+        .save-btn {
+            background: var(--accent); color: white; border: none;
+            padding: 14px 32px; border-radius: 12px; font-weight: 700; font-size: 0.95rem;
+            cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .save-btn:hover { background: var(--accent-hover); box-shadow: 0 8px 20px var(--glow); transform: translateY(-1px); }
+
+        .position-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+       /* Enhanced Position Buttons Grid Wrapper */
+.position-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+/* Base Layout Alignment Strategy */
+.pos-btn { 
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    color: var(--text-muted); 
+    padding: 12px 18px; /* Slightly tighter top/bottom padding for clean balance */
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    
+    /* Flexbox Alignment Rules */
+    display: flex;
+    align-items: center;      /* Centers SVG and text perfectly vertically */
+    justify-content: center;   /* Keeps the content grouped neatly in the center */
+    gap: 10px;                 /* Defines crisp spacing between the icon and the word label */
+}
+
+/* SVG Vector Bounds Constraints */
+.pos-btn .btn-svg {
+    width: 18px;              /* Standard optimal profile scale inside dashboard widgets */
+    height: 18px;
+    display: block;
+    flex-shrink: 0;           /* Prevents the browser from compressing the vector shape */
+}
+
+/* Text Element Inline Flex Fix */
+.pos-btn span {
+    display: inline-block;
+    line-height: 1;           /* Eradicates layout line-height font metric padding errors */
+}
+
+/* Hover States */
+.pos-btn:hover { 
+    color: var(--text); 
+    background: var(--card-hover); 
+}
+
+/* Premium Highlight State mapping when position index matches selection */
+.pos-btn.active { 
+    border-color: var(--accent); 
+    color: white; 
+    background: var(--accent); 
+    box-shadow: 0 6px 16px var(--glow); 
+}
+        .danger-btn { 
+            background: rgba(239, 68, 68, 0.08); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); 
+            padding: 14px; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 0.95rem;
+            width: 100%; transition: all 0.2s ease;
+        }
+        .danger-btn:hover { background: #ef4444; color: white; box-shadow: 0 6px 16px rgba(239, 68, 68, 0.25); }
+
+        /* Notification Toast Styling */
+        .toast {
+            position: fixed; bottom: 30px; right: 30px; background: #10b981; color: white;
+            padding: 14px 24px; border-radius: 12px; font-weight: 700; font-size: 0.9rem;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3); display: flex; align-items: center; gap: 10px;
+            transform: translateY(100px); opacity: 0; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 1000;
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        
+    </style>
+</head>
+<body>
+
+    <aside class="settings-sidebar">
+        <a href="index.html" class="back-home">
+            <svg width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            Back to Workspace
+        </a>
+        
+        <div class="nav-group">
+            <div class="nav-item active" onclick="switchTab('profile', event)">
+                <i class="fa-regular fa-user-circle"></i> Profile
+            </div>
+            <div class="nav-item" onclick="switchTab('personalisation', event)">
+                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="20" height="20" viewBox="0 0 24 24" ><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 17.5a3.5 3.5 0 1 1-7 0a3.5 3.5 0 0 1 7 0Z"></path><path d="M17.5 14h-11a3.5 3.5 0 1 0 0 7h11a3.5 3.5 0 1 0 0-7ZM3 6.5a3.5 3.5 0 1 0 7 0a3.5 3.5 0 0 0-7 0Z"></path><path d="M6.5 3h11a3.5 3.5 0 1 1 0 7h-11a3.5 3.5 0 1 1 0-7Z"></path></g></svg> Personalisation
+            </div>
+            <div class="nav-item" onclick="switchTab('security', event)">
+                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="24" height="24" viewBox="0 0 32 32"><path fill="currentColor" d="M16 22a4 4 0 1 0-4-4a4 4 0 0 0 4 4m0-6a2 2 0 1 1-2 2a2 2 0 0 1 2-2M14 6h4v2h-4z"></path><path fill="currentColor" d="M24 2H8a2 2 0 0 0-2 2v24a2 2 0 0 0 2 2h16a2.003 2.003 0 0 0 2-2V4a2 2 0 0 0-2-2m-4 26h-8v-2a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1Zm2 0v-2a3 3 0 0 0-3-3h-6a3 3 0 0 0-3 3v2H8V4h16v24Z"></path></svg> Credentials
+            </div>
+            <div class="nav-item" onclick="switchTab('settings', event)">
+               <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7.05 6.462a2 2 0 0 0 2.63-1.519l.32-1.72a9 9 0 0 1 3.998 0l.322 1.72a2 2 0 0 0 2.63 1.519l1.649-.58a9 9 0 0 1 2.001 3.46l-1.33 1.14a2 2 0 0 0 0 3.037l1.33 1.139a9 9 0 0 1-2.001 3.46l-1.65-.58a2 2 0 0 0-2.63 1.519L14 20.777a9 9 0 0 1-3.998 0l-.322-1.72a2 2 0 0 0-2.63-1.519l-1.649.58a9 9 0 0 1-2.001-3.46l1.33-1.14a2 2 0 0 0 0-3.036L3.4 9.342a9 9 0 0 1 2-3.46zM12 9a3 3 0 1 1 0 6a3 3 0 0 1 0-6" clip-rule="evenodd"></path></svg></i> Settings
+            </div>
+        </div>
+    </aside>
+
+    <main class="content-area">
+        <section id="profile-sec" class="tab-content active">
+            <header>
+                <h1>User Profile</h1>
+                <p>Manage your identity and connected account metrics.</p>
+            </header>
+            <div class="settings-card">
+                <div class="profile-header">
+                    <div class="avatar-edit-container">
+                        <div class="avatar-large" id="display-avatar">G</div>
+                        <label for="avatar-upload" class="avatar-badge">
+                            <i class="fa-solid fa-pen" style="color:white;"></i>
+                        </label>
+                        <input type="file" id="avatar-upload" hidden onchange="updateAvatar(this)">
+                    </div>
+                    <div class="profile-info">
+                        <h3 id="display-name">Guest User</h3>
+                        <p id="display-email">guest@multiai.system</p>
+                    </div>
+                </div>
+                <div class="btn-wrapper" style="margin-top:20px;">
+                    <button class="save-btn" onclick="switchTab('security')">Modify Parameters</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="personalisation-sec" class="tab-content">
+            <header>
+                <h1>Personalisation</h1>
+                <p>Tailor the interface to match your workflow layout.</p>
+            </header>
+            <div class="settings-card">
+                <div class="form-group">
+                    <label>Default Workspace Theme</label>
+                    <select id="pref-theme" class="custom-select">
+                        <option value="dark">Dark Mode (Standard)</option>
+                        <option value="light">Light Mode</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Sidebar Orientation Alignment</label>
+<div class="position-grid">
+    <button class="pos-btn" id="pos-left" onclick="setPos('left')">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" class="btn-svg">
+            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="M.5 1.5h6m-4 4h4m-6 4h6m-4 4h4m7-8.5l-2 2l2 2M9 13.5V.5"></path>
+        </svg>
+        <span>Left Alignment</span>
+    </button>
+    
+    <button class="pos-btn" id="pos-right" onclick="setPos('right')">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" class="btn-svg">
+            <g transform="translate(14 0) scale(-1 1)">
+                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="M.5 1.5h6m-4 4h4m-6 4h6m-4 4h4m7-8.5l-2 2l2 2M9 13.5V.5"></path>
+            </g>
+        </svg>
+        <span>Right Alignment</span>
+    </button>
+</div>
+                </div>
+                <button class="save-btn" onclick="savePersonalisation()">Apply Configurations</button>
+            </div>
+        </section>
+
+        <section id="security-sec" class="tab-content">
+            <header>
+                <h1>Security Profile</h1>
+                <p>Update your authentication handles and data lines.</p>
+            </header>
+            <div class="settings-card">
+                <div class="form-group">
+                    <label>Profile Nickname Handle</label>
+                    <input type="text" id="edit-username" placeholder="Enter username">
+                </div>
+                <div class="form-group">
+                    <label>Registered System Email</label>
+                    <input type="email" id="edit-email" placeholder="name@domain.com">
+                </div>
+                <button class="save-btn" onclick="saveSecurity()">Update Credentials</button>
+            </div>
+        </section>
+
+        <section id="settings-sec" class="tab-content">
+            <header>
+                <h1>System Settings</h1>
+                <p>Control the cache engine behind the dynamic interface framework.</p>
+            </header>
+            <div class="settings-card">
+                <div class="form-group">
+                    <label>Data Core Management</label>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; font-weight: 500; margin-bottom: 15px; line-height: 1.5;">
+                        Purging completely resets your profile vectors, deletes session memory structures, and reverts styles back to default dark maps.
+                    </p>
+                    <button class="danger-btn" onclick="clearData()">Flush System Storage & Reset</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="toast-notif" class="toast">
+        <i class="fa-solid fa-circle-check"></i> <span id="toast-message">Configuration Logged!</span>
+    </div>
+
+    <script>
+        // Synchronous initial view parsing runtime
+        window.onload = () => {
+            // Pull data arrays out of localized variable space fields
+            const name = localStorage.getItem('neuralUser') || "Guest User";
+            const email = localStorage.getItem('neuralEmail') || "guest@multiai.system";
+            const avatar = localStorage.getItem('userAvatar');
+            const theme = localStorage.getItem('defaultTheme') || "dark";
+            const pos = localStorage.getItem('sidebarPos') || "right";
+
+            // Bind values dynamically into visual layout text contexts
+            document.getElementById('display-name').innerText = name;
+            document.getElementById('display-email').innerText = email;
+            
+            // Populate inputs
+            document.getElementById('edit-username').value = name;
+            document.getElementById('edit-email').value = email;
+            document.getElementById('pref-theme').value = theme;
+            
+            // Initialize accurate theme mode visual parsing 
+            applyThemeStylesheet(theme);
+            
+            if (avatar) {
+                document.getElementById('display-avatar').style.backgroundImage = `url(${avatar})`;
+                document.getElementById('display-avatar').innerText = "";
+            } else {
+                document.getElementById('display-avatar').style.backgroundImage = 'none';
+                document.getElementById('display-avatar').innerText = name.charAt(0).toUpperCase();
+            }
+            
+            setPos(pos);
+        };
+
+        function showNotification(msg) {
+            const toast = document.getElementById('toast-notif');
+            document.getElementById('toast-message').innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        function applyThemeStylesheet(theme) {
+            if(theme === 'light') {
+                document.body.classList.add('light-mode');
+            } else {
+                document.body.classList.remove('light-mode');
+            }
+        }
+
+        function switchTab(tabId, event) {
+            document.querySelectorAll('.tab-content').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
+            document.getElementById(tabId + '-sec').classList.add('active');
+            
+            if (event) {
+                event.currentTarget.classList.add('active');
+            } else {
+                const items = document.querySelectorAll('.nav-item');
+                if(tabId === 'profile') items[0].classList.add('active');
+                if(tabId === 'personalisation') items[1].classList.add('active');
+                if(tabId === 'security') items[2].classList.add('active');
+                if(tabId === 'settings') items[3].classList.add('active');
+            }
+        }
+
+        function setPos(pos) {
+            localStorage.setItem('sidebarPos', pos);
+            document.querySelectorAll('.pos-btn').forEach(b => b.classList.remove('active'));
+            const element = document.getElementById('pos-' + pos);
+            if(element) element.classList.add('active');
+        }
+
+        function savePersonalisation() {
+            const theme = document.getElementById('pref-theme').value;
+            localStorage.setItem('defaultTheme', theme);
+            applyThemeStylesheet(theme);
+            showNotification("Preferences applied dynamically!");
+        }
+
+        function saveSecurity() {
+            const newName = document.getElementById('edit-username').value.trim();
+            const newEmail = document.getElementById('edit-email').value.trim();
+            
+            if(!newName || !newEmail) {
+                alert("Fields cannot remain blank.");
+                return;
+            }
+
+            localStorage.setItem('neuralUser', newName);
+            localStorage.setItem('neuralEmail', newEmail);
+            
+            // Re-render layout changes immediately without breaking user flow
+            document.getElementById('display-name').innerText = newName;
+            document.getElementById('display-email').innerText = newEmail;
+            
+            const avatarDiv = document.getElementById('display-avatar');
+            if (!localStorage.getItem('userAvatar')) {
+                avatarDiv.innerText = newName.charAt(0).toUpperCase();
+            }
+            
+            showNotification("Security records updated!");
+        }
+
+        function updateAvatar(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('display-avatar').style.backgroundImage = `url(${e.target.result})`;
+                    document.getElementById('display-avatar').innerText = "";
+                    localStorage.setItem('userAvatar', e.target.result);
+                    showNotification("Profile vector uploaded!");
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function clearData() {
+            if(confirm("This will permanently drop your active custom session properties. Continue?")) {
+                localStorage.clear();
+                showNotification("System data dropped. Redirecting...");
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1000);
+            }
+        }
+    </script>
+</body>
+</html>

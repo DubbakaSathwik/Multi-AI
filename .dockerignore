@@ -1,0 +1,10 @@
+backend/node_modules
+node_modules
+.git
+.env
+backend/.env
+*.log
+backend/*.log
+Documentation/*.docx
+Documentation/*.pdf
+multi_ai_project_report.*

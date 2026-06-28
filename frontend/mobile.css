@@ -1,0 +1,523 @@
+/* ==========================
+   MULTIAI MOBILE OVERRIDES
+   ========================== */
+
+@media screen and (max-width: 768px) {
+
+    html,
+    body {
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        height: auto !important;
+    }
+
+    .main-wrapper {
+        display: flex !important;
+        flex-direction: column !important;
+        height: auto !important;
+        min-height: 100vh;
+    }
+
+    /* HEADER */
+
+    header {
+        position: sticky;
+        top: 0;
+        z-index: 999;
+        width: 100%;
+        padding: 12px !important;
+        height: auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px;
+    }
+
+    .logo {
+        font-size: 1.4rem !important;
+        margin: 0 auto;
+    }
+
+    .nav-links {
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        white-space: nowrap;
+        flex-wrap: nowrap !important;
+        padding-bottom: 6px;
+        gap: 8px !important;
+        scrollbar-width: none;
+    }
+
+    .nav-links::-webkit-scrollbar {
+        display: none;
+    }
+
+    .nav-item {
+        flex-shrink: 0;
+        height: auto !important;
+        padding: 10px 12px !important;
+        border-radius: 10px;
+        background: rgba(255,255,255,0.03);
+    }
+
+    /* SIDEBAR -> BOTTOM DOCK */
+
+    .sidebar {
+        position: fixed !important;
+        bottom: 0;
+        left: 0;
+        width: 100% !important;
+        height: 70px !important;
+        flex-direction: row !important;
+        justify-content: space-around !important;
+        align-items: center !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+        z-index: 9999;
+        gap: 0 !important;
+    }
+
+    .sb-icon {
+        width: 48px;
+        height: 48px;
+    }
+
+    .user-control-area {
+        display: none !important;
+    }
+
+    .sidebar-container {
+        display: none !important;
+    }
+
+    /* WORKSPACE */
+
+    .workspace {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 15px !important;
+        padding: 10px !important;
+        width: 100% !important;
+        padding-bottom: 100px !important;
+    }
+
+    /* AI CARDS */
+
+    .ai-card {
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+
+        grid-column: auto !important;
+        grid-row: auto !important;
+
+        margin: 0 !important;
+    }
+
+    .ai-header {
+        padding: 12px;
+    }
+
+    .ai-content {
+        min-height: 250px;
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    /* CARD BUTTONS */
+
+    .card-actions {
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 10px;
+    }
+
+    .action-btn {
+        min-width: 40px;
+        min-height: 40px;
+    }
+
+    /* VIEWS */
+
+    .view-container {
+        width: 100% !important;
+        padding: 10px !important;
+        margin: 0 !important;
+    }
+
+    /* INTRO */
+
+  @media (max-width:768px){
+
+
+
+.intro-content{
+    width:100% !important;
+    max-width:100% !important;
+}
+
+}
+
+    .steps {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+    }
+
+    .step-card {
+        width: 100% !important;
+    }
+
+    /* HISTORY PANEL */
+
+    .history-panel {
+        width: 100% !important;
+        left: -100% !important;
+        top: 0 !important;
+        height: 100vh !important;
+    }
+
+    .history-panel.open {
+        left: 0 !important;
+    }
+
+    /* SETTINGS / INSIGHTS / EXPERTISE */
+
+    .expertise-grid,
+    .insights-grid,
+    .dashboard-grid,
+    .panel-grid {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    /* CHARTS */
+
+    canvas {
+        max-width: 100% !important;
+        height: auto !important;
+    }
+
+    /* PROFILE */
+
+    #profile-gate span,
+    #user-label {
+        display: none;
+    }
+
+    /* THEME BULB */
+
+    .theme-toggle-container {
+        transform: scale(0.85);
+        margin: auto;
+    }
+
+    /* FIXED INPUT BAR IF PRESENT */
+
+    .prompt-area,
+    .chat-input-container,
+    .input-container {
+        position: sticky !important;
+        bottom: 75px !important;
+        width: 100%;
+        z-index: 500;
+    }
+}
+/* =======================================================
+   MULTIAI HUB PRODUCTION MOBILE RESPONSIVE ENGINE
+   ======================================================= */
+@media screen and (max-width: 768px) {
+
+    html, body {
+        overflow-x: hidden !important;
+        overflow-y: auto !important; /* Restores standard native scrolling down the page viewports */
+        height: 100% !important;
+    }
+
+    .main-wrapper {
+        display: flex !important;
+        flex-direction: column !important; /* Rows transform cleanly into vertical blocks */
+        height: auto !important;
+        min-height: 100vh;
+        width: 100% !important;
+    }
+
+    .main-content {
+        display: flex !important;
+        flex-direction: column !important; /* Pulls panels completely out of conflicting grid cells */
+        height: auto !important;
+        width: 100% !important;
+        min-height: 100vh;
+    }
+
+    /* ---------------------------------------------------
+       HEADER & NAVIGATION BAR STYLING
+       --------------------------------------------------- */
+    header {
+        position: relative !important;
+        width: 100% !important;
+        height: auto !important;
+        padding: 15px 20px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 14px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+        font-size: 1.3rem !important;
+        margin: 0 auto !important; /* Anchors the brand logo at the exact center of top panel */
+        letter-spacing: 1px;
+    }
+
+    .nav-links {
+        width: 100% !important;
+        display: flex !important;
+        overflow-x: auto !important; /* Allows horizontal swiping across workspace view options */
+        overflow-y: hidden !important;
+        white-space: nowrap !important;
+        flex-wrap: nowrap !important;
+        padding-bottom: 8px;
+        gap: 10px !important;
+        scrollbar-width: none; /* Masks standard thick desktop tracking bars on Firefox */
+        justify-content: flex-start !important;
+    }
+    .nav-links::-webkit-scrollbar {
+        display: none !important; /* Hides raw horizontal tracking bars on WebKit browsers */
+    }
+
+    .nav-item {
+        flex-shrink: 0 !important; /* Prevents text elements from squishing or truncating */
+        height: 40px !important;
+        padding: 0 16px !important;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.02);
+        display: inline-flex !important;
+        align-items: center;
+    }
+    
+    .nav-item.active::after {
+        left: 2px !important;
+        right: 2px !important;
+        height: 2px !important;
+    }
+
+    /* ---------------------------------------------------
+       THEME TOGGLE HANGING BULB ALIGNMENT
+       --------------------------------------------------- */
+    .theme-toggle-container {
+        position: absolute !important;
+        top: 12px !important;
+        right: 15px !important;
+        height: 40px !important;
+        width: 40px !important;
+        transform: scale(0.8); /* Shrinks the container scale smoothly on handheld frames */
+        margin: 0 !important;
+    }
+    .wire {
+        height: 15px !important; /* Shortens the cord dropdown length */
+        top: 0 !important;
+    }
+    .bulb {
+        top: 15px !important; /* Moves down right beneath the end of the shortened wire track */
+    }
+
+    /* ---------------------------------------------------
+       SIDEBAR CONVERTED TO COZY FIXED BOTTOM FOOTER DOCK
+       --------------------------------------------------- */
+    .sidebar {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 72px !important; /* Compact structural base line track */
+        flex-direction: row !important; /* Spreads layout controls cleanly horizontally across display */
+        justify-content: space-around !important;
+        align-items: center !important;
+        padding: 0 10px !important;
+        margin: 0 !important;
+        border-right: none !important;
+        border-top: 1px solid var(--border) !important;
+        background: var(--sidebar-bg) !important;
+        z-index: 99999 !important; /* Elevates visibility layer priority over active stream views */
+        gap: 0 !important;
+    }
+
+    .sb-icon, .pf-icon {
+        width: 44px !important;
+        height: 44px !important;
+        border-radius: 12px !important;
+    }
+    
+    .sb-icon.active::after {
+        bottom: -4px !important; /* Re-positions the tracking dot cleanly near phone bottom */
+    }
+
+    /* Remaps hidden parent grids without layout glitches */
+    .user-control-area, .sidebar-container {
+        display: none !important;
+    }
+
+    /* FLOATING BOTTOM SIDEBAR LOGOUT BUTTON REPOSITON */
+    #logout-btn { 
+        position: relative !important;
+        width: 44px !important;
+        height: 44px !important;
+        margin: 0 !important; 
+        border-radius: 12px !important;
+        z-index: 100000 !important;
+    }
+
+    /* ---------------------------------------------------
+       DYNAMIC COMPONENT VIEWS & CARD WRAPPERS
+       --------------------------------------------------- */
+    .workspace {
+        display: flex !important;
+        flex-direction: column !important; /* Sets cards to stack vertically in a clean feed */
+        gap: 18px !important;
+        padding: 15px !important;
+        width: 100% !important;
+        height: auto !important;
+        overflow-y: visible !important; /* Lets the document window handle natural touch scrolling */
+        padding-bottom: 120px !important; /* Leaves safe padding space so content isn't cut off by the fixed bottom dock */
+    }
+
+    .ai-card {
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+        grid-column: auto !important;
+        grid-row: auto !important;
+        margin: 0 !important;
+        border-radius: 18px !important;
+    }
+    
+    .ai-card:hover {
+        transform: translateY(-2px) scale(1) !important; /* Softens scale intensity on mobile touch events */
+    }
+    
+    .ai-header {
+        padding: 14px 18px !important;
+    }
+    
+    .ai-content {
+        min-height: 240px !important;
+        max-height: 380px !important; /* Sets content boundaries within mobile screen sizes */
+        overflow-y: auto !important;
+    }
+
+    /* ---------------------------------------------------
+       FIXED INPUT CONSOLE PROMPT BAR DOCK
+       --------------------------------------------------- */
+    .dock-area {
+        position: fixed !important;
+        bottom: 84px !important; /* Snaps exactly over the bottom footer button rails */
+        left: 0 !important;
+        width: 100% !important;
+        padding: 0 15px !important;
+        z-index: 9999 !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 10px !important;
+    }
+
+    .input-bar {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 6px 6px 6px 18px !important;
+        border-radius: 30px !important;
+        background: var(--dock-bg) !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+    }
+    
+    .input-bar input {
+        font-size: 0.88rem !important;
+    }
+
+    .prompt-type-select {
+        width: 110px !important; /* Compact design footprint for the dropdown selector menu */
+        padding: 8px 22px 8px 10px !important;
+        margin-right: 6px !important;
+        font-size: 0.72rem !important;
+        background-position: calc(100% - 12px) 50%, calc(100% - 8px) 50% !important;
+    }
+    
+    .send-pill {
+        width: 36px !important;
+        height: 36px !important;
+    }
+    
+    .circle-tool {
+        width: 44px !important;
+        height: 44px !important;
+        background: var(--dock-bg) !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
+    }
+
+    /* Universal absolute layout catchalls for sticky configurations */
+    .prompt-area, .chat-input-container, .input-container {
+        position: fixed !important;
+        bottom: 84px !important;
+        width: 100% !important;
+        padding: 0 15px !important;
+        z-index: 9999 !important;
+    }
+
+    /* ---------------------------------------------------
+       GRID LAYOUT GRID MATRIX FLUID CONVERSIONS
+       --------------------------------------------------- */
+    .view-container {
+        width: 100% !important;
+        padding: 15px !important;
+        margin: 0 !important;
+        height: auto !important;
+    }
+
+    .expertise-grid, .insights-grid, .dashboard-grid, .panel-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 16px !important;
+    }
+
+    /* ---------------------------------------------------
+       ONBOARDING TARGETED TOUR STEP RESPONSIVE LAYOUTS
+       --------------------------------------------------- */
+    
+   #intro-overlay {
+       
+    position:fixed !important;
+    display:flex !important;
+    align-items:center;
+    justify-content:center;
+    min-height:60vh !important;
+    padding:20px !important;
+
+        
+        overflow-y: auto !important; /* Enables scrolling for tour text steps on shorter displays */
+        padding: 30px 15px !important;
+    }
+    
+    
+    .guide-anchor {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        transform: none !important;
+        margin: 15px auto !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        animation: none !important; /* Halts hover/bounce motion pathways on touch viewports */
+    }
+    
+    
+    
+    .pointer-body {
+        width: 100% !important;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2) !important;
+    }
+}
+

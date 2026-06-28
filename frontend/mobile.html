@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>MultiAI · Mobile</title>
+    <style>
+        /* ============================================================
+           MOBILE‑FIRST STYLES – Everything from scratch
+           ============================================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --bg: #020617;
+            --card-bg: #0f172a;
+            --text: #ffffff;
+            --accent: #6366f1;
+            --border: rgba(99, 102, 241, 0.2);
+            --glow: rgba(99, 102, 241, 0.5);
+            --dock-bg: rgba(15, 23, 42, 0.85);
+            --radius: 16px;
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        body.light-mode {
+            --bg: #f8fafc;
+            --card-bg: #f1f5f9;
+            --text: #0f172a;
+            --accent: #4f46e5;
+            --border: rgba(0, 0, 0, 0.15);
+            --glow: rgba(79, 70, 229, 0.2);
+            --dock-bg: rgba(255, 255, 255, 0.9);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            transition: background 0.3s, color 0.3s;
+            padding-bottom: calc(80px + var(--safe-bottom));
+            overflow-x: hidden;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        ::-webkit-scrollbar { width: 0; height: 0; }
+        * { scrollbar-width: none; -ms-overflow-style: none; }
+
+        /* ---------- HEADER ---------- */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            min-height: 56px;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+        }
+        .logo span { color: var(--accent); }
+
+        /* Hamburger */
+        .hamburger-toggle {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            background: transparent;
+            border: none;
+            padding: 6px;
+            cursor: pointer;
+            z-index: 101;
+        }
+        .hamburger-toggle span {
+            display: block;
+            width: 24px;
+            height: 2.5px;
+            background: var(--text);
+            border-radius: 2px;
+            transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transform-origin: center;
+        }
+        .hamburger-toggle.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+        .hamburger-toggle.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+        .hamburger-toggle.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .theme-toggle-container {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .theme-toggle-container .wire { display: none; }
+        .bulb {
+            width: 20px;
+            height: 20px;
+            background: #444;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            position: relative;
+        }
+        .bulb::before {
+            content: "";
+            position: absolute;
+            left: 4px;
+            top: -14px;
+            width: 10px;
+            height: 16px;
+            background: #444;
+            border-top: 6px solid var(--accent);
+            border-radius: 3px;
+        }
+        .bulb span { display: none; }
+        body.light-mode .bulb {
+            background: #facc15;
+            border-color: rgba(180, 83, 9, 0.2);
+            box-shadow: 0 0 18px rgba(250, 204, 21, 0.55);
+        }
+        body.light-mode .bulb::before { background: #facc15; }
+        body.light-mode .bulb::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 44px;
+            height: 44px;
+            background: rgba(250, 204, 21, 0.28);
+            border-radius: 50%;
+            filter: blur(12px);
+            z-index: -1;
+        }
+
+        .profile-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.8rem;
+            color: white;
+            cursor: pointer;
+            border: 1px solid var(--border);
+        }
+
+        /* ---------- SLIDE MENU ---------- */
+        .nav-links {
+            display: none;
+            position: fixed;
+            top: 56px;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            flex-direction: column;
+            padding: 12px 16px;
+            gap: 4px;
+            z-index: 200;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            border-radius: 0 0 20px 20px;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .nav-links.open { display: flex; }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 12px;
+            height: 48px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            opacity: 0.7;
+            cursor: pointer;
+            color: var(--text);
+            transition: 0.2s;
+            min-height: 48px;
+        }
+        .nav-item i, .nav-item svg { width: 20px; text-align: center; }
+        .nav-item.active {
+            opacity: 1;
+            background: rgba(99, 102, 241, 0.08);
+            color: var(--accent);
+        }
+        .nav-item.active::after { display: none; }
+
+        #profile-gate .nav-item span { display: none; }
+        #profile-node {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #logout-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            padding: 0;
+            justify-content: center;
+        }
+        #logout-btn span { display: none; }
+
+        /* ---------- MAIN WRAPPER ---------- */
+        .main-wrapper {
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-template-rows: auto 1fr;
+            min-height: calc(100vh - 56px);
+        }
+
+        /* ---------- SIDEBAR → BOTTOM NAV ---------- */
+        .sidebar-container { display: none; }
+
+        .sidebar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 72px;
+            background: var(--dock-bg);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 0 8px;
+            z-index: 500;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: var(--safe-bottom);
+        }
+
+        .sb-icon, .pf-icon {
+            flex: 0 0 50px;
+            height: 50px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: none;
+            color: var(--text);
+            opacity: 0.5;
+            transition: 0.2s;
+            cursor: pointer;
+            position: relative;
+        }
+        .sb-icon.active {
+            opacity: 1;
+            background: rgba(99, 102, 241, 0.15);
+            border: 1px solid var(--accent);
+            box-shadow: 0 0 20px var(--glow);
+        }
+        .sb-icon.active::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 12px var(--accent);
+        }
+        .sb-icon svg, .pf-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .user-control-area { display: none; }
+
+        /* ---------- VIEW CONTAINERS ---------- */
+        .view-container {
+            display: none;
+            padding: 16px;
+            animation: fadeSlide 0.3s ease;
+        }
+        .view-container.active { display: block; }
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ---------- WORKSPACE ---------- */
+        .workspace {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .ai-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .ai-card.hidden { display: none; }
+
+        .ai-header {
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid var(--border);
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+        .ai-header svg {
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        .ai-content {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .bubble {
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            max-width: 92%;
+            align-self: flex-start;
+            background: rgba(128, 128, 128, 0.08);
+            border: 1px solid var(--border);
+            border-bottom-left-radius: 4px;
+        }
+        .bubble.user {
+            align-self: flex-end;
+            background: var(--accent);
+            color: white;
+            border-bottom-right-radius: 4px;
+            border-color: var(--accent);
+        }
+        .bubble.ai {
+            background: rgba(128, 128, 128, 0.06);
+        }
+
+        .card-actions {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            gap: 6px;
+            border-top: 1px solid var(--border);
+            background: rgba(0, 0, 0, 0.05);
+            flex-wrap: wrap;
+        }
+        .card-actions .action-btn {
+            background: transparent;
+            border: none;
+            color: var(--text);
+            opacity: 0.6;
+            padding: 6px 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: 0.2s;
+            min-width: 40px;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card-actions .action-btn:hover { opacity: 1; background: rgba(99, 102, 241, 0.1); }
+        .card-actions .action-btn.like-trigger.active { color: #10b981; }
+        .card-actions .action-btn.dislike-trigger.active { color: #ef4444; }
+        .card-telemetry {
+            font-size: 0.65rem;
+            opacity: 0.5;
+            margin-right: auto;
+        }
+
+        /* ---------- INPUT BAR (fixed) ---------- */
+        .dock-area {
+            position: fixed;
+            bottom: 72px;
+            left: 0;
+            right: 0;
+            padding: 8px 12px;
+            background: linear-gradient(to top, var(--bg) 60%, transparent);
+            z-index: 50;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: nowrap;
+        }
+
+        .input-bar {
+            flex: 1;
+            display: flex;
+            background: var(--dock-bg);
+            border: 1px solid var(--border);
+            border-radius: 60px;
+            padding: 4px 4px 4px 12px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            align-items: center;
+            min-width: 0;
+        }
+        .input-bar input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text);
+            font-size: 0.9rem;
+            padding: 10px 0;
+            min-height: 44px;
+            min-width: 60px;
+        }
+        .input-bar input::placeholder { opacity: 0.5; }
+
+        .prompt-type-select {
+            appearance: none;
+            -webkit-appearance: none;
+            background: rgba(99, 102, 241, 0.14);
+            border: 1px solid rgba(99, 102, 241, 0.34);
+            border-radius: 999px;
+            color: var(--text);
+            padding: 4px 24px 4px 10px;
+            margin-right: 6px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            outline: none;
+            cursor: pointer;
+            min-height: 30px;
+            background-image: linear-gradient(45deg, transparent 50%, var(--accent) 50%), linear-gradient(135deg, var(--accent) 50%, transparent 50%);
+            background-position: calc(100% - 14px) 50%, calc(100% - 10px) 50%;
+            background-size: 4px 4px, 4px 4px;
+            background-repeat: no-repeat;
+            flex-shrink: 0;
+            width: 90px;
+            max-width: 90px;
+        }
+
+        .send-pill {
+            background: var(--accent);
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: 0.2s;
+            flex-shrink: 0;
+        }
+        .send-pill:active { transform: scale(0.92); }
+
+        .circle-tool {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--dock-bg);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1rem;
+            color: var(--text);
+            transition: 0.2s;
+            flex-shrink: 0;
+        }
+        .circle-tool:active { transform: scale(0.92); }
+        .circle-tool#best-response-btn { color: #10b981; }
+        .circle-tool#ai-consensus-btn { color: #eab308; }
+        .circle-tool#voice-input-btn { color: var(--accent); }
+        .circle-tool#optimize-prompt-btn { color: var(--accent); }
+
+        /* ---------- NOTEPAD ---------- */
+        .floating-notepad {
+            position: fixed;
+            top: 10%;
+            left: 5%;
+            width: 90%;
+            max-width: 90vw;
+            height: 60vh;
+            min-height: 280px;
+            max-height: 80vh;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            z-index: 9999;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            backdrop-filter: blur(18px);
+        }
+        .floating-notepad.is-open { display: flex !important; }
+        .floating-notepad .notepad-header {
+            padding: 12px 16px;
+            background: rgba(99, 102, 241, 0.05);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+            cursor: default;
+        }
+        .floating-notepad .notepad-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+        .floating-notepad .notepad-actions {
+            display: flex;
+            gap: 6px;
+        }
+        .floating-notepad .notepad-btn {
+            background: transparent;
+            border: none;
+            color: var(--text);
+            opacity: 0.6;
+            cursor: pointer;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+        .floating-notepad .notepad-btn:hover { opacity: 1; background: rgba(255, 255, 255, 0.08); }
+        .floating-notepad .notepad-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+        .floating-notepad .notepad-body textarea {
+            flex: 1;
+            background: transparent;
+            border: none;
+            resize: none;
+            padding: 16px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            outline: none;
+        }
+        .floating-notepad .notepad-body textarea::placeholder { opacity: 0.4; }
+        .floating-notepad .notepad-footer {
+            padding: 10px 16px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+        .floating-notepad .notepad-action-btn {
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: 0.2s;
+        }
+        .floating-notepad .notepad-action-btn.clear-btn {
+            background: rgba(239, 68, 68, 0.1);
+            color: #f87171;
+        }
+        .floating-notepad .notepad-action-btn.clear-btn:hover {
+            background: #ef4444;
+            color: white;
+        }
+        .floating-notepad .notepad-action-btn.save-btn {
+            background: var(--accent);
+            color: white;
+        }
+        .floating-notepad .notepad-action-btn.save-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 10px var(--glow);
+        }
+        .floating-notepad.minimized {
+            height: 48px !important;
+            min-height: 48px !important;
+            overflow: hidden !important;
+            width: 160px !important;
+            bottom: 80px !important;
+            top: auto !important;
+            right: 12px !important;
+            left: auto !important;
+        }
+        .floating-notepad.minimized .notepad-body,
+        .floating-notepad.minimized .notepad-footer {
+            display: none !important;
+        }
+
+        /* ---------- OTHER VIEWS ---------- */
+        .scroll-view {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+        .page-sub {
+            opacity: 0.6;
+            margin-bottom: 16px;
+            font-size: 0.9rem;
+        }
+
+        .expertise-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .expertise-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+        }
+        .expertise-card.active { border-color: var(--accent); background: rgba(99, 102, 241, 0.06); }
+        .expertise-card .icon { font-size: 1.4rem; width: 40px; text-align: center; }
+        .expertise-card .info h4 { font-weight: 700; font-size: 0.95rem; }
+        .expertise-card .info p { font-size: 0.75rem; opacity: 0.6; }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .history-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 14px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .history-item .title { font-weight: 600; }
+        .history-item .date { font-size: 0.7rem; opacity: 0.5; }
+
+        .insights-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .insight-stat {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 14px;
+            text-align: center;
+        }
+        .insight-stat .value { font-size: 1.5rem; font-weight: 800; }
+        .insight-stat .label { font-size: 0.7rem; opacity: 0.5; }
+
+        .debate-setup {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .debate-setup select, .debate-setup input {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px;
+            color: var(--text);
+            outline: none;
+            font-size: 0.9rem;
+            width: 100%;
+        }
+        .debate-setup button {
+            background: var(--accent);
+            border: none;
+            border-radius: 10px;
+            padding: 12px;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .debate-arena {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            background: rgba(0, 0, 0, 0.15);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            min-height: 200px;
+        }
+        .debate-bubble {
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            max-width: 90%;
+        }
+        .debate-bubble.positive { align-self: flex-start; background: rgba(99, 102, 241, 0.08); border-color: var(--accent); }
+        .debate-bubble.negative { align-self: flex-end; background: rgba(244, 63, 94, 0.08); border-color: #f43f5e; }
+
+        /* ---------- UTILITY ---------- */
+        .hidden { display: none !important; }
+
+        /* ---------- RESPONSIVE TWEAKS ---------- */
+        @media (max-width: 420px) {
+            .input-bar input { font-size: 0.8rem; }
+            .sb-icon, .pf-icon { flex: 0 0 40px; height: 40px; }
+            .sb-icon svg, .pf-icon svg { width: 20px; height: 20px; }
+            .prompt-type-select {
+                width: 70px;
+                max-width: 70px;
+                font-size: 0.55rem;
+                padding: 2px 18px 2px 6px;
+                background-size: 3px 3px, 3px 3px;
+                background-position: calc(100% - 10px) 50%, calc(100% - 7px) 50%;
+            }
+            .circle-tool { width: 30px; height: 30px; font-size: 0.8rem; }
+            .send-pill { width: 30px; height: 30px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ====== HEADER ====== -->
+<header>
+    <div class="logo">MULTI<span>AI</span></div>
+
+    <!-- Hamburger toggle -->
+    <button class="hamburger-toggle" id="hamburger-toggle" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <ul class="nav-links" id="nav-links">
+        <li class="nav-item" onclick="switchView('workspace')"><span>Workspace</span></li>
+        <li class="nav-item" onclick="switchView('expertise')"><span>Expertise</span></li>
+        <li class="nav-item" onclick="switchView('history')"><span>History</span></li>
+        <li class="nav-item" onclick="switchView('insights')"><span>Insights</span></li>
+        <li class="nav-item" onclick="switchView('debate')"><span>Debate</span></li>
+        <li class="nav-item" onclick="switchView('about-us')"><span>About</span></li>
+        <li class="nav-item" onclick="switchView('setting')"><span>Settings</span></li>
+        <li id="profile-gate" class="nav-item" onclick="window.location.href='profile.html'">
+            <div id="profile-node">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <span id="user-label">GUEST</span>
+        </li>
+        <a id="logout-btn" onclick="handleLogout()" href="login.html" class="nav-item"></a>
+            <i class="fa-solid fa-right-from-bracket"></i><span>Log out</span>
+        </li>
+    </ul>
+
+    <div class="header-actions">
+        <div class="theme-toggle-container" id="theme-toggle">
+            <div class="bulb" id="theme-bulb"><span></span><span></span></div>
+        </div>
+        <div class="profile-avatar" id="profile-avatar" onclick="switchView('profile')">G</div>
+    </div>
+</header>
+
+<div class="main-wrapper">
+    <!-- ====== SIDEBAR (becomes bottom nav) ====== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sb-icon" id="btn-gemini" onclick="toggleAI(0)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81"/></svg>
+        </div>
+        <div class="sb-icon" id="btn-gpt" onclick="toggleAI(1)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2.5C8.7 6.9 6 10.2 6 14.1a6 6 0 0 0 12 0c0-3.9-2.7-7.2-6-11.6z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9.1 14.3c.4 1.7 1.5 2.8 3.5 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <div class="sb-icon" id="btn-grok" onclick="toggleAI(2)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"/><path d="M15.5 15.5l2.2 2.2M9 12a3 3 0 1 1 6 0a3 3 0 0 1-6 0z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <div class="sb-icon" id="btn-claude" onclick="toggleAI(3)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M13.3 2L6 13.2h5.1L10.7 22L18 10.8h-5.1z" fill="currentColor"/></svg>
+        </div>
+        <div class="sb-icon" id="btn-cohere" onclick="toggleAI(4)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="12" r="4" stroke="currentColor" stroke-width="2"/><circle cx="15" cy="12" r="4" stroke="currentColor" stroke-width="2"/></svg>
+        </div>
+        <!-- Notepad button in bottom nav -->
+        <div class="pf-icon notepad-long-btn" onclick="launchNotepad(event)" title="Notepad">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 16 16"><path fill="currentColor" d="M4.5 2A2.5 2.5 0 0 0 2 4.5v7A2.5 2.5 0 0 0 4.5 14h3.672a2.5 2.5 0 0 0 1.767-.732l3.329-3.329A2.5 2.5 0 0 0 14 8.172V4.5A2.5 2.5 0 0 0 11.5 2zM3 4.5A1.5 1.5 0 0 1 4.5 3h7A1.5 1.5 0 0 1 13 4.5V8h-2.5A2.5 2.5 0 0 0 8 10.5V13H4.5A1.5 1.5 0 0 1 3 11.5zm6 8.25V10.5A1.5 1.5 0 0 1 10.5 9h2.25q-.082.124-.19.232l-3.328 3.329q-.107.106-.232.19"/></svg>
+        </div>
+    </aside>
+
+    <!-- ====== VIEW: WORKSPACE ====== -->
+    <div id="view-workspace" class="view-container active">
+        <div class="workspace">
+            <!-- Cards will be populated by JavaScript -->
+            <div id="intro-overlay" style="text-align:center;padding:40px 20px;opacity:0.7;">
+                <h2 style="color:var(--accent);font-size:1.8rem;">Welcome</h2>
+                <p style="margin-top:10px;line-height:1.6;">Toggle models below, then type a prompt.</p>
+            </div>
+            <!-- AI cards (same IDs as desktop) -->
+            <div class="ai-card hidden" id="card-gemini">
+                <div class="ai-header"><b>Gemini Flash</b></div>
+                <div class="ai-content" id="chat-gemini"><div class="bubble ai">Gemini Flash is ready.</div></div>
+                <div class="card-actions">
+                    <span class="card-telemetry">0 tokens</span>
+                    <button class="action-btn" onclick="copyCardChat(this)"><i class="fa-regular fa-copy"></i></button>
+                    <button class="action-btn" onclick="downloadCardChat(this)"><i class="fa-regular fa-file-lines"></i></button>
+                    <button class="action-btn like-trigger" onclick="likeAIResponse(this)"><i class="fa-regular fa-thumbs-up"></i></button>
+                    <button class="action-btn dislike-trigger" onclick="dislikeAIResponse(this)"><i class="fa-regular fa-thumbs-down"></i></button>
+                </div>
+            </div>
+            <div class="ai-card hidden" id="card-gpt">
+                <div class="ai-header"><b>Liquid LFM</b></div>
+                <div class="ai-content" id="chat-gpt"><div class="bubble ai">Liquid LFM is ready.</div></div>
+                <div class="card-actions">
+                    <span class="card-telemetry">0 tokens</span>
+                    <button class="action-btn" onclick="copyCardChat(this)"><i class="fa-regular fa-copy"></i></button>
+                    <button class="action-btn" onclick="downloadCardChat(this)"><i class="fa-regular fa-file-lines"></i></button>
+                    <button class="action-btn like-trigger" onclick="likeAIResponse(this)"><i class="fa-regular fa-thumbs-up"></i></button>
+                    <button class="action-btn dislike-trigger" onclick="dislikeAIResponse(this)"><i class="fa-regular fa-thumbs-down"></i></button>
+                </div>
+            </div>
+            <div class="ai-card hidden" id="card-grok">
+                <div class="ai-header"><b>Qwen HF</b></div>
+                <div class="ai-content" id="chat-grok"><div class="bubble ai">Qwen HF is ready.</div></div>
+                <div class="card-actions">
+                    <span class="card-telemetry">0 tokens</span>
+                    <button class="action-btn" onclick="copyCardChat(this)"><i class="fa-regular fa-copy"></i></button>
+                    <button class="action-btn" onclick="downloadCardChat(this)"><i class="fa-regular fa-file-lines"></i></button>
+                    <button class="action-btn like-trigger" onclick="likeAIResponse(this)"><i class="fa-regular fa-thumbs-up"></i></button>
+                    <button class="action-btn dislike-trigger" onclick="dislikeAIResponse(this)"><i class="fa-regular fa-thumbs-down"></i></button>
+                </div>
+            </div>
+            <div class="ai-card hidden" id="card-claude">
+                <div class="ai-header"><b>GROQ LLAMA</b></div>
+                <div class="ai-content" id="chat-claude"><div class="bubble ai">Groq is ready.</div></div>
+                <div class="card-actions">
+                    <span class="card-telemetry">0 tokens</span>
+                    <button class="action-btn" onclick="copyCardChat(this)"><i class="fa-regular fa-copy"></i></button>
+                    <button class="action-btn" onclick="downloadCardChat(this)"><i class="fa-regular fa-file-lines"></i></button>
+                    <button class="action-btn like-trigger" onclick="likeAIResponse(this)"><i class="fa-regular fa-thumbs-up"></i></button>
+                    <button class="action-btn dislike-trigger" onclick="dislikeAIResponse(this)"><i class="fa-regular fa-thumbs-down"></i></button>
+                </div>
+            </div>
+            <div class="ai-card hidden" id="card-cohere">
+                <div class="ai-header"><b>COHERE</b></div>
+                <div class="ai-content" id="chat-cohere"><div class="bubble ai">Cohere is ready.</div></div>
+                <div class="card-actions">
+                    <span class="card-telemetry">0 tokens</span>
+                    <button class="action-btn" onclick="copyCardChat(this)"><i class="fa-regular fa-copy"></i></button>
+                    <button class="action-btn" onclick="downloadCardChat(this)"><i class="fa-regular fa-file-lines"></i></button>
+                    <button class="action-btn like-trigger" onclick="likeAIResponse(this)"><i class="fa-regular fa-thumbs-up"></i></button>
+                    <button class="action-btn dislike-trigger" onclick="dislikeAIResponse(this)"><i class="fa-regular fa-thumbs-down"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== OTHER VIEWS (stubs – you can paste full content) ====== -->
+    <div id="view-expertise" class="view-container hidden"><div class="scroll-view"><div class="page-title">Expertise</div><p class="page-sub">Coming soon</p></div></div>
+    <div id="view-history" class="view-container hidden"><div class="scroll-view"><div class="page-title">History</div><p class="page-sub">Coming soon</p></div></div>
+    <div id="view-insights" class="view-container hidden"><div class="scroll-view"><div class="page-title">Insights</div><p class="page-sub">Coming soon</p></div></div>
+    <div id="view-debate" class="view-container hidden"><div class="scroll-view"><div class="page-title">Debate</div><p class="page-sub">Coming soon</p></div></div>
+    <div id="view-setting" class="view-container hidden"><div class="scroll-view"><div class="page-title">Settings</div><p class="page-sub">Coming soon</p></div></div>
+    <div id="view-about-us" class="view-container hidden"><div class="scroll-view"><div class="page-title">About</div><p class="page-sub">MultiAI mobile</p></div></div>
+    <div id="view-profile" class="view-container hidden"><div class="scroll-view"><div class="page-title">Profile</div><p class="page-sub">Guest</p></div></div>
+
+</div>
+
+<!-- ====== FLOATING NOTEPAD ====== -->
+<div id="floating-notepad" class="floating-notepad">
+    <div class="notepad-header" id="notepad-drag-handle">
+        <div class="notepad-title"><i class="fa-regular fa-note-sticky"></i> Scratchpad</div>
+        <div class="notepad-actions">
+            <button class="notepad-btn" onclick="toggleNotepadMinimize()"><i class="fa-regular fa-window-minimize"></i></button>
+            <button class="notepad-btn close-trigger" onclick="closeNotepad()"><i class="fa-regular fa-xmark"></i></button>
+        </div>
+    </div>
+    <div class="notepad-body">
+        <textarea id="notepad-textarea" placeholder="Write your notes here…"></textarea>
+        <div class="notepad-footer">
+            <button class="notepad-action-btn clear-btn" onclick="clearNotepad()">Clear</button>
+            <button class="notepad-action-btn save-btn" onclick="downloadNotepadText()">Download</button>
+        </div>
+    </div>
+</div>
+
+<!-- ====== SCRIPTS ====== -->
+<script>
+    // ============================================================
+    // CORE MOBILE LOGIC (minimal but functional)
+    // ============================================================
+
+    // ---------- MODEL TOGGLES ----------
+    function toggleAI(index) {
+        const cards = ['card-gemini','card-gpt','card-grok','card-claude','card-cohere'];
+        const btns = ['btn-gemini','btn-gpt','btn-grok','btn-claude','btn-cohere'];
+        const card = document.getElementById(cards[index]);
+        const btn = document.getElementById(btns[index]);
+        if (card && btn) {
+            card.classList.toggle('hidden');
+            btn.classList.toggle('active');
+            // Show intro overlay if no cards active
+            const overlay = document.getElementById('intro-overlay');
+            const anyVisible = document.querySelectorAll('.ai-card:not(.hidden)').length > 0;
+            overlay.style.display = anyVisible ? 'none' : 'block';
+        }
+    }
+
+    // ---------- BROADCAST (mock) ----------
+    function broadcast() {
+        const input = document.getElementById('main-in');
+        const text = input.value.trim();
+        if (!text) return;
+        const activeCards = document.querySelectorAll('.ai-card:not(.hidden)');
+        activeCards.forEach(card => {
+            const content = card.querySelector('.ai-content');
+            const userBubble = document.createElement('div');
+            userBubble.className = 'bubble user';
+            userBubble.textContent = text;
+            content.appendChild(userBubble);
+            const aiBubble = document.createElement('div');
+            aiBubble.className = 'bubble ai';
+            aiBubble.textContent = 'Processing…';
+            content.appendChild(aiBubble);
+            // Simulate response
+            setTimeout(() => {
+                aiBubble.textContent = `Mock response to: "${text}"`;
+            }, 800);
+            content.scrollTop = content.scrollHeight;
+        });
+        input.value = '';
+    }
+
+    // ---------- NOTEPAD ----------
+    function launchNotepad(e) {
+        if (e) e.stopPropagation();
+        const notepad = document.getElementById('floating-notepad');
+        notepad.classList.toggle('is-open');
+        if (notepad.classList.contains('is-open')) {
+            notepad.classList.remove('minimized');
+            document.getElementById('notepad-textarea').focus();
+        }
+    }
+    function closeNotepad() {
+        document.getElementById('floating-notepad').classList.remove('is-open');
+    }
+    function toggleNotepadMinimize() {
+        document.getElementById('floating-notepad').classList.toggle('minimized');
+    }
+    function clearNotepad() {
+        if (confirm('Clear scratchpad?')) {
+            document.getElementById('notepad-textarea').value = '';
+            localStorage.removeItem('workspaceScratchpadText');
+        }
+    }
+    function downloadNotepadText() {
+        const text = document.getElementById('notepad-textarea').value;
+        if (!text) return alert('Empty');
+        const blob = new Blob([text], {type:'text/plain'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'scratchpad.txt';
+        a.click();
+        URL.revokeObjectURL(a.href);
+    }
+
+    // ---------- VIEW SWITCHING ----------
+    function switchView(view) {
+        document.querySelectorAll('.view-container').forEach(el => el.classList.remove('active'));
+        const target = document.getElementById('view-'+view);
+        if (target) target.classList.add('active');
+        // Close menu
+        document.getElementById('nav-links').classList.remove('open');
+        document.getElementById('hamburger-toggle').classList.remove('open');
+    }
+
+    // ---------- THEME TOGGLE ----------
+    document.getElementById('theme-bulb').addEventListener('click', function() {
+        document.body.classList.toggle('light-mode');
+        const isLight = document.body.classList.contains('light-mode');
+        localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    });
+    if (localStorage.getItem('theme') === 'light') {
+        document.body.classList.add('light-mode');
+    }
+
+    // ---------- HAMBURGER TOGGLE ----------
+    document.getElementById('hamburger-toggle').addEventListener('click', function(e) {
+        e.stopPropagation();
+        this.classList.toggle('open');
+        document.getElementById('nav-links').classList.toggle('open');
+    });
+    document.addEventListener('click', function(e) {
+        const nav = document.getElementById('nav-links');
+        const hamburger = document.getElementById('hamburger-toggle');
+        if (!nav.contains(e.target) && !hamburger.contains(e.target)) {
+            nav.classList.remove('open');
+            hamburger.classList.remove('open');
+        }
+    });
+
+    // ---------- INPUT BAR ----------
+    // We need to create the input bar dynamically because it's not in the HTML
+    // Let's inject it now
+    (function createInputBar() {
+        const dock = document.createElement('div');
+        dock.className = 'dock-area';
+        dock.id = 'dock-area';
+        dock.innerHTML = `
+            <div class="circle-tool" id="best-response-btn" onclick="selectBestResponse()" title="Best Response"><i class="fa-solid fa-star" style="color:#10b981;"></i></div>
+            <div class="circle-tool" id="optimize-prompt-btn" onclick="optimizePrompt()" title="Optimize"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+            <div class="input-bar">
+                
+                <input type="text" id="main-in" placeholder="Command the system..." onkeypress="if(event.key==='Enter') broadcast()">
+                <div class="send-pill" onclick="broadcast()"><i class="fa-solid fa-paper-plane"></i></div>
+            </div>
+            <div class="circle-tool" id="voice-input-btn" onclick="startVoiceRecognition()" title="Voice"><i class="fa-solid fa-microphone"></i></div>
+            <div class="circle-tool" id="ai-consensus-btn" onclick="generateConsensus()" title="Consensus"><i class="fa-solid fa-brain" style="color:#eab308;"></i></div>
+        `;
+        document.body.appendChild(dock);
+    })();
+
+    // Stub functions for buttons
+    function selectBestResponse() { alert('Best response (mock)'); }
+    function optimizePrompt() { alert('Optimize prompt (mock)'); }
+    function startVoiceRecognition() { alert('Voice input (mock)'); }
+    function generateConsensus() { alert('Consensus (mock)'); }
+    function handleLogout() { if(confirm('Logout?')) { localStorage.clear(); location.reload(); } }
+
+    // ---------- INIT: show all cards by default on first load ----------
+    document.addEventListener('DOMContentLoaded', function() {
+        // Activate all models by default
+        for (let i=0; i<5; i++) {
+            const card = document.querySelectorAll('.ai-card')[i];
+            if (card) card.classList.remove('hidden');
+            const btn = document.querySelectorAll('.sb-icon')[i];
+            if (btn) btn.classList.add('active');
+        }
+        document.getElementById('intro-overlay').style.display = 'none';
+        // Load saved notepad text
+        const saved = localStorage.getItem('workspaceScratchpadText');
+        if (saved) document.getElementById('notepad-textarea').value = saved;
+        document.getElementById('notepad-textarea').addEventListener('input', function() {
+            localStorage.setItem('workspaceScratchpadText', this.value);
+        });
+        // Set profile avatar
+        const name = localStorage.getItem('neuralUser') || 'Guest';
+        document.getElementById('profile-avatar').textContent = name.charAt(0).toUpperCase();
+        document.getElementById('user-label').textContent = name.toUpperCase();
+    });
+
+    // Copy/Download stubs (minimal)
+    function copyCardChat(btn) {
+        const card = btn.closest('.ai-card');
+        const bubbles = card.querySelectorAll('.bubble');
+        let text = '';
+        bubbles.forEach(b => text += b.textContent + '\n');
+        navigator.clipboard.writeText(text).then(() => alert('Copied!'));
+    }
+    function downloadCardChat(btn) {
+        const card = btn.closest('.ai-card');
+        const bubbles = card.querySelectorAll('.bubble');
+        let text = '';
+        bubbles.forEach(b => text += b.textContent + '\n');
+        const blob = new Blob([text], {type:'text/plain'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'chat.txt';
+        a.click();
+        URL.revokeObjectURL(a.href);
+    }
+    function likeAIResponse(btn) {
+        btn.classList.toggle('active');
+        const parent = btn.closest('.card-actions');
+        parent.querySelector('.dislike-trigger')?.classList.remove('active');
+    }
+    function dislikeAIResponse(btn) {
+        btn.classList.toggle('active');
+        const parent = btn.closest('.card-actions');
+        parent.querySelector('.like-trigger')?.classList.remove('active');
+    }
+    // Make functions globally accessible
+    window.toggleAI = toggleAI;
+    window.broadcast = broadcast;
+    window.launchNotepad = launchNotepad;
+    window.closeNotepad = closeNotepad;
+    window.toggleNotepadMinimize = toggleNotepadMinimize;
+    window.clearNotepad = clearNotepad;
+    window.downloadNotepadText = downloadNotepadText;
+    window.switchView = switchView;
+    window.handleLogout = handleLogout;
+    window.selectBestResponse = selectBestResponse;
+    window.optimizePrompt = optimizePrompt;
+    window.startVoiceRecognition = startVoiceRecognition;
+    window.generateConsensus = generateConsensus;
+    window.copyCardChat = copyCardChat;
+    window.downloadCardChat = downloadCardChat;
+    window.likeAIResponse = likeAIResponse;
+    window.dislikeAIResponse = dislikeAIResponse;
+</script>
+</body>
+</html>
