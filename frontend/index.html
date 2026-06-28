@@ -1171,6 +1171,12 @@ function renderModelText(text) {
 
 const BACKGROUND_API_DELAY_MS = 1500;
 
+function clearLegacyPersistentByokKeys() {
+    ['byok_gemini', 'byok_openrouter', 'byok_groq', 'byok_huggingface', 'byok_cohere'].forEach((key) => {
+        localStorage.removeItem(key);
+    });
+}
+
 function delayBackgroundApiCall(ms = BACKGROUND_API_DELAY_MS) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -1936,6 +1942,7 @@ async function sendModelFollowUp(card, followUp, queryBox) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    clearLegacyPersistentByokKeys();
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
     const userName = localStorage.getItem('neuralUser') || "Guest";
     
@@ -4544,13 +4551,14 @@ function saveByokKeys() {
 function getCustomKeysPayload() {
     const enabled = localStorage.getItem('byok_enabled') === 'true';
     if (!enabled) return null;
-    return {
+    const keys = {
         GEMINI_API_KEY: sessionStorage.getItem('byok_gemini') || '',
         OPENROUTER_API_KEY: sessionStorage.getItem('byok_openrouter') || '',
         HUGGINGFACE_API_KEY: sessionStorage.getItem('byok_huggingface') || '',
         GROQ_API_KEY: sessionStorage.getItem('byok_groq') || '',
         COHERE_API_KEY: sessionStorage.getItem('byok_cohere') || ''
     };
+    return Object.values(keys).some((value) => value.trim()) ? keys : null;
 }
 
 // AI Consensus Engine & Modal Controls
