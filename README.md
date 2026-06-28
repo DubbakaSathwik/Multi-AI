@@ -61,6 +61,14 @@ COHERE_API_KEY=
 
 For production, `JWT_SECRET` and `CORS_ORIGIN` are required.
 
+For Render, use your deployed service origin only:
+
+```env
+CORS_ORIGIN=https://multiai-6kx9.onrender.com
+```
+
+Do not include `/index.html`. A trailing slash is tolerated by the server, but the clean value above is recommended.
+
 ## Local Start
 
 ```bash

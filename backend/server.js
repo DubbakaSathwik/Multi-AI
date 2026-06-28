@@ -13,7 +13,7 @@ import feedbackRoutes from './routes/feedback.routes.js';
 import workspaceRoutes from './routes/workspace.routes.js';
 import { aiLimiter, authLimiter } from './middlewares/rateLimit.middleware.js';
 import { errorHandler } from './middlewares/error.middleware.js';
-import { getAllowedOrigins, validateEnvironment } from './config/env.js';
+import { getAllowedOrigins, normalizeOrigin, validateEnvironment } from './config/env.js';
 
 dotenv.config();
 validateEnvironment();
@@ -42,9 +42,11 @@ app.use(
 app.use(compression());
 app.use(cors({
   origin(origin, callback) {
-    if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+    const normalizedOrigin = normalizeOrigin(origin);
+    if (!normalizedOrigin || allowedOrigins.length === 0 || allowedOrigins.includes(normalizedOrigin)) {
       return callback(null, true);
     }
+    console.warn(`CORS blocked origin: ${origin}. Allowed origins: ${allowedOrigins.join(', ')}`);
     return callback(new Error('CORS origin not allowed'));
   }
 }));

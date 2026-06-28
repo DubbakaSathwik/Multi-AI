@@ -20,9 +20,20 @@ export function getJwtSecret() {
   return process.env.JWT_SECRET || 'development-only-change-me';
 }
 
+export function normalizeOrigin(origin) {
+  const raw = String(origin || '').trim();
+  if (!raw) return '';
+
+  try {
+    return new URL(raw).origin;
+  } catch {
+    return raw.replace(/\/+$/, '');
+  }
+}
+
 export function getAllowedOrigins() {
   return (process.env.CORS_ORIGIN || '')
     .split(',')
-    .map((origin) => origin.trim())
+    .map(normalizeOrigin)
     .filter(Boolean);
 }
