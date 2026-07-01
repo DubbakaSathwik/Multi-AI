@@ -3546,3 +3546,20 @@ select option {
 .cmd-btn {
     color: #ffffff !important;
 }
+
+/* Centering profile node contents (text letter or SVGs) perfectly in the middle */
+#profile-node {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    border-radius: 50% !important;
+    overflow: hidden !important;
+}
+
+#profile-node svg {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 auto !important;
+}
