@@ -3563,3 +3563,15 @@ select option {
     height: 100% !important;
     margin: 0 auto !important;
 }
+
+/* Quick Settings inline group row layout */
+.form-group.inline-group {
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    background: var(--bg) !important;
+    padding: 12px 18px !important;
+    border-radius: 12px !important;
+    border: 1px solid var(--border) !important;
+    margin-top: 0 !important;
+}
