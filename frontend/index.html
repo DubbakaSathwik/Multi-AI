@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-<link rel="stylesheet" href="style.css?v=1.0.4">
+<link rel="stylesheet" href="style.css?v=1.0.5">
 <link rel="stylesheet" href="mobile.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Multi AI - all Ai meetup</title>
@@ -650,11 +650,11 @@
                     <div style="display: grid; grid-template-columns: 2fr 1.1fr 1.1fr 1.1fr 0.8fr 0.8fr; gap: 15px; align-items: flex-end;">
                         <div class="form-group">
                             <label style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; opacity: 0.8; margin-bottom: 6px;">Debate Topic</label>
-                            <input type="text" id="debate-topic" placeholder="e.g., Should AI Replace Teachers?" style="background: rgba(15, 23, 42, 0.45); border: 1px solid var(--border); border-radius: 10px; padding: 12px; color: var(--text); outline: none;" value="Should AI Replace Teachers?">
+                            <input type="text" id="debate-topic" placeholder="e.g., Should AI Replace Teachers?" style="background: var(--input-bg, rgba(15, 23, 42, 0.45)); border: 1px solid var(--border); border-radius: 10px; padding: 12px; color: var(--text); outline: none;" value="Should AI Replace Teachers?">
                         </div>
                         <div class="form-group">
                             <label style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; opacity: 0.8; margin-bottom: 6px;">Model A (Positive)</label>
-                            <select id="debate-model-a" style="background: rgba(15, 23, 42, 0.8); border: 1px solid var(--border); border-radius: 10px; padding: 12px; color: var(--text); outline: none;">
+                            <select id="debate-model-a" style="background: var(--input-bg, rgba(15, 23, 42, 0.8)); border: 1px solid var(--border); border-radius: 10px; padding: 12px; color: var(--text); outline: none;">
                                 <option value="Gemini Flash">Gemini Flash</option>
                                 <option value="Liquid LFM">Liquid LFM</option>
                                 <option value="Qwen HF">Qwen HF</option>
@@ -664,7 +664,7 @@
                         </div>
                         <div class="form-group">
                             <label style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; opacity: 0.8; margin-bottom: 6px;">Model B (Negative)</label>
-                            <select id="debate-model-b" style="background: rgba(15, 23, 42, 0.8); border: 1px solid var(--border); border-radius: 10px; padding: 12px; color: var(--text); outline: none;">
+                            <select id="debate-model-b" style="background: var(--input-bg, rgba(15, 23, 42, 0.8)); border: 1px solid var(--border); border-radius: 10px; padding: 12px; color: var(--text); outline: none;">
                                 <option value="Gemini Flash" selected>Gemini Flash</option>
                                 <option value="Liquid LFM">Liquid LFM</option>
                                 <option value="Qwen HF">Qwen HF</option>
@@ -674,7 +674,7 @@
                         </div>
                         <div class="form-group">
                             <label style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; opacity: 0.8; margin-bottom: 6px;">Response Length</label>
-                            <select id="debate-length" style="background: rgba(15, 23, 42, 0.8); border: 1px solid var(--border); border-radius: 10px; padding: 12px; color: var(--text); outline: none;">
+                            <select id="debate-length" style="background: var(--input-bg, rgba(15, 23, 42, 0.8)); border: 1px solid var(--border); border-radius: 10px; padding: 12px; color: var(--text); outline: none;">
                                 <option value="short">Short (30-40 words)</option>
                                 <option value="medium" selected>Medium (50-70 words)</option>
                                 <option value="long">Long &amp; Detailed (100-120 words)</option>
@@ -682,7 +682,7 @@
                         </div>
                         <div class="form-group">
                             <label style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; opacity: 0.8; margin-bottom: 6px;">Debate Rounds</label>
-                            <select id="debate-rounds" style="background: rgba(15, 23, 42, 0.8); border: 1px solid var(--border); border-radius: 10px; padding: 12px; color: var(--text); outline: none;">
+                            <select id="debate-rounds" style="background: var(--input-bg, rgba(15, 23, 42, 0.8)); border: 1px solid var(--border); border-radius: 10px; padding: 12px; color: var(--text); outline: none;">
                                 <option value="3">3 Rounds</option>
                                 <option value="5">5 Rounds</option>
                                 <option value="7">7 Rounds</option>
@@ -1409,23 +1409,23 @@
             <div id="byok-keys-fields" style="display: flex; flex-direction: column; gap: 15px; opacity: 0.5; pointer-events: none;">
                 <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
                     <label style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">Gemini API Key</label>
-                    <input type="password" id="byok-gemini-key" placeholder="AI.Ab8..." style="background: rgba(15, 23, 42, 0.45); border: 1px solid var(--border); border-radius: 10px; padding: 12px; color: var(--text); outline: none;">
+                    <input type="password" id="byok-gemini-key" placeholder="AI.Ab8..." style="background: var(--input-bg, rgba(15, 23, 42, 0.45)); border: 1px solid var(--border); border-radius: 10px; padding: 12px; color: var(--text); outline: none;">
                 </div>
                 <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
                     <label style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">OpenRouter API Key</label>
-                    <input type="password" id="byok-openrouter-key" placeholder="sk-or-v1-..." style="background: rgba(15, 23, 42, 0.45); border: 1px solid var(--border); border-radius: 10px; padding: 12px; color: var(--text); outline: none;">
+                    <input type="password" id="byok-openrouter-key" placeholder="sk-or-v1-..." style="background: var(--input-bg, rgba(15, 23, 42, 0.45)); border: 1px solid var(--border); border-radius: 10px; padding: 12px; color: var(--text); outline: none;">
                 </div>
                 <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
                     <label style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">Groq API Key</label>
-                    <input type="password" id="byok-groq-key" placeholder="gsk_..." style="background: rgba(15, 23, 42, 0.45); border: 1px solid var(--border); border-radius: 10px; padding: 12px; color: var(--text); outline: none;">
+                    <input type="password" id="byok-groq-key" placeholder="gsk_..." style="background: var(--input-bg, rgba(15, 23, 42, 0.45)); border: 1px solid var(--border); border-radius: 10px; padding: 12px; color: var(--text); outline: none;">
                 </div>
                 <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
                     <label style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">HuggingFace API Key</label>
-                    <input type="password" id="byok-huggingface-key" placeholder="hf_..." style="background: rgba(15, 23, 42, 0.45); border: 1px solid var(--border); border-radius: 10px; padding: 12px; color: var(--text); outline: none;">
+                    <input type="password" id="byok-huggingface-key" placeholder="hf_..." style="background: var(--input-bg, rgba(15, 23, 42, 0.45)); border: 1px solid var(--border); border-radius: 10px; padding: 12px; color: var(--text); outline: none;">
                 </div>
                 <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
                     <label style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">Cohere API Key</label>
-                    <input type="password" id="byok-cohere-key" placeholder="co_..." style="background: rgba(15, 23, 42, 0.45); border: 1px solid var(--border); border-radius: 10px; padding: 12px; color: var(--text); outline: none;">
+                    <input type="password" id="byok-cohere-key" placeholder="co_..." style="background: var(--input-bg, rgba(15, 23, 42, 0.45)); border: 1px solid var(--border); border-radius: 10px; padding: 12px; color: var(--text); outline: none;">
                 </div>
             </div>
             <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
@@ -1472,7 +1472,7 @@
             <div style="display: flex; gap: 15px; align-items: center; margin-bottom: 10px;">
                 <div style="flex: 1;">
                     <label style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">Compare Model A</label>
-                    <select id="diff-select-model-a" onchange="recalculateResponseDiff()" style="background: rgba(15, 23, 42, 0.8); border: 1px solid var(--border); border-radius: 10px; padding: 10px; color: var(--text); outline: none; width: 100%;">
+                    <select id="diff-select-model-a" onchange="recalculateResponseDiff()" style="background: var(--input-bg, rgba(15, 23, 42, 0.8)); border: 1px solid var(--border); border-radius: 10px; padding: 10px; color: var(--text); outline: none; width: 100%;">
                         <option value="Gemini Flash">Gemini Flash</option>
                         <option value="Liquid LFM">Liquid LFM</option>
                         <option value="Qwen HF">Qwen HF</option>
@@ -1483,7 +1483,7 @@
                 <span style="font-weight: 800; opacity: 0.5; margin-top: 15px;">VS</span>
                 <div style="flex: 1;">
                     <label style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">Compare Model B</label>
-                    <select id="diff-select-model-b" onchange="recalculateResponseDiff()" style="background: rgba(15, 23, 42, 0.8); border: 1px solid var(--border); border-radius: 10px; padding: 10px; color: var(--text); outline: none; width: 100%;">
+                    <select id="diff-select-model-b" onchange="recalculateResponseDiff()" style="background: var(--input-bg, rgba(15, 23, 42, 0.8)); border: 1px solid var(--border); border-radius: 10px; padding: 10px; color: var(--text); outline: none; width: 100%;">
                         <option value="Gemini Flash">Gemini Flash</option>
                         <option value="Liquid LFM" selected>Liquid LFM</option>
                         <option value="Qwen HF">Qwen HF</option>
@@ -1492,7 +1492,7 @@
                     </select>
                 </div>
             </div>
-            <div id="diff-output-container" style="background: rgba(0,0,0,0.3); border: 1px solid var(--border); padding: 25px; border-radius: 16px; overflow-y: auto; max-height: 45vh; line-height: 1.6; font-size: 0.9rem;">
+            <div id="diff-output-container" style="background: var(--bg, rgba(0,0,0,0.3)); border: 1px solid var(--border); padding: 25px; border-radius: 16px; overflow-y: auto; max-height: 45vh; line-height: 1.6; font-size: 0.9rem;">
                 <!-- Difference highlights go here -->
             </div>
         </div>

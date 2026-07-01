@@ -3541,3 +3541,8 @@ select option {
     color: var(--text) !important;
     padding: 8px !important;
 }
+
+/* Ensure all solid action buttons have white text for contrast readability across all themes */
+.cmd-btn {
+    color: #ffffff !important;
+}
