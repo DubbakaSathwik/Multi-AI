@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=1.0.3">
 <link rel="stylesheet" href="mobile.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Multi AI - all Ai meetup</title>
@@ -7538,6 +7538,14 @@ window.clearChatHistory = clearChatHistory;
 window.deleteSavedNotepadNotes = deleteSavedNotepadNotes;
 window.resetSettingsToDefault = resetSettingsToDefault;
 window.applyTheme = applyTheme;
+
+
+// Execute layout, theme, and background canvas visualizer immediately on page script evaluation
+applyWorkspaceLayout();
+const defaultThemeOnLoad = localStorage.getItem('themeName') || 'midnight';
+applyTheme(defaultThemeOnLoad);
+initBackgroundEffects();
+updateActiveModelsCountBadge();
 
 
 });
