@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-<link rel="stylesheet" href="style.css?v=1.0.6">
+<link rel="stylesheet" href="style.css?v=1.0.7">
 <link rel="stylesheet" href="mobile.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Multi AI - all Ai meetup</title>
@@ -7244,22 +7244,28 @@ function applyWorkspaceLayout() {
         }
     }
 
-    // 2. Prompt Position
+    // 2. Prompt Position & Flex Container Setup (avoids double padding-bottom offsets)
+    const viewWorkspace = document.getElementById('view-workspace');
+    if (viewWorkspace) {
+        viewWorkspace.style.setProperty('display', 'flex', 'important');
+        viewWorkspace.style.setProperty('flex-direction', 'column', 'important');
+    }
+
     if (dockArea && workspace) {
+        workspace.style.setProperty('flex', '1', 'important');
+        workspace.style.setProperty('height', '100%', 'important');
+        workspace.style.setProperty('margin-top', '0px', 'important');
+        
         if (promptPos === 'top') {
             dockArea.style.position = 'fixed';
             dockArea.style.bottom = 'auto';
             dockArea.style.top = '105px';
-            workspace.style.setProperty('padding-top', '110px', 'important');
-            workspace.style.setProperty('padding-bottom', '20px', 'important');
-            workspace.style.setProperty('margin-top', '0px', 'important');
+            workspace.style.setProperty('padding', '110px 30px 24px 30px', 'important');
         } else {
             dockArea.style.position = 'fixed';
             dockArea.style.top = 'auto';
             dockArea.style.bottom = 'clamp(14px, 2.2vh, 25px)';
-            workspace.style.setProperty('padding-top', '20px', 'important');
-            workspace.style.setProperty('padding-bottom', '110px', 'important');
-            workspace.style.setProperty('margin-top', '0px', 'important');
+            workspace.style.setProperty('padding', '24px 30px 110px 30px', 'important');
         }
     }
 
