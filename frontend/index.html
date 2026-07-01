@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-<link rel="stylesheet" href="style.css?v=1.0.7">
+<link rel="stylesheet" href="style.css?v=1.0.8">
 <link rel="stylesheet" href="mobile.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Multi AI - all Ai meetup</title>
@@ -7247,8 +7247,8 @@ function applyWorkspaceLayout() {
     // 2. Prompt Position & Flex Container Setup (avoids double padding-bottom offsets)
     const viewWorkspace = document.getElementById('view-workspace');
     if (viewWorkspace) {
-        viewWorkspace.style.setProperty('display', 'flex', 'important');
-        viewWorkspace.style.setProperty('flex-direction', 'column', 'important');
+        // Cleanly remove any inline display overrides to allow the stylesheet's .hidden class to hide it when switching tabs
+        viewWorkspace.style.display = '';
     }
 
     if (dockArea && workspace) {
