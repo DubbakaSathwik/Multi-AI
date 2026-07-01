@@ -11,6 +11,7 @@
     
 </head>
 <body>
+    <canvas id="app-bg-effects" style="position: fixed; inset: 0; pointer-events: none; z-index: -1;"></canvas>
 
     
        <header>
@@ -49,7 +50,7 @@
             <span>Setting</span>
         </li>
         
-        <li id="profile-gate" class="nav-item" onclick="window.location.href='profile.html'">
+        <li id="profile-gate" class="nav-item" onclick="switchView('setting'); switchSettingsTab('profile');">
             <div id="profile-node" style="border-radius: 50%; overflow: hidden; background: var(--accent); display: inline-flex; align-items: center; justify-content: center;">
                 <?xml version="1.0" encoding="utf-8"?><!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
 <svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" style="margin-left: 6px;" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 7.063C16.5 10.258 14.57 13 12 13c-2.572 0-4.5-2.742-4.5-5.938C7.5 3.868 9.16 2 12 2s4.5 1.867 4.5 5.063zM4.102 20.142C4.487 20.6 6.145 22 12 22c5.855 0 7.512-1.4 7.898-1.857a.416.416 0 0 0 .09-.317C19.9 18.944 19.106 15 12 15s-7.9 3.944-7.989 4.826a.416.416 0 0 0 .091.317z" fill="#000000"/></svg>
@@ -70,6 +71,10 @@
 <div class="main-wrapper">
 <div class="sidebar-container" id="sidebar-wrapper"></div>
         <aside class="sidebar">
+    <div class="active-models-count-container" style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; display: flex; flex-direction: column; align-items: center; gap: 2px;">
+        <span style="font-size:0.55rem;opacity:0.6;">Active</span>
+        <span id="active-models-count-badge" style="font-size:0.75rem;font-weight:800;color:var(--accent);">1 / 5</span>
+    </div>
     <div class="sb-icon" id="btn-gemini" onclick="toggleAI(0)">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81"/></svg>
     </div>
@@ -398,36 +403,41 @@
             </div>
 
             <div class="dock-area">
-                <div class="circle-tool" id="best-response-btn" onclick="selectBestResponse()" title="⭐ Select Best Response" style="color: #10b981;">
-                    <i class="fa-solid fa-star" style="font-size: 1.2rem;"></i>
-                </div>
-                <div class="circle-tool" id="optimize-prompt-btn" onclick="optimizePrompt()" title="Optimize Prompt" style="color: var(--accent);">
-                    <i class="fa-solid fa-wand-magic-sparkles" style="font-size: 1.2rem;"></i>
-                </div>
-                <div class="input-bar">
-                    <div id="custom-prompt-select" class="custom-prompt-select">
-                        <div class="custom-select-trigger" onclick="toggleCustomSelect()">
-                            <span id="custom-select-trigger-text">Prompt Type</span>
-                            <i class="fa-solid fa-chevron-up" style="font-size: 0.7rem; opacity: 0.8;"></i>
+                <div class="prompt-bar-container">
+                    <button class="circle-tool" id="upload-file-btn" onclick="triggerFileUpload()" title="Upload File" style="color: var(--accent);">
+                        <i class="fa-solid fa-paperclip" style="font-size: 1.1rem;"></i>
+                        <input type="file" id="prompt-file-upload" style="display: none;" onchange="handlePromptFileUpload(this)">
+                    </button>
+                    <button class="circle-tool" id="voice-input-btn" onclick="startVoiceRecognition()" title="Voice Input (Speech to Text)" style="color: #ef4444;">
+                        <i class="fa-solid fa-microphone" style="font-size: 1.1rem;"></i>
+                    </button>
+                    <button class="circle-tool" id="optimize-prompt-btn" onclick="optimizePrompt()" title="Optimize Prompt" style="color: #a855f7;">
+                        <i class="fa-solid fa-wand-magic-sparkles" style="font-size: 1.1rem;"></i>
+                    </button>
+                    
+                    <div class="input-bar">
+                        <div id="custom-prompt-select" class="custom-prompt-select">
+                            <div class="custom-select-trigger" onclick="toggleCustomSelect()">
+                                <span id="custom-select-trigger-text">Prompt Type</span>
+                                <i class="fa-solid fa-chevron-up" style="font-size: 0.7rem; opacity: 0.8;"></i>
+                            </div>
+                            <div class="custom-select-options hidden" id="custom-select-options"></div>
                         </div>
-                        <div class="custom-select-options hidden" id="custom-select-options"></div>
+                        <select id="prompt-template-select" class="prompt-type-select" style="display: none !important;"></select>
+                        <textarea id="main-in" placeholder="Command the system..." onkeydown="handlePromptKeyDown(event)" rows="1"></textarea>
                     </div>
-                    <select id="prompt-template-select" class="prompt-type-select" style="display: none !important;">
-                    </select>
-                    <textarea id="main-in" placeholder="Command the system..." onkeydown="handlePromptKeyDown(event)" rows="1"></textarea>
-                    <div class="send-pill" onclick="broadcast()"> <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 14 22" fill="currentColor">
-            <path d="m0 0l20 10L0 20zm0 8v4l10-2z"/>
-        </svg></div>
-                </div>
-                <div class="circle-tool" id="voice-input-btn" onclick="startVoiceRecognition()" title="Voice Input (Speech to Text)">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
-                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-                        <line x1="12" y1="19" x2="12" y2="22"></line>
-                    </svg>
-                </div>
-                <div class="circle-tool" id="ai-consensus-btn" onclick="generateConsensus()" title="🧠 AI Consensus (Synthesize Answers)" style="color: #eab308;">
-                    <i class="fa-solid fa-brain" style="font-size: 1.2rem;"></i>
+
+                    <button class="circle-tool" id="ai-consensus-btn" onclick="generateConsensus()" title="🧠 AI Consensus" style="color: #eab308;">
+                        <i class="fa-solid fa-brain" style="font-size: 1.1rem;"></i>
+                    </button>
+                    <button class="circle-tool" id="best-response-btn" onclick="selectBestResponse()" title="⭐ Select Best Response" style="color: #10b981;">
+                        <i class="fa-solid fa-star" style="font-size: 1.1rem;"></i>
+                    </button>
+                    <button class="send-circle-btn" onclick="broadcast()" title="Send Command">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                        </svg>
+                    </button>
                 </div>
             </div>
         </div>
@@ -682,7 +692,7 @@
                             <label style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; opacity: 0.8; margin-bottom: 8px;">Animations</label>
                             <label class="switch">
                                 <input type="checkbox" id="debate-animations" checked>
-                                <span class="slider"></span>
+                                <span class="switch-slider"></span>
                             </label>
                         </div>
                     </div>
@@ -718,45 +728,571 @@
         </div>
 
 <div id="view-setting" class="view-container hidden settings-page">
-    <div class="page-kicker">Control Center</div>
-    <h2 class="page-heading">Settings</h2>
-    <p class="page-subtext">Tune the way MultiAI behaves while keeping the workspace clean. These controls affect model access, judging behavior, generation style, and card layout.</p>
-    <div class="settings-grid">
-        <div class="ui-info-card">
-            <div class="ui-info-icon"><i class="fa-solid fa-key"></i></div>
-            <div>
-                <h3>API Keys</h3>
-                <p>Add your own Gemini, OpenRouter, Hugging Face, Groq, and Cohere keys. Keys stay in this browser and override the server defaults when enabled.</p>
-                <button id="byok-settings-btn" class="settings-action" type="button" onclick="openByokSettings()"><i class="fa-solid fa-key"></i> Manage keys</button>
+    <div class="settings-workspace-layout">
+        <!-- Settings Sidebar -->
+        <aside class="settings-nav-sidebar">
+            <div class="settings-nav-item active" onclick="switchSettingsTab('profile')">
+                <i class="fa-solid fa-user"></i>
+                <span>Profile</span>
             </div>
-        </div>
-        <div class="ui-info-card">
-            <div class="ui-info-icon"><i class="fa-solid fa-trophy"></i></div>
-            <div>
-                <h3>Best Response Judge</h3>
-                <p>Gemini reviews all usable model answers and highlights the strongest response for the original question. Use preferences to shape the judgement style.</p>
-                <button id="best-resp-settings-btn" class="settings-action" type="button" onclick="openBestRespSettings()"><i class="fa-solid fa-star"></i> Judge settings</button>
+            <div class="settings-nav-item" onclick="switchSettingsTab('appearance')">
+                <i class="fa-solid fa-palette"></i>
+                <span>Appearance</span>
             </div>
-        </div>
-        <div class="ui-info-card">
-            <div class="ui-info-icon"><i class="fa-solid fa-sliders"></i></div>
-            <div>
-                <h3>Generation Parameters</h3>
-                <p>Control temperature, output length, and nucleus sampling. Lower values are steadier; higher values allow more varied answers.</p>
-                <button id="params-toggle-btn" class="settings-action" type="button" onclick="toggleParametersDrawer()"><i class="fa-solid fa-sliders"></i> Open parameters</button>
+            <div class="settings-nav-item" onclick="switchSettingsTab('workspace')">
+                <i class="fa-solid fa-desktop"></i>
+                <span>Workspace</span>
             </div>
-        </div>
-        <div class="ui-info-card">
-            <div class="ui-info-icon"><i class="fa-solid fa-arrows-up-down-left-right"></i></div>
-            <div>
-                <h3>Workspace Rearrangement</h3>
-                <p>Enable drag mode to reorder model response cards. Turn it off when you want the cards locked for reading and comparison.</p>
-                <button id="dragRearrangeToggle" class="settings-action drag-mode-btn" type="button"><i class="fa-solid fa-arrows-up-down-left-right"></i> rearrange: off</button>
+            <div class="settings-nav-item" onclick="switchSettingsTab('ai')">
+                <i class="fa-solid fa-robot"></i>
+                <span>AI Preferences</span>
             </div>
-        </div>
+            <div class="settings-nav-item" onclick="switchSettingsTab('notifications')">
+                <i class="fa-solid fa-bell"></i>
+                <span>Notifications</span>
+            </div>
+            <div class="settings-nav-item" onclick="switchSettingsTab('privacy')">
+                <i class="fa-solid fa-lock"></i>
+                <span>Privacy</span>
+            </div>
+            <div class="settings-nav-item" onclick="switchSettingsTab('about')">
+                <i class="fa-solid fa-circle-info"></i>
+                <span>About</span>
+            </div>
+        </aside>
+
+        <!-- Settings Content Area -->
+        <main class="settings-content-panel">
+            <!-- PROFILE TAB -->
+            <section id="set-tab-profile" class="settings-tab-content active">
+                <div class="settings-section-header">
+                    <h3>User Profile</h3>
+                    <p>Manage your identity details, view statistics, and check achievements.</p>
+                </div>
+                
+                <div class="profile-dashboard-grid">
+                    <div class="ui-info-card profile-info-main">
+                        <div class="profile-avatar-wrapper">
+                            <div class="avatar-large" id="settings-display-avatar">G</div>
+                            <label for="settings-avatar-upload" class="avatar-edit-badge" title="Upload Custom Avatar">
+                                <i class="fa-solid fa-camera"></i>
+                            </label>
+                            <input type="file" id="settings-avatar-upload" style="display: none;" onchange="updateProfileAvatar(this)">
+                        </div>
+                        <div class="profile-meta">
+                            <h4 id="settings-display-name">Guest User</h4>
+                            <p id="settings-display-email">guest@multiai.system</p>
+                            <div class="profile-badge-row">
+                                <span class="profile-role-badge" id="settings-display-role">Developer</span>
+                                <span class="profile-type-badge">Account: Free Tier</span>
+                            </div>
+                            <p class="profile-member-date">Member Since: <span id="settings-display-member-since">June 2026</span></p>
+                        </div>
+                    </div>
+
+                    <div class="ui-info-card">
+                        <h3>Edit Identity Details</h3>
+                        <div class="profile-form-grid">
+                            <div class="form-group">
+                                <label>Username</label>
+                                <input type="text" id="profile-input-name" placeholder="Enter username" onchange="saveProfileDetails()">
+                            </div>
+                            <div class="form-group">
+                                <label>Email Address</label>
+                                <input type="email" id="profile-input-email" placeholder="name@domain.com" onchange="saveProfileDetails()">
+                            </div>
+                            <div class="form-group">
+                                <label>Workspace Role</label>
+                                <input type="text" id="profile-input-role" placeholder="Student, Developer, Researcher..." onchange="saveProfileDetails()">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ui-info-card stats-card" style="grid-column: 1 / -1;">
+                        <h3>Workspace Analytics & Statistics</h3>
+                        <div class="stats-grid">
+                            <div class="stat-box">
+                                <span class="stat-num" id="stat-prompts">0</span>
+                                <span class="stat-label">Prompts Sent</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-num" id="stat-responses">0</span>
+                                <span class="stat-label">AI Responses</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-num" id="stat-notes">0</span>
+                                <span class="stat-label">Saved Notes</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-num" id="stat-debates">0</span>
+                                <span class="stat-label">Debates Created</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-num" id="stat-consensus">0</span>
+                                <span class="stat-label">Consensus Run</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-num" id="stat-fav-model">Gemini Flash</span>
+                                <span class="stat-label">Favorite Model</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-num" id="stat-active-time">0.0h</span>
+                                <span class="stat-label">Active Time</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ui-info-card achievements-card" style="grid-column: 1 / -1;">
+                        <h3>User Achievements & Milestones</h3>
+                        <div class="achievements-grid">
+                            <div class="achievement-box locked" id="ach-box-first_prompt">
+                                <div class="ach-icon"><i class="fa-solid fa-seedling"></i></div>
+                                <div class="ach-details">
+                                    <h5>First Prompt</h5>
+                                    <p>Submit your first prompt</p>
+                                </div>
+                            </div>
+                            <div class="achievement-box locked" id="ach-box-hundred_prompts">
+                                <div class="ach-icon"><i class="fa-solid fa-fire"></i></div>
+                                <div class="ach-details">
+                                    <h5>100 Prompts</h5>
+                                    <p>Submit 100 queries</p>
+                                </div>
+                            </div>
+                            <div class="achievement-box locked" id="ach-box-debate_expert">
+                                <div class="ach-icon"><i class="fa-solid fa-trophy"></i></div>
+                                <div class="ach-details">
+                                    <h5>Debate Expert</h5>
+                                    <p>Initiate 3 debates</p>
+                                </div>
+                            </div>
+                            <div class="achievement-box locked" id="ach-box-consensus_master">
+                                <div class="ach-icon"><i class="fa-solid fa-brain"></i></div>
+                                <div class="ach-details">
+                                    <h5>Consensus Master</h5>
+                                    <p>Run consensus 3 times</p>
+                                </div>
+                            </div>
+                            <div class="achievement-box locked" id="ach-box-power_user">
+                                <div class="ach-icon"><i class="fa-solid fa-bolt"></i></div>
+                                <div class="ach-details">
+                                    <h5>Power User</h5>
+                                    <p>Submit 50 prompts</p>
+                                </div>
+                            </div>
+                            <div class="achievement-box locked" id="ach-box-researcher">
+                                <div class="ach-icon"><i class="fa-solid fa-book-bookmark"></i></div>
+                                <div class="ach-details">
+                                    <h5>Researcher</h5>
+                                    <p>Save 4 scratchpad notes</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ui-info-card" style="grid-column: 1 / -1;">
+                        <h3>Quick Workspace Settings</h3>
+                        <div class="quick-settings-grid">
+                            <div class="form-group inline-group">
+                                <label>Animations</label>
+                                <label class="switch">
+                                    <input type="checkbox" id="quick-anim-toggle" onchange="toggleQuickSetting('animations')">
+                                    <span class="switch-slider"></span>
+                                </label>
+                            </div>
+                            <div class="form-group inline-group">
+                                <label>Compact Mode</label>
+                                <label class="switch">
+                                    <input type="checkbox" id="quick-compact-toggle" onchange="toggleQuickSetting('compact')">
+                                    <span class="switch-slider"></span>
+                                </label>
+                            </div>
+                            <div class="form-group inline-group">
+                                <label>Enable Notifications</label>
+                                <label class="switch">
+                                    <input type="checkbox" id="quick-notif-toggle" onchange="toggleQuickSetting('notifications')">
+                                    <span class="switch-slider"></span>
+                                </label>
+                            </div>
+                            <div class="form-group inline-group">
+                                <label>Auto-Save Notes</label>
+                                <label class="switch">
+                                    <input type="checkbox" id="quick-autosave-toggle" onchange="toggleQuickSetting('autosave')">
+                                    <span class="switch-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="ui-info-card" style="grid-column: 1 / -1;">
+                        <h3>Workspace Avatar Collection</h3>
+                        <div class="avatar-collection-grid">
+                            <div class="avatar-option-item" onclick="selectAvatarOption('male1')" id="av-opt-male1">
+                                <div class="avatar-option-preview av-male1" style="background-image: linear-gradient(135deg, #3b82f6, #1d4ed8);"></div>
+                                <span>Male 1</span>
+                            </div>
+                            <div class="avatar-option-item" onclick="selectAvatarOption('male2')" id="av-opt-male2">
+                                <div class="avatar-option-preview av-male2" style="background-image: linear-gradient(135deg, #60a5fa, #2563eb);"></div>
+                                <span>Male 2</span>
+                            </div>
+                            <div class="avatar-option-item" onclick="selectAvatarOption('female1')" id="av-opt-female1">
+                                <div class="avatar-option-preview av-female1" style="background-image: linear-gradient(135deg, #ec4899, #be185d);"></div>
+                                <span>Female 1</span>
+                            </div>
+                            <div class="avatar-option-item" onclick="selectAvatarOption('female2')" id="av-opt-female2">
+                                <div class="avatar-option-preview av-female2" style="background-image: linear-gradient(135deg, #f472b6, #db2777);"></div>
+                                <span>Female 2</span>
+                            </div>
+                            <div class="avatar-option-item" onclick="selectAvatarOption('robot')" id="av-opt-robot">
+                                <div class="avatar-option-preview av-robot" style="background-image: linear-gradient(135deg, #a855f7, #6b21a8);"></div>
+                                <span>AI Robot</span>
+                            </div>
+                            <div class="avatar-option-item" onclick="selectAvatarOption('neural')" id="av-opt-neural">
+                                <div class="avatar-option-preview av-neural" style="background-image: linear-gradient(135deg, #10b981, #065f46);"></div>
+                                <span>Neural</span>
+                            </div>
+                            <div class="avatar-option-item" onclick="selectAvatarOption('minimal')" id="av-opt-minimal">
+                                <div class="avatar-option-preview av-minimal" style="background-image: linear-gradient(135deg, #6b7280, #374151);"></div>
+                                <span>Minimal</span>
+                            </div>
+                            <div class="avatar-option-item" onclick="selectAvatarOption('galaxy')" id="av-opt-galaxy">
+                                <div class="avatar-option-preview av-galaxy" style="background-image: linear-gradient(135deg, #eab308, #ca8a04);"></div>
+                                <span>Galaxy</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- APPEARANCE TAB -->
+            <section id="set-tab-appearance" class="settings-tab-content">
+                <div class="settings-section-header">
+                    <h3>Appearance & Theme Customization</h3>
+                    <p>Style the visual workspace properties to build your ideal coding canvas.</p>
+                </div>
+                
+                <div class="settings-card">
+                    <div class="form-group">
+                        <label>Workspace Theme</label>
+                        <div class="theme-selection-grid">
+                            <div class="theme-option-box midnight" onclick="selectThemeName('midnight')" id="theme-opt-midnight">
+                                <div class="color-stripe" style="background: #6366f1;"></div>
+                                <span>Midnight Dark</span>
+                            </div>
+                            <div class="theme-option-box light" onclick="selectThemeName('light')" id="theme-opt-light">
+                                <div class="color-stripe" style="background: #3b82f6;"></div>
+                                <span>Light Theme</span>
+                            </div>
+                            <div class="theme-option-box cyber" onclick="selectThemeName('cyber')" id="theme-opt-cyber">
+                                <div class="color-stripe" style="background: #d500f9;"></div>
+                                <span>Cyber Purple</span>
+                            </div>
+                            <div class="theme-option-box emerald" onclick="selectThemeName('emerald')" id="theme-opt-emerald">
+                                <div class="color-stripe" style="background: #10b981;"></div>
+                                <span>Emerald Green</span>
+                            </div>
+                            <div class="theme-option-box sunset" onclick="selectThemeName('sunset')" id="theme-opt-sunset">
+                                <div class="color-stripe" style="background: #ff6d00;"></div>
+                                <span>Sunset Orange</span>
+                            </div>
+                            <div class="theme-option-box custom" onclick="selectThemeName('custom')" id="theme-opt-custom">
+                                <div class="color-stripe" style="background: var(--accent);"></div>
+                                <span>Custom Color</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group hidden" id="custom-accent-panel" style="margin-top: 15px; padding: 20px; background: rgba(0,0,0,0.15); border: 1px dashed var(--border); border-radius: 14px;">
+                        <label style="margin-bottom: 12px;">Dynamic Accent Palette Controller</label>
+                        <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <input type="color" id="custom-color-picker" oninput="handleCustomColorInput(this.value)" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--border); background: none; cursor: pointer;">
+                                <span>Palette Color</span>
+                            </div>
+                            <div class="form-group" style="margin: 0; flex: 1; min-width: 150px;">
+                                <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 5px;">HEX Code</span>
+                                <input type="text" id="custom-color-hex" placeholder="#7C3AED" onchange="handleCustomColorInput(this.value)" style="padding: 10px 14px; border-radius: 8px;">
+                            </div>
+                            <div class="form-group" style="margin: 0; flex: 1; min-width: 150px;">
+                                <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 5px;">RGB Values</span>
+                                <input type="text" id="custom-color-rgb" placeholder="RGB(124,58,237)" onchange="handleCustomColorRgbInput(this.value)" style="padding: 10px 14px; border-radius: 8px;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="appearance-sliders-grid" style="margin-top: 25px;">
+                        <div class="form-group">
+                            <div class="slider-header">
+                                <span class="slider-label">Border Radius: <strong id="val-radius-disp">20px</strong></span>
+                            </div>
+                            <input type="range" id="radius-slider" min="0" max="32" value="20" oninput="saveAppearanceSetting('borderRadius', this.value)">
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="slider-header">
+                                <span class="slider-label">Font Size: <strong id="val-fontsize-disp">14px</strong></span>
+                            </div>
+                            <input type="range" id="fontsize-slider" min="12" max="18" value="14" oninput="saveAppearanceSetting('fontSize', this.value)">
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="slider-header">
+                                <span class="slider-label">Animation Speed: <strong id="val-speed-disp">0.3s</strong></span>
+                            </div>
+                            <input type="range" id="speed-slider" min="0.1" max="1.5" step="0.05" value="0.3" oninput="saveAppearanceSetting('animSpeed', this.value)">
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="slider-header">
+                                <span class="slider-label">Background Blur: <strong id="val-blur-disp">16px</strong></span>
+                            </div>
+                            <input type="range" id="blur-slider" min="0" max="25" value="16" oninput="saveAppearanceSetting('bgBlur', this.value)">
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 15px;">
+                        <label>Card Density Layout</label>
+                        <select id="appearance-density-select" class="custom-select" onchange="saveAppearanceSetting('cardDensity', this.value)">
+                            <option value="compact">Compact Space</option>
+                            <option value="comfortable">Comfortable Grid</option>
+                            <option value="loose">Loose & Roomy</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group inline-group" style="margin-top: 15px;">
+                        <label>Glassmorphism Transparency</label>
+                        <label class="switch">
+                            <input type="checkbox" id="appearance-glass-toggle" onchange="saveAppearanceSetting('glassmorphismEnabled', this.checked)">
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 15px;">
+                        <label>Active Canvas Background Effect</label>
+                        <select id="appearance-bg-effect" class="custom-select" onchange="saveAppearanceSetting('backgroundEffect', this.value); initBackgroundEffects();">
+                            <option value="static">Static (Plain Color)</option>
+                            <option value="gradient">Gradient Glow (Slow Pulse)</option>
+                            <option value="particles">Floating Particles</option>
+                            <option value="stars">Twinkling Starfield</option>
+                            <option value="neural">Synaptic Neural Network</option>
+                            <option value="aurora">Glowing Aurora Blobs</option>
+                            <option value="minimal">Minimal Subtle Glow</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <!-- WORKSPACE TAB -->
+            <section id="set-tab-workspace" class="settings-tab-content">
+                <div class="settings-section-header">
+                    <h3>Workspace & Dock Layout</h3>
+                    <p>Rearrange the positions of prompt inputs, grids, and toggle columns.</p>
+                </div>
+                
+                <div class="settings-card">
+                    <div class="form-group">
+                        <label>Model Sidebar Alignment</label>
+                        <select id="workspace-sidebar-pos" class="custom-select" onchange="saveWorkspaceSetting('sidebarPos', this.value)">
+                            <option value="left">Left Side</option>
+                            <option value="right">Right Side</option>
+                            <option value="collapsed">Collapsed Left</option>
+                            <option value="hidden">Hidden Workspace</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Command Prompt Placement</label>
+                        <select id="workspace-prompt-pos" class="custom-select" onchange="saveWorkspaceSetting('promptPos', this.value)">
+                            <option value="bottom">Bottom Dock Area</option>
+                            <option value="top">Top Placement</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Response Grid Columns</label>
+                        <select id="workspace-grid-cols" class="custom-select" onchange="saveWorkspaceSetting('responseGridCols', this.value)">
+                            <option value="auto">Auto Layout (Flex Width)</option>
+                            <option value="2">2 Columns side-by-side</option>
+                            <option value="3">3 Columns grid</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Workspace Card Scaling</label>
+                        <select id="workspace-card-size" class="custom-select" onchange="saveWorkspaceSetting('cardSize', this.value)">
+                            <option value="compact">Compact Text</option>
+                            <option value="comfortable">Comfortable Scaling</option>
+                            <option value="large">Large Spans</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AI TAB -->
+            <section id="set-tab-ai" class="settings-tab-content">
+                <div class="settings-section-header">
+                    <h3>AI Workspace & Execution Settings</h3>
+                    <p>Customize the behaviors of prompts, optimization, consensus, and judgment.</p>
+                </div>
+                
+                <div class="settings-card">
+                    <div class="form-group">
+                        <label>Default AI Prompt Persona</label>
+                        <select id="ai-default-expertise" class="custom-select" onchange="saveAISetting('defaultExpertise', this.value)">
+                            <!-- Expertises dynamically populated here on load -->
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Default AI Node Choice</label>
+                        <select id="ai-default-model" class="custom-select" onchange="saveAISetting('defaultModel', this.value)">
+                            <option value="Gemini Flash">Gemini Flash</option>
+                            <option value="Liquid LFM">Liquid LFM</option>
+                            <option value="Qwen HF">Qwen HF</option>
+                            <option value="Groq">Groq Llama</option>
+                            <option value="Cohere">Cohere</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group inline-group">
+                        <label>Auto-Generate AI Consensus</label>
+                        <label class="switch">
+                            <input type="checkbox" id="ai-auto-consensus" onchange="saveAISetting('autoConsensus', this.checked)">
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="form-group inline-group" style="margin-top: 12px;">
+                        <label>Auto-Evaluate Best Response</label>
+                        <label class="switch">
+                            <input type="checkbox" id="ai-auto-bestresp" onchange="saveAISetting('autoBestResponse', this.checked)">
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="form-group inline-group" style="margin-top: 12px;">
+                        <label>Auto-Optimize Submitted Prompt</label>
+                        <label class="switch">
+                            <input type="checkbox" id="ai-auto-optprompt" onchange="saveAISetting('autoOptimizePrompt', this.checked)">
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="form-group inline-group" style="margin-top: 12px;">
+                        <label>Typing Cursor Animation effect</label>
+                        <label class="switch">
+                            <input type="checkbox" id="ai-typing-anim" onchange="saveAISetting('typingAnimation', this.checked)">
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- NOTIFICATIONS TAB -->
+            <section id="set-tab-notifications" class="settings-tab-content">
+                <div class="settings-section-header">
+                    <h3>Notification Channels</h3>
+                    <p>Manage workspace alert lines and success pop-ups.</p>
+                </div>
+                
+                <div class="settings-card">
+                    <div class="form-group inline-group">
+                        <label>AI Response Ready notification</label>
+                        <label class="switch">
+                            <input type="checkbox" id="notif-response" onchange="saveNotifSetting('notif_response_ready', this.checked)">
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="form-group inline-group" style="margin-top: 12px;">
+                        <label>API Connection Errors alerts</label>
+                        <label class="switch">
+                            <input type="checkbox" id="notif-errors" onchange="saveNotifSetting('notif_errors', this.checked)">
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="form-group inline-group" style="margin-top: 12px;">
+                        <label>Success Toasts Pop-ups</label>
+                        <label class="switch">
+                            <input type="checkbox" id="notif-success" onchange="saveNotifSetting('notif_success_toasts', this.checked)">
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PRIVACY TAB -->
+            <section id="set-tab-privacy" class="settings-tab-content">
+                <div class="settings-section-header">
+                    <h3>Privacy & Core Storage Management</h3>
+                    <p>Review locally saved cache segments and clear settings.</p>
+                </div>
+                
+                <div class="settings-card" style="display: flex; flex-direction: column; gap: 20px;">
+                    <div>
+                        <h5>Export Configuration Core</h5>
+                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 5px; margin-bottom: 12px;">
+                            Download a serialized backup of your themes, user preferences, and history as a JSON file.
+                        </p>
+                        <button class="settings-action" onclick="exportLocalSettingsData()"><i class="fa-solid fa-download"></i> Export Data Backup</button>
+                    </div>
+                    
+                    <hr style="border-color: rgba(255,255,255,0.08); margin: 5px 0;">
+
+                    <div>
+                        <h5>Purge Saved History Log</h5>
+                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 5px; margin-bottom: 12px;">
+                            Erase the browser's conversation record database. All saved chats will be removed.
+                        </p>
+                        <button class="settings-action clear-btn" onclick="clearChatHistory()"><i class="fa-solid fa-trash-can"></i> Clear History</button>
+                    </div>
+                    
+                    <hr style="border-color: rgba(255,255,255,0.08); margin: 5px 0;">
+
+                    <div>
+                        <h5>Erase Notepad Scratchpad</h5>
+                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 5px; margin-bottom: 12px;">
+                            Flush the active text stored in the workspace scratchpad canvas.
+                        </p>
+                        <button class="settings-action clear-btn" onclick="deleteSavedNotepadNotes()"><i class="fa-solid fa-eraser"></i> Delete Notes</button>
+                    </div>
+                    
+                    <hr style="border-color: rgba(255,255,255,0.08); margin: 5px 0;">
+
+                    <div>
+                        <h5>Reset Visuals & Theme engine</h5>
+                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 5px; margin-bottom: 12px;">
+                            Restores standard midnight styling themes, font sizes, layouts, and AI choices.
+                        </p>
+                        <button class="settings-action clear-btn" onclick="resetSettingsToDefault()"><i class="fa-solid fa-arrows-rotate"></i> Reset Settings</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ABOUT TAB -->
+            <section id="set-tab-about" class="settings-tab-content">
+                <div class="settings-section-header">
+                    <h3>About MultiAI</h3>
+                    <p>Premium multi-model compare and debate coding engine.</p>
+                </div>
+                
+                <div class="settings-card">
+                    <h4 style="color: var(--accent); margin-bottom: 10px;">MultiAI Workspace OS</h4>
+                    <p style="font-size: 0.9rem; line-height: 1.6; margin-bottom: 15px;">
+                        MultiAI is a state-of-the-art single-interface compare tool. Broadcast queries, contrast word diff structures, synthesize AI consensus, and initiate rebuttal debates across 5 local and remote AI models.
+                    </p>
+                    
+                    <div style="font-size: 0.85rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 8px;">
+                        <span>System Core Version: <strong>v2.5.0 Premium</strong></span>
+                        <span>Interface Engine: <strong>HTML5 / CSS3 / Vanilla Javascript</strong></span>
+                        <span>Active Framework: <strong>AI OS Compare Core</strong></span>
+                    </div>
+                </div>
+            </section>
+        </main>
     </div>
 </div>
-
 
 <div id="view-about-us" class="view-container hidden about-page">
     <div class="page-kicker">About MultiAI</div>
@@ -799,67 +1335,9 @@
     
 </div>
 
-<div id="view-profile" class="view-container hidden profile-page">
-    <div class="page-kicker">Profile</div>
-    <h2 class="page-heading">Your workspace identity</h2>
-    <p class="page-subtext">Manage the visible user profile and session controls for this browser. Authentication can be expanded later without changing the workspace layout.</p>
-    <div class="profile-grid">
-        <div class="ui-info-card profile-hero-card">
-            <div class="profile-avatar-large" id="profile-avatar-letter">G</div>
-            <div>
-                <h3 id="profile-display-name">Guest</h3>
-                <p id="profile-display-email">guest@multiai.system</p>
-                <button class="settings-action" type="button" onclick="switchView('setting')"><i class="fa-solid fa-gear"></i> Open settings</button>
-            </div>
-        </div>
-        <div class="ui-info-card">
-            <div class="ui-info-icon"><i class="fa-solid fa-user-shield"></i></div>
-            <div><h3>Session Status</h3><p id="profile-session-status">Guest mode is active. You can still compare models and use local settings.</p></div>
-        </div>
-        <div class="ui-info-card">
-            <div class="ui-info-icon"><i class="fa-solid fa-brain"></i></div>
-            <div><h3>Active Expertise</h3><p id="profile-active-expertise">Neutral role. Choose an expertise from the Expertise page or prompt selector.</p></div>
-        </div>
-        <div class="ui-info-card" style="grid-column: 1 / -1;">
-            <div class="ui-info-icon"><i class="fa-solid fa-address-card"></i></div>
-            <div>
-                <h3>Edit Details</h3>
-                <p>These profile details are saved locally in this browser and can later be connected to account storage.</p>
-                <div class="profile-form-grid" style="margin-top:14px;">
-                    <div class="form-group">
-                        <label for="profile-edit-name">Display Name</label>
-                        <input type="text" id="profile-edit-name" placeholder="Your name">
-                    </div>
-                    <div class="form-group">
-                        <label for="profile-edit-email">Email</label>
-                        <input type="email" id="profile-edit-email" placeholder="you@example.com">
-                    </div>
-                    <div class="form-group">
-                        <label for="profile-edit-mobile">Mobile</label>
-                        <input type="tel" id="profile-edit-mobile" placeholder="+91 00000 00000">
-                    </div>
-                    <div class="form-group">
-                        <label for="profile-edit-role">Role / Class</label>
-                        <input type="text" id="profile-edit-role" placeholder="Student, Developer, Researcher...">
-                    </div>
-                    <div class="form-group full-width">
-                        <label for="profile-edit-bio">Short Bio</label>
-                        <textarea id="profile-edit-bio" placeholder="A short note about how you use MultiAI..."></textarea>
-                    </div>
-                </div>
-                <button class="settings-action" type="button" onclick="saveProfileDetails()" style="margin-top:14px;"><i class="fa-solid fa-floppy-disk"></i> Save profile</button>
-            </div>
-        </div>
-        <div class="ui-info-card">
-            <div class="ui-info-icon"><i class="fa-solid fa-right-from-bracket"></i></div>
-            <div><h3>Account Actions</h3><p>Use logout to clear the active user label and return this browser to guest mode.</p><button class="settings-action" type="button" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i> Log out</button></div>
-        </div>
-    </div>
-</div>
+<div id="view-profile" class="view-container hidden"></div>
 
-    </div>
-
-    <!-- BEST RESPONSE SETTINGS MODAL -->
+<!-- BEST RESPONSE SETTINGS MODAL -->
     <div id="best-resp-settings-modal" class="custom-modal-overlay" style="display: none;">
         <div class="custom-modal-content" style="max-width: 480px;">
             <div class="modal-header">
@@ -2178,6 +2656,10 @@ window.addEventListener('DOMContentLoaded', () => {
             overlay.classList.remove('hidden');
         }
 
+        if (typeof updateActiveModelsCountBadge === 'function') {
+            updateActiveModelsCountBadge();
+        }
+
         applyModelLayout();
     }
 
@@ -2303,6 +2785,24 @@ window.addEventListener('DOMContentLoaded', () => {
         const activeCards = Array.from(workspace.querySelectorAll('.ai-card:not(.hidden)')).sort(
             (leftCard, rightCard) => modelLayoutOrder.indexOf(leftCard.id) - modelLayoutOrder.indexOf(rightCard.id)
         );
+
+        // Custom Grid Column overrides
+        const gridColsSetting = localStorage.getItem('responseGridCols') || 'auto';
+        if (gridColsSetting !== 'auto') {
+            activeCards.forEach((card) => {
+                card.style.gridColumn = '';
+                card.style.gridRow = '';
+                card.style.height = '100%';
+            });
+            workspace.style.setProperty('display', 'grid', 'important');
+            workspace.style.setProperty('grid-template-columns', `repeat(${gridColsSetting}, 1fr)`, 'important');
+            workspace.style.setProperty('grid-template-rows', 'auto', 'important');
+            workspace.style.setProperty('grid-auto-rows', '1fr', 'important');
+            workspace.style.setProperty('align-content', 'stretch', 'important');
+            workspace.style.setProperty('height', availableHeight, 'important');
+            workspace.style.setProperty('padding', '16px 20px', 'important');
+            return;
+        }
 
         activeCards.forEach((card) => {
             card.style.gridColumn = '';
@@ -2657,27 +3157,25 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 1. Force Theme from Preferences
-    const savedTheme = localStorage.getItem('defaultTheme');
-    if (savedTheme === 'light') {
-        document.body.classList.add('light-mode');
-    } else {
-        document.body.classList.remove('light-mode');
+    // 1. Force Theme and Accent from Preferences
+    const savedThemeName = localStorage.getItem('themeName') || 'midnight';
+    if (typeof applyTheme === 'function') {
+        applyTheme(savedThemeName);
     }
-
-    // 2. Force Sidebar Position
-    const sidePos = localStorage.getItem('sidebarPos');
-    const mainWrapper = document.querySelector('.main-wrapper');
-    const sidebar = document.querySelector('.sidebar');
-
-    if (sidePos === 'left') {
-        mainWrapper.style.gridTemplateColumns = '85px 1fr';
-        sidebar.style.gridColumn = '1';
-        document.querySelector('header').style.gridColumn = '2';
-        document.querySelectorAll('.view-container').forEach(el => el.style.gridColumn = '2');
-    } else if (sidePos === 'bottom') {
-        // You would need a more complex grid change for 'bottom', 
-        // but this handles the logic for saved state!
+    
+    // 2. Apply Workspace Visual Layout Configurations
+    if (typeof applyWorkspaceLayout === 'function') {
+        applyWorkspaceLayout();
+    }
+    
+    // 3. Initialize background visual effects
+    if (typeof initBackgroundEffects === 'function') {
+        initBackgroundEffects();
+    }
+    
+    // 4. Update models count badge
+    if (typeof updateActiveModelsCountBadge === 'function') {
+        updateActiveModelsCountBadge();
     }
 
     // Set default active view
@@ -4079,6 +4577,19 @@ function switchView(viewName, preventAutoSelectAll = false) {
         const target = item.getAttribute('onclick')?.match(/switchView\('([^']+)'/)?.[1];
         item.classList.toggle('active', target === viewName);
     });
+
+    if (viewName === 'profile') {
+        viewName = 'setting';
+        setTimeout(() => {
+            if (typeof switchSettingsTab === 'function') switchSettingsTab('profile');
+        }, 10);
+    }
+    
+    if (viewName === 'setting') {
+        setTimeout(() => {
+            if (typeof populateSettingsAndProfileData === 'function') populateSettingsAndProfileData();
+        }, 10);
+    }
 
     views.forEach(v => {
         const el = document.getElementById(`view-${v}`);
@@ -5897,6 +6408,1138 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+/* =======================================================
+   PREMIUM THEMES & VISUAL ENGINE SYSTEM HANDLERS
+   ======================================================= */
+
+// Global state / helper functions
+let bgAnimationId = null;
+let totalActiveTimeSeconds = parseFloat(localStorage.getItem('total_active_time') || '0');
+
+// Start tracking active time
+setInterval(() => {
+    if (document.hasFocus()) {
+        totalActiveTimeSeconds += 10;
+        localStorage.setItem('total_active_time', totalActiveTimeSeconds);
+    }
+}, 10000);
+
+function getDisplayActiveTime() {
+    const totalSec = parseFloat(localStorage.getItem('total_active_time') || '0');
+    const hrs = (totalSec / 3600).toFixed(1);
+    return `${hrs}h`;
+}
+
+const themesMap = {
+    'midnight': {
+        '--bg': '#030712',
+        '--sidebar-bg': '#090d1a',
+        '--card-bg': 'rgba(17, 24, 39, 0.7)',
+        '--text': '#f3f4f6',
+        '--text-muted': '#9ca3af',
+        '--accent': '#6366f1',
+        '--accent-hover': '#4f46e5',
+        '--border': 'rgba(99, 102, 241, 0.15)',
+        '--glow': 'rgba(99, 102, 241, 0.35)',
+        '--input-bg': '#050812'
+    },
+    'light': {
+        '--bg': '#f8fafc',
+        '--sidebar-bg': '#ffffff',
+        '--card-bg': 'rgba(255, 255, 255, 0.8)',
+        '--text': '#0f172a',
+        '--text-muted': '#64748b',
+        '--accent': '#3b82f6',
+        '--accent-hover': '#2563eb',
+        '--border': 'rgba(59, 130, 246, 0.2)',
+        '--glow': 'rgba(59, 130, 246, 0.15)',
+        '--input-bg': '#f1f5f9'
+    },
+    'cyber': {
+        '--bg': '#0d001a',
+        '--sidebar-bg': '#140029',
+        '--card-bg': 'rgba(30, 0, 50, 0.6)',
+        '--text': '#f5ebff',
+        '--text-muted': '#b39ddb',
+        '--accent': '#d500f9',
+        '--accent-hover': '#aa00ff',
+        '--border': 'rgba(213, 0, 249, 0.25)',
+        '--glow': 'rgba(213, 0, 249, 0.5)',
+        '--input-bg': '#1f003d'
+    },
+    'emerald': {
+        '--bg': '#022c22',
+        '--sidebar-bg': '#064e3b',
+        '--card-bg': 'rgba(6, 78, 59, 0.6)',
+        '--text': '#ecfdf5',
+        '--text-muted': '#6ee7b7',
+        '--accent': '#10b981',
+        '--accent-hover': '#059669',
+        '--border': 'rgba(16, 185, 129, 0.25)',
+        '--glow': 'rgba(16, 185, 129, 0.4)',
+        '--input-bg': '#022c22'
+    },
+    'sunset': {
+        '--bg': '#1a0b2e',
+        '--sidebar-bg': '#2d0b4e',
+        '--card-bg': 'rgba(74, 20, 140, 0.55)',
+        '--text': '#fff3e0',
+        '--text-muted': '#ffb74d',
+        '--accent': '#ff6d00',
+        '--accent-hover': '#e65100',
+        '--border': 'rgba(255, 109, 0, 0.25)',
+        '--glow': 'rgba(255, 109, 0, 0.45)',
+        '--input-bg': '#3e2723'
+    }
+};
+
+function applyTheme(themeName) {
+    const root = document.documentElement;
+    let themeObj = themesMap[themeName];
+    if (!themeObj) themeObj = themesMap['midnight'];
+    
+    if (themeName === 'custom') {
+        const customHex = localStorage.getItem('accentColor') || '#7c3aed';
+        const r = parseInt(customHex.slice(1, 3), 16);
+        const g = parseInt(customHex.slice(3, 5), 16);
+        const b = parseInt(customHex.slice(5, 7), 16);
+        
+        const rHover = Math.max(0, Math.floor(r * 0.8));
+        const gHover = Math.max(0, Math.floor(g * 0.8));
+        const bHover = Math.max(0, Math.floor(b * 0.8));
+        const hoverHex = "#" + ((1 << 24) + (rHover << 16) + (gHover << 8) + bHover).toString(16).slice(1);
+        
+        themeObj = {
+            '--bg': '#030712',
+            '--sidebar-bg': '#090d1a',
+            '--card-bg': 'rgba(17, 24, 39, 0.7)',
+            '--text': '#f3f4f6',
+            '--text-muted': '#9ca3af',
+            '--accent': customHex,
+            '--accent-hover': hoverHex,
+            '--border': `rgba(${r}, ${g}, ${b}, 0.15)`,
+            '--glow': `rgba(${r}, ${g}, ${b}, 0.35)`,
+            '--input-bg': '#050812'
+        };
+    }
+
+    for (const [key, value] of Object.entries(themeObj)) {
+        root.style.setProperty(key, value);
+    }
+    
+    if (themeName === 'light') {
+        document.body.classList.add('light-mode');
+    } else {
+        document.body.classList.remove('light-mode');
+    }
+    
+    localStorage.setItem('themeName', themeName);
+}
+
+function getFavoriteAIModel() {
+    const likes = JSON.parse(localStorage.getItem('modelLikes') || '{}');
+    let favModel = "Gemini Flash";
+    let maxLikes = -1;
+    for (const [model, count] of Object.entries(likes)) {
+        if (count > maxLikes) {
+            maxLikes = count;
+            favModel = model;
+        }
+    }
+    return favModel;
+}
+
+function getNotesCount() {
+    return parseInt(localStorage.getItem('saved_notes_count') || '0', 10);
+}
+
+// 1. Switch Settings Sidebar Tabs
+function switchSettingsTab(tabName) {
+    document.querySelectorAll('.settings-nav-sidebar .settings-nav-item').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelectorAll('.settings-tab-content').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    const targetBtn = Array.from(document.querySelectorAll('.settings-nav-sidebar .settings-nav-item')).find(btn => 
+        btn.getAttribute('onclick')?.includes(`'${tabName}'`)
+    );
+    if (targetBtn) targetBtn.classList.add('active');
+    
+    const targetTab = document.getElementById(`set-tab-${tabName}`);
+    if (targetTab) targetTab.classList.add('active');
+}
+
+// 2. Select Avatar Option
+function selectAvatarOption(avatarId) {
+    localStorage.setItem('selectedAvatar', avatarId);
+    
+    document.querySelectorAll('.avatar-option-item').forEach(item => {
+        item.classList.remove('selected');
+    });
+    const targetItem = document.getElementById(`av-opt-${avatarId}`);
+    if (targetItem) targetItem.classList.add('selected');
+    
+    updateAvatarDisplay(avatarId);
+    showSuccessToast(`Avatar updated to ${avatarId}`);
+}
+
+function updateAvatarDisplay(avatarId) {
+    const settingsAvatar = document.getElementById('settings-display-avatar');
+    const headerAvatarNode = document.getElementById('profile-node');
+    const headerUserLabel = document.getElementById('user-label');
+    const name = localStorage.getItem('neuralUser') || "Guest";
+    const letter = name.charAt(0).toUpperCase();
+
+    const avatarSVGs = {
+        'male1': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:100%;height:100%;"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>`,
+        'male2': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:100%;height:100%;"><circle cx="12" cy="12" r="10"></circle><path d="M12 14c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path><circle cx="12" cy="8" r="4"></circle></svg>`,
+        'female1': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:100%;height:100%;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>`,
+        'female2': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:100%;height:100%;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3z"></path></svg>`,
+        'robot': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:100%;height:100%;"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="8" cy="16" r="1"></circle><circle cx="16" cy="16" r="1"></circle><path d="M12 6v5M9 8h6M12 2A2 2 0 0 1 12 6"></path></svg>`,
+        'neural': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:100%;height:100%;"><circle cx="12" cy="12" r="3"></circle><circle cx="6" cy="6" r="2"></circle><circle cx="18" cy="6" r="2"></circle><circle cx="6" cy="18" r="2"></circle><circle cx="18" cy="18" r="2"></circle><line x1="8" y1="8" x2="10.5" y2="10.5"></line><line x1="16" y1="8" x2="13.5" y2="10.5"></line><line x1="8" y1="16" x2="10.5" y2="13.5"></line><line x1="16" y1="16" x2="13.5" y2="13.5"></line></svg>`,
+        'minimal': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:100%;height:100%;"><circle cx="12" cy="12" r="8"></circle><circle cx="12" cy="12" r="4"></circle></svg>`,
+        'galaxy': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:100%;height:100%;"><path d="M12 2a10 10 0 0 0-10 10c0 5.5 4.5 10 10 10s10-4.5 10-10A10 10 0 0 0 12 2zm0 15a5 5 0 0 1-5-5c0-1.5.7-2.8 1.8-3.7l1.4 1.4A3 3 0 0 0 9 12a3 3 0 0 0 3 3 3 3 0 0 0 1.8-.6l1.4 1.4A5 5 0 0 1 12 17z"></path></svg>`
+    };
+
+    if (avatarId && avatarSVGs[avatarId]) {
+        if (settingsAvatar) {
+            settingsAvatar.innerHTML = avatarSVGs[avatarId];
+            settingsAvatar.style.backgroundImage = 'none';
+        }
+        if (headerAvatarNode) {
+            headerAvatarNode.innerHTML = avatarSVGs[avatarId];
+            headerAvatarNode.style.backgroundImage = 'none';
+            headerAvatarNode.style.width = '30px';
+            headerAvatarNode.style.height = '30px';
+            headerAvatarNode.style.padding = '3px';
+            headerAvatarNode.style.color = '#fff';
+        }
+    } else {
+        const savedCustom = localStorage.getItem('userAvatar');
+        if (savedCustom && avatarId === 'custom') {
+            if (settingsAvatar) {
+                settingsAvatar.style.backgroundImage = `url(${savedCustom})`;
+                settingsAvatar.innerHTML = '';
+            }
+            if (headerAvatarNode) {
+                headerAvatarNode.style.backgroundImage = `url(${savedCustom})`;
+                headerAvatarNode.innerHTML = '';
+                headerAvatarNode.style.width = '30px';
+                headerAvatarNode.style.height = '30px';
+                headerAvatarNode.style.backgroundSize = 'cover';
+                headerAvatarNode.style.backgroundPosition = 'center';
+            }
+        } else {
+            if (settingsAvatar) {
+                settingsAvatar.innerHTML = letter;
+                settingsAvatar.style.backgroundImage = 'none';
+            }
+            if (headerAvatarNode) {
+                headerAvatarNode.innerHTML = `<span style="font-size:0.8rem;font-weight:800;color:white;line-height:1;margin:0 auto;">${letter}</span>`;
+                headerAvatarNode.style.backgroundImage = 'none';
+                headerAvatarNode.style.width = '30px';
+                headerAvatarNode.style.height = '30px';
+            }
+        }
+    }
+
+    if (headerUserLabel) {
+        headerUserLabel.innerText = name.toUpperCase();
+    }
+}
+
+// 3. Update Custom uploaded avatar
+function updateProfileAvatar(input) {
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            localStorage.setItem('userAvatar', e.target.result);
+            selectAvatarOption('custom');
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+// 4. Check & Unlock Achievements
+function checkAchievements() {
+    const prompts = parseInt(localStorage.getItem('total_queries_count') || '0', 10);
+    const debates = parseInt(localStorage.getItem('debates_count') || '0', 10);
+    const consensus = parseInt(localStorage.getItem('consensus_count') || '0', 10);
+    const notes = getNotesCount();
+    
+    const achievements = {
+        'first_prompt': prompts > 0,
+        'hundred_prompts': prompts >= 100,
+        'debate_expert': debates >= 3,
+        'consensus_master': consensus >= 3,
+        'power_user': prompts >= 50,
+        'researcher': notes >= 4
+    };
+    
+    for (const [key, unlocked] of Object.entries(achievements)) {
+        localStorage.setItem('ach_' + key, unlocked ? 'true' : 'false');
+        
+        const box = document.getElementById(`ach-box-${key}`);
+        if (box) {
+            if (unlocked) {
+                box.classList.remove('locked');
+                box.classList.add('unlocked');
+            } else {
+                box.classList.add('locked');
+                box.classList.remove('unlocked');
+            }
+        }
+    }
+}
+
+// 5. Populate Settings tab & profile data
+function populateSettingsAndProfileData() {
+    checkAchievements();
+    
+    const name = localStorage.getItem('neuralUser') || "Guest";
+    const email = localStorage.getItem('neuralEmail') || "guest@multiai.system";
+    const role = localStorage.getItem('profileRole') || "Developer";
+    const memberSince = localStorage.getItem('profileMemberSince') || "June 2026";
+    
+    const inputName = document.getElementById('profile-input-name');
+    const inputEmail = document.getElementById('profile-input-email');
+    const inputRole = document.getElementById('profile-input-role');
+    const dispName = document.getElementById('settings-display-name');
+    const dispEmail = document.getElementById('settings-display-email');
+    const dispRole = document.getElementById('settings-display-role');
+    const dispMemberSince = document.getElementById('settings-display-member-since');
+
+    if (inputName) inputName.value = name;
+    if (inputEmail) inputEmail.value = email;
+    if (inputRole) inputRole.value = role;
+    if (dispName) dispName.innerText = name;
+    if (dispEmail) dispEmail.innerText = email;
+    if (dispRole) dispRole.innerText = role;
+    if (dispMemberSince) dispMemberSince.innerText = memberSince;
+
+    const prompts = parseInt(localStorage.getItem('total_queries_count') || '0', 10);
+    const debates = parseInt(localStorage.getItem('debates_count') || '0', 10);
+    const consensus = parseInt(localStorage.getItem('consensus_count') || '0', 10);
+    const notes = getNotesCount();
+    
+    const activeModels = document.querySelectorAll('.sidebar .sb-icon.active').length;
+    const responses = prompts * activeModels;
+
+    const elPrompts = document.getElementById('stat-prompts');
+    const elResponses = document.getElementById('stat-responses');
+    const elNotes = document.getElementById('stat-notes');
+    const elDebates = document.getElementById('stat-debates');
+    const elConsensus = document.getElementById('stat-consensus');
+    const elFav = document.getElementById('stat-fav-model');
+    const elTime = document.getElementById('stat-active-time');
+
+    if (elPrompts) elPrompts.innerText = prompts;
+    if (elResponses) elResponses.innerText = responses;
+    if (elNotes) elNotes.innerText = notes;
+    if (elDebates) elDebates.innerText = debates;
+    if (elConsensus) elConsensus.innerText = consensus;
+    if (elFav) elFav.innerText = getFavoriteAIModel();
+    if (elTime) elTime.innerText = getDisplayActiveTime();
+
+    const currentTheme = localStorage.getItem('themeName') || 'midnight';
+    document.querySelectorAll('.theme-option-box').forEach(box => {
+        box.classList.toggle('selected', box.id === `theme-opt-${currentTheme}`);
+    });
+    
+    const radius = localStorage.getItem('borderRadius') || '20';
+    const font = localStorage.getItem('fontSize') || '14';
+    const speed = localStorage.getItem('animSpeed') || '0.3';
+    const blur = localStorage.getItem('bgBlur') || '16';
+    
+    const sliderRadius = document.getElementById('radius-slider');
+    const sliderFont = document.getElementById('fontsize-slider');
+    const sliderSpeed = document.getElementById('speed-slider');
+    const sliderBlur = document.getElementById('blur-slider');
+
+    if (sliderRadius) sliderRadius.value = radius;
+    if (sliderFont) sliderFont.value = font;
+    if (sliderSpeed) sliderSpeed.value = speed;
+    if (sliderBlur) sliderBlur.value = blur;
+
+    updateSliderLabelDisplays();
+
+    const density = localStorage.getItem('cardDensity') || 'comfortable';
+    const selectDensity = document.getElementById('appearance-density-select');
+    if (selectDensity) selectDensity.value = density;
+
+    const glass = localStorage.getItem('glassmorphismEnabled') !== 'false';
+    const checkGlass = document.getElementById('appearance-glass-toggle');
+    if (checkGlass) checkGlass.checked = glass;
+
+    const bgEffect = localStorage.getItem('backgroundEffect') || 'gradient';
+    const selectBgEffect = document.getElementById('appearance-bg-effect');
+    if (selectBgEffect) selectBgEffect.value = bgEffect;
+
+    const sidebarPos = localStorage.getItem('sidebarPos') || 'left';
+    const promptPos = localStorage.getItem('promptPos') || 'bottom';
+    const gridCols = localStorage.getItem('responseGridCols') || 'auto';
+    const cardSize = localStorage.getItem('cardSize') || 'comfortable';
+
+    const selectSide = document.getElementById('workspace-sidebar-pos');
+    const selectPrompt = document.getElementById('workspace-prompt-pos');
+    const selectCols = document.getElementById('workspace-grid-cols');
+    const selectCardSize = document.getElementById('workspace-card-size');
+
+    if (selectSide) selectSide.value = sidebarPos;
+    if (selectPrompt) selectPrompt.value = promptPos;
+    if (selectCols) selectCols.value = gridCols;
+    if (selectCardSize) selectCardSize.value = cardSize;
+
+    const defaultAI = localStorage.getItem('defaultAI') || 'Gemini Flash';
+    const defaultExp = localStorage.getItem('activeExpertise') || 'Neutral';
+    const autoCons = localStorage.getItem('autoConsensus') === 'true';
+    const autoBest = localStorage.getItem('autoBestResponse') === 'true';
+    const autoOpt = localStorage.getItem('autoOptimizePrompt') === 'true';
+    const typing = localStorage.getItem('typingAnimation') !== 'false';
+
+    const selectDefaultAI = document.getElementById('ai-default-model');
+    const selectDefaultExp = document.getElementById('ai-default-expertise');
+    const checkAutoCons = document.getElementById('ai-auto-consensus');
+    const checkAutoBest = document.getElementById('ai-auto-bestresp');
+    const checkAutoOpt = document.getElementById('ai-auto-optprompt');
+    const checkTyping = document.getElementById('ai-typing-anim');
+
+    if (selectDefaultAI) selectDefaultAI.value = defaultAI;
+    if (checkAutoCons) checkAutoCons.checked = autoCons;
+    if (checkAutoBest) checkAutoBest.checked = autoBest;
+    if (checkAutoOpt) checkAutoOpt.checked = autoOpt;
+    if (checkTyping) checkTyping.checked = typing;
+
+    if (selectDefaultExp) {
+        selectDefaultExp.innerHTML = '';
+        const expertises = ['Neutral', 'Code Architect', 'Creative Writer', 'Bug Finder & QA', 'UX/UI Critic', 'Academic Scholar'];
+        expertises.forEach(exp => {
+            const opt = document.createElement('option');
+            opt.value = exp;
+            opt.innerText = exp;
+            selectDefaultExp.appendChild(opt);
+        });
+        selectDefaultExp.value = defaultExp;
+    }
+
+    const nResponse = localStorage.getItem('notif_response_ready') !== 'false';
+    const nErrors = localStorage.getItem('notif_errors') !== 'false';
+    const nSuccess = localStorage.getItem('notif_success_toasts') !== 'false';
+
+    const checkNResponse = document.getElementById('notif-response');
+    const checkNErrors = document.getElementById('notif-errors');
+    const checkNSuccess = document.getElementById('notif-success');
+
+    if (checkNResponse) checkNResponse.checked = nResponse;
+    if (checkNErrors) checkNErrors.checked = nErrors;
+    if (checkNSuccess) checkNSuccess.checked = nSuccess;
+
+    const checkQAnim = document.getElementById('quick-anim-toggle');
+    const checkQCompact = document.getElementById('quick-compact-toggle');
+    const checkQNotif = document.getElementById('quick-notif-toggle');
+    const checkQAutosave = document.getElementById('quick-autosave-toggle');
+
+    if (checkQAnim) checkQAnim.checked = localStorage.getItem('animSpeed') !== '1.5';
+    if (checkQCompact) checkQCompact.checked = localStorage.getItem('cardDensity') === 'compact';
+    if (checkQNotif) checkQNotif.checked = localStorage.getItem('notif_success_toasts') !== 'false';
+    if (checkQAutosave) checkQAutosave.checked = localStorage.getItem('autoSaveNotes') === 'true';
+
+    const selectedAvatar = localStorage.getItem('selectedAvatar') || 'letter';
+    document.querySelectorAll('.avatar-option-item').forEach(item => {
+        item.classList.toggle('selected', item.id === `av-opt-${selectedAvatar}`);
+    });
+    
+    updateAvatarDisplay(selectedAvatar);
+}
+
+function updateSliderLabelDisplays() {
+    const radius = localStorage.getItem('borderRadius') || '20';
+    const font = localStorage.getItem('fontSize') || '14';
+    const speed = localStorage.getItem('animSpeed') || '0.3';
+    const blur = localStorage.getItem('bgBlur') || '16';
+
+    const rDisp = document.getElementById('val-radius-disp');
+    const fDisp = document.getElementById('val-fontsize-disp');
+    const sDisp = document.getElementById('val-speed-disp');
+    const bDisp = document.getElementById('val-blur-disp');
+
+    if (rDisp) rDisp.innerText = radius + 'px';
+    if (fDisp) fDisp.innerText = font + 'px';
+    if (sDisp) sDisp.innerText = speed + 's';
+    if (bDisp) bDisp.innerText = blur + 'px';
+}
+
+function saveProfileDetails() {
+    const inputName = document.getElementById('profile-input-name')?.value.trim() || 'Guest';
+    const inputEmail = document.getElementById('profile-input-email')?.value.trim() || 'guest@multiai.system';
+    const inputRole = document.getElementById('profile-input-role')?.value.trim() || 'Developer';
+
+    localStorage.setItem('neuralUser', inputName);
+    localStorage.setItem('neuralEmail', inputEmail);
+    localStorage.setItem('profileRole', inputRole);
+    localStorage.setItem('isLoggedIn', 'true');
+    
+    if (typeof workspaceApi === 'function') {
+        workspaceApi('/profile', {
+            method: 'PUT',
+            body: { displayName: inputName, email: inputEmail, role: inputRole }
+        }).catch(e => console.log("Profile server update ignored (guest mode)."));
+    }
+    
+    const selectedAvatar = localStorage.getItem('selectedAvatar') || 'letter';
+    updateAvatarDisplay(selectedAvatar);
+    showSuccessToast("Profile settings saved!");
+}
+
+function selectThemeName(themeName) {
+    localStorage.setItem('themeName', themeName);
+    applyTheme(themeName);
+    
+    document.querySelectorAll('.theme-option-box').forEach(box => {
+        box.classList.toggle('selected', box.id === `theme-opt-${themeName}`);
+    });
+    
+    const accentPanel = document.getElementById('custom-accent-panel');
+    if (themeName === 'custom') {
+        if (accentPanel) accentPanel.classList.remove('hidden');
+        const picker = document.getElementById('custom-color-picker');
+        if (picker) {
+            picker.value = localStorage.getItem('accentColor') || '#6366f1';
+            updateAccentColor(picker.value);
+        }
+    } else {
+        if (accentPanel) accentPanel.classList.add('hidden');
+    }
+    
+    showSuccessToast(`Theme changed to ${themeName}`);
+}
+
+function handleCustomColorInput(colorHex) {
+    if (/^#[0-9A-F]{6}$/i.test(colorHex)) {
+        updateAccentColor(colorHex);
+        const inputHex = document.getElementById('custom-color-hex');
+        if (inputHex) inputHex.value = colorHex;
+        
+        const r = parseInt(colorHex.slice(1, 3), 16);
+        const g = parseInt(colorHex.slice(3, 5), 16);
+        const b = parseInt(colorHex.slice(5, 7), 16);
+        const inputRgb = document.getElementById('custom-color-rgb');
+        if (inputRgb) inputRgb.value = `rgb(${r}, ${g}, ${b})`;
+    }
+}
+
+function handleCustomColorRgbInput(rgbStr) {
+    const match = rgbStr.match(/\b\d{1,3}\b/g);
+    if (match && match.length === 3) {
+        const r = Math.min(255, parseInt(match[0], 10));
+        const g = Math.min(255, parseInt(match[1], 10));
+        const b = Math.min(255, parseInt(match[2], 10));
+        const colorHex = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+        handleCustomColorInput(colorHex);
+        const picker = document.getElementById('custom-color-picker');
+        if (picker) picker.value = colorHex;
+    }
+}
+
+function updateAccentColor(hexColor) {
+    const root = document.documentElement;
+    root.style.setProperty('--accent', hexColor);
+    
+    const r = parseInt(hexColor.slice(1, 3), 16);
+    const g = parseInt(hexColor.slice(3, 5), 16);
+    const b = parseInt(hexColor.slice(5, 7), 16);
+    
+    const rHover = Math.max(0, Math.floor(r * 0.8));
+    const gHover = Math.max(0, Math.floor(g * 0.8));
+    const bHover = Math.max(0, Math.floor(b * 0.8));
+    const hoverHex = "#" + ((1 << 24) + (rHover << 16) + (gHover << 8) + bHover).toString(16).slice(1);
+    
+    root.style.setProperty('--accent-hover', hoverHex);
+    root.style.setProperty('--glow', `rgba(${r}, ${g}, ${b}, 0.35)`);
+    root.style.setProperty('--border', `rgba(${r}, ${g}, ${b}, 0.15)`);
+    
+    localStorage.setItem('accentColor', hexColor);
+}
+
+function saveAppearanceSetting(key, val) {
+    localStorage.setItem(key, val);
+    updateSliderLabelDisplays();
+    applyWorkspaceLayout();
+}
+
+// Redefining standard notepad download count logger safely on window property overrides
+const originalDownloadNotepadText = window.downloadNotepadText;
+window.downloadNotepadText = function() {
+    const txtArea = document.getElementById("notepad-textarea");
+    if(!txtArea) return;
+    const content = txtArea.value;
+    if(!content || !content.trim()) {
+        alert("The notepad workspace canvas is currently empty.");
+        return;
+    }
+    
+    let noteCount = parseInt(localStorage.getItem('saved_notes_count') || '0', 10);
+    localStorage.setItem('saved_notes_count', noteCount + 1);
+    checkAchievements();
+    
+    const format = localStorage.getItem('noteExportFormat') || 'txt';
+    const fileName = "workspace-scratchpad-notes";
+
+    if (format === 'pdf') {
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`<pre style="font-family: monospace; white-space: pre-wrap;">${content}</pre>`);
+        printWindow.document.close();
+        printWindow.print();
+    } else if (format === 'doc') {
+        const fileBlob = new Blob([content], { type: 'application/msword' });
+        const tempAnchor = document.createElement('a');
+        const objectUrl = window.URL.createObjectURL(fileBlob);
+        tempAnchor.download = `${fileName}.doc`;
+        tempAnchor.href = objectUrl;
+        document.body.appendChild(tempAnchor);
+        tempAnchor.click();
+        setTimeout(() => {
+            document.body.removeChild(tempAnchor);
+            window.URL.revokeObjectURL(objectUrl);
+        }, 100);
+    } else if (format === 'md') {
+        const fileBlob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
+        const tempAnchor = document.createElement('a');
+        const objectUrl = window.URL.createObjectURL(fileBlob);
+        tempAnchor.download = `${fileName}.md`;
+        tempAnchor.href = objectUrl;
+        document.body.appendChild(tempAnchor);
+        tempAnchor.click();
+        setTimeout(() => {
+            document.body.removeChild(tempAnchor);
+            window.URL.revokeObjectURL(objectUrl);
+        }, 100);
+    } else {
+        const fileBlob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+        const tempAnchor = document.createElement('a');
+        const objectUrl = window.URL.createObjectURL(fileBlob);
+        tempAnchor.download = `${fileName}.txt`;
+        tempAnchor.href = objectUrl;
+        document.body.appendChild(tempAnchor);
+        tempAnchor.click();
+        setTimeout(() => {
+            document.body.removeChild(tempAnchor);
+            window.URL.revokeObjectURL(objectUrl);
+        }, 100);
+    }
+    showSuccessToast("Scratchpad notes downloaded successfully!");
+};
+
+// Redefining standard startModelDebate count logger safely on window overrides
+const originalStartModelDebate = window.startModelDebate;
+window.startModelDebate = async function() {
+    let debateCount = parseInt(localStorage.getItem('debates_count') || '0', 10);
+    localStorage.setItem('debates_count', debateCount + 1);
+    checkAchievements();
+    if (typeof originalStartModelDebate === 'function') {
+        return await originalStartModelDebate();
+    }
+};
+
+// Redefining standard generateConsensus count logger safely on window overrides
+const originalGenerateConsensus = window.generateConsensus;
+window.generateConsensus = async function() {
+    let consensusCount = parseInt(localStorage.getItem('consensus_count') || '0', 10);
+    localStorage.setItem('consensus_count', consensusCount + 1);
+    checkAchievements();
+    if (typeof originalGenerateConsensus === 'function') {
+        return await originalGenerateConsensus();
+    }
+};
+
+// Redefining standard broadcast count logger safely on window overrides
+const originalBroadcast = window.broadcast;
+window.broadcast = async function() {
+    let queryCount = parseInt(localStorage.getItem('total_queries_count') || '0', 10);
+    localStorage.setItem('total_queries_count', queryCount + 1);
+    checkAchievements();
+    if (typeof originalBroadcast === 'function') {
+        return await originalBroadcast();
+    }
+};
+
+function saveWorkspaceSetting(key, val) {
+    localStorage.setItem(key, val);
+    applyWorkspaceLayout();
+}
+
+function saveAISetting(key, val) {
+    localStorage.setItem(key, val);
+}
+
+function saveNotifSetting(key, val) {
+    localStorage.setItem(key, val);
+}
+
+function toggleQuickSetting(settingName) {
+    if (settingName === 'animations') {
+        const speed = localStorage.getItem('animSpeed') === '1.5' ? '0.3' : '1.5';
+        saveAppearanceSetting('animSpeed', speed);
+    } else if (settingName === 'compact') {
+        const density = localStorage.getItem('cardDensity') === 'compact' ? 'comfortable' : 'compact';
+        saveAppearanceSetting('cardDensity', density);
+    } else if (settingName === 'notifications') {
+        const current = localStorage.getItem('notif_success_toasts') !== 'false';
+        saveNotifSetting('notif_success_toasts', (!current).toString());
+    } else if (settingName === 'autosave') {
+        const current = localStorage.getItem('autoSaveNotes') === 'true';
+        localStorage.setItem('autoSaveNotes', !current);
+    }
+    populateSettingsAndProfileData();
+}
+
+// 8. Toast alerts
+function showSuccessToast(message, isError = false) {
+    if (localStorage.getItem('notif_success_toasts') === 'false') return;
+    
+    let toast = document.getElementById('toast-notif');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'toast-notif';
+        toast.className = 'toast-notification';
+        document.body.appendChild(toast);
+    }
+    
+    toast.innerHTML = `<i class="fa-solid ${isError ? 'fa-triangle-exclamation' : 'fa-circle-check'}"></i> <span id="toast-notif-message">${message}</span>`;
+    
+    if (isError) {
+        toast.style.background = 'rgba(239, 68, 68, 0.95)';
+        toast.style.boxShadow = '0 10px 30px rgba(239, 68, 68, 0.3)';
+    } else {
+        toast.style.background = 'rgba(16, 185, 129, 0.95)';
+        toast.style.boxShadow = '0 10px 30px rgba(16, 185, 129, 0.3)';
+    }
+    
+    toast.classList.add('show');
+    
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 2800);
+}
+
+// 9. Document uploader handler
+function triggerFileUpload() {
+    document.getElementById('prompt-file-upload').click();
+}
+
+function handlePromptFileUpload(input) {
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const textarea = document.getElementById('main-in');
+            if (textarea) {
+                const textContent = e.target.result;
+                const attachmentStr = `\n\n[Attachment: ${file.name}]\n"""\n${textContent}\n"""`;
+                textarea.value += attachmentStr;
+                adjustPromptInputHeight();
+                showSuccessToast(`Attached file content: ${file.name}`);
+            }
+        };
+        if (file.type.startsWith('text/') || file.name.endsWith('.js') || file.name.endsWith('.py') || file.name.endsWith('.json') || file.name.endsWith('.md') || file.name.endsWith('.html') || file.name.endsWith('.css')) {
+            reader.readAsText(file);
+        } else {
+            const textarea = document.getElementById('main-in');
+            if (textarea) {
+                textarea.value += `\n\n[Attached File Reference: ${file.name}]`;
+                adjustPromptInputHeight();
+                showSuccessToast(`Attached binary file reference ${file.name}`);
+            }
+        }
+    }
+}
+
+// 10. Update Active Models Count Badge
+function updateActiveModelsCountBadge() {
+    const activeCount = document.querySelectorAll('.sidebar .sb-icon.active').length;
+    const badge = document.getElementById('active-models-count-badge');
+    if (badge) {
+        badge.innerText = `${activeCount} / 5`;
+    }
+}
+
+// Helper openSettingsWithTab
+function openSettingsWithTab(tab) {
+    switchView('setting');
+    setTimeout(() => switchSettingsTab(tab), 10);
+}
+
+function applyWorkspaceLayout() {
+    const sidePos = localStorage.getItem('sidebarPos') || 'left';
+    const promptPos = localStorage.getItem('promptPos') || 'bottom';
+    const responseGridCols = localStorage.getItem('responseGridCols') || 'auto';
+    const cardSize = localStorage.getItem('cardSize') || 'comfortable';
+    const cardDensity = localStorage.getItem('cardDensity') || 'comfortable';
+    const glassEnabled = localStorage.getItem('glassmorphismEnabled') || 'true';
+    const borderRadius = localStorage.getItem('borderRadius') || '20';
+    const fontSize = localStorage.getItem('fontSize') || '14';
+    const animSpeed = localStorage.getItem('animSpeed') || '0.3';
+    const bgBlur = localStorage.getItem('bgBlur') || '16';
+
+    const mainWrapper = document.querySelector('.main-wrapper');
+    const sidebar = document.querySelector('.sidebar');
+    const header = document.querySelector('header');
+    const workspace = document.querySelector('.workspace');
+    const dockArea = document.querySelector('.dock-area');
+    const viewContainers = document.querySelectorAll('.view-container');
+
+    // 1. Sidebar position & visibility
+    if (mainWrapper && sidebar) {
+        if (sidePos === 'left') {
+            mainWrapper.style.gridTemplateColumns = '85px 1fr';
+            sidebar.style.display = 'flex';
+            sidebar.style.gridColumn = '1';
+            sidebar.style.width = '70px';
+            sidebar.style.padding = '40px 0';
+            sidebar.querySelectorAll('.sb-icon').forEach(el => el.style.transform = 'scale(1)');
+            if (header) header.style.gridColumn = '2';
+            viewContainers.forEach(el => el.style.gridColumn = '2');
+        } else if (sidePos === 'right') {
+            mainWrapper.style.gridTemplateColumns = '1fr 85px';
+            sidebar.style.display = 'flex';
+            sidebar.style.gridColumn = '2';
+            sidebar.style.width = '70px';
+            sidebar.style.padding = '40px 0';
+            sidebar.querySelectorAll('.sb-icon').forEach(el => el.style.transform = 'scale(1)');
+            if (header) header.style.gridColumn = '1';
+            viewContainers.forEach(el => el.style.gridColumn = '1');
+        } else if (sidePos === 'collapsed') {
+            mainWrapper.style.gridTemplateColumns = '55px 1fr';
+            sidebar.style.display = 'flex';
+            sidebar.style.gridColumn = '1';
+            sidebar.style.width = '45px';
+            sidebar.style.padding = '20px 0';
+            sidebar.querySelectorAll('.sb-icon').forEach(el => el.style.transform = 'scale(0.85)');
+            if (header) header.style.gridColumn = '2';
+            viewContainers.forEach(el => el.style.gridColumn = '2');
+        } else if (sidePos === 'hidden') {
+            mainWrapper.style.gridTemplateColumns = '1fr';
+            sidebar.style.display = 'none';
+            if (header) header.style.gridColumn = '1';
+            viewContainers.forEach(el => el.style.gridColumn = '1');
+            
+            let floatingBtn = document.getElementById('sidebar-reveal-btn');
+            if (!floatingBtn) {
+                floatingBtn = document.createElement('button');
+                floatingBtn.id = 'sidebar-reveal-btn';
+                floatingBtn.className = 'floating-reveal-btn';
+                floatingBtn.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
+                floatingBtn.onclick = () => {
+                    localStorage.setItem('sidebarPos', 'left');
+                    applyWorkspaceLayout();
+                };
+                document.body.appendChild(floatingBtn);
+            }
+            floatingBtn.style.display = 'flex';
+        }
+        
+        if (sidePos !== 'hidden') {
+            const floatingBtn = document.getElementById('sidebar-reveal-btn');
+            if (floatingBtn) floatingBtn.style.display = 'none';
+        }
+    }
+
+    // 2. Prompt Position
+    if (dockArea && workspace) {
+        if (promptPos === 'top') {
+            dockArea.style.position = 'fixed';
+            dockArea.style.bottom = 'auto';
+            dockArea.style.top = '105px';
+            workspace.style.setProperty('padding-top', '110px', 'important');
+            workspace.style.setProperty('padding-bottom', '20px', 'important');
+            workspace.style.setProperty('margin-top', '0px', 'important');
+        } else {
+            dockArea.style.position = 'fixed';
+            dockArea.style.top = 'auto';
+            dockArea.style.bottom = 'clamp(14px, 2.2vh, 25px)';
+            workspace.style.setProperty('padding-top', '20px', 'important');
+            workspace.style.setProperty('padding-bottom', '110px', 'important');
+            workspace.style.setProperty('margin-top', '0px', 'important');
+        }
+    }
+
+    // 3. Response Grid columns
+    if (workspace) {
+        if (responseGridCols === '2') {
+            workspace.style.gridTemplateColumns = 'repeat(2, 1fr)';
+        } else if (responseGridCols === '3') {
+            workspace.style.gridTemplateColumns = 'repeat(3, 1fr)';
+        } else {
+            workspace.style.gridTemplateColumns = 'repeat(auto-fit, minmax(320px, 1fr))';
+        }
+    }
+
+    // 4. Card Size & Spacing (Density)
+    document.querySelectorAll('.ai-card').forEach(card => {
+        if (cardDensity === 'compact') {
+            card.style.padding = '12px';
+        } else if (cardDensity === 'loose') {
+            card.style.padding = '28px';
+        } else {
+            card.style.padding = '20px';
+        }
+        
+        const content = card.querySelector('.ai-content');
+        if (content) {
+            if (cardSize === 'compact') {
+                content.style.fontSize = '0.85rem';
+            } else if (cardSize === 'large') {
+                content.style.fontSize = '1.05rem';
+            } else {
+                content.style.fontSize = '0.95rem';
+            }
+        }
+    });
+
+    // 5. CSS custom properties for styling theme details
+    const root = document.documentElement;
+    root.style.setProperty('--border-radius', borderRadius + 'px');
+    root.style.setProperty('--font-size', fontSize + 'px');
+    root.style.setProperty('--transition-speed', animSpeed + 's');
+    root.style.setProperty('--bg-blur', bgBlur + 'px');
+
+    if (glassEnabled === 'true') {
+        root.style.setProperty('--card-backdrop', `blur(${bgBlur}px)`);
+        root.style.setProperty('--glass-bg', 'rgba(17, 24, 39, 0.7)');
+    } else {
+        root.style.setProperty('--card-backdrop', 'none');
+        root.style.setProperty('--glass-bg', 'var(--sidebar-bg)');
+    }
+    
+    // Trigger response layout columns refresh instantly
+    if (typeof applyModelLayout === 'function') {
+        applyModelLayout();
+    }
+}
+
+function initBackgroundEffects() {
+    const canvas = document.getElementById('app-bg-effects');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+    
+    let particles = [];
+    let angle = 0;
+    
+    for (let i = 0; i < 40; i++) {
+        particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            vx: (Math.random() - 0.5) * 0.5,
+            vy: (Math.random() - 0.5) * 0.5,
+            r: Math.random() * 2 + 1
+        });
+    }
+    
+    function loop() {
+        const effect = localStorage.getItem('backgroundEffect') || 'gradient';
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        if (effect === 'static') {
+            // Static bg-color
+        } else if (effect === 'gradient') {
+            angle += 0.002;
+            const x = canvas.width * 0.5 + Math.cos(angle) * canvas.width * 0.2;
+            const y = canvas.height * 0.5 + Math.sin(angle) * canvas.height * 0.2;
+            const grad = ctx.createRadialGradient(x, y, 10, x, y, canvas.width * 0.8);
+            
+            const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#6366f1';
+            grad.addColorStop(0, accent + '0b');
+            grad.addColorStop(1, 'transparent');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        } else if (effect === 'particles' || effect === 'neural') {
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
+            const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#6366f1';
+            ctx.strokeStyle = accent + '1a';
+            
+            particles.forEach((p, idx) => {
+                p.x += p.vx;
+                p.y += p.vy;
+                
+                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+                
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fill();
+                
+                if (effect === 'neural') {
+                    for (let j = idx + 1; j < particles.length; j++) {
+                        const p2 = particles[j];
+                        const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
+                        if (dist < 120) {
+                            ctx.beginPath();
+                            ctx.moveTo(p.x, p.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+            });
+        } else if (effect === 'stars') {
+            for (let i = 0; i < 50; i++) {
+                const x = (Math.sin(i + angle) * 0.5 + 0.5) * canvas.width;
+                const y = (Math.cos(i * 1.5 + angle * 0.5) * 0.5 + 0.5) * canvas.height;
+                const alpha = Math.abs(Math.sin(angle + i)) * 0.8;
+                ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+                ctx.fillRect(x, y, 1.5, 1.5);
+            }
+            angle += 0.005;
+        } else if (effect === 'aurora') {
+            angle += 0.003;
+            ctx.save();
+            ctx.filter = 'blur(60px)';
+            const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#6366f1';
+            
+            const x1 = canvas.width * 0.3 + Math.sin(angle) * 100;
+            const y1 = canvas.height * 0.3 + Math.cos(angle) * 80;
+            ctx.fillStyle = accent + '15';
+            ctx.beginPath();
+            ctx.arc(x1, y1, 150, 0, Math.PI * 2);
+            ctx.fill();
+            
+            const x2 = canvas.width * 0.7 + Math.cos(angle * 0.8) * 120;
+            const y2 = canvas.height * 0.6 + Math.sin(angle * 1.2) * 90;
+            ctx.fillStyle = '#f43f5e10';
+            ctx.beginPath();
+            ctx.arc(x2, y2, 200, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.restore();
+        } else if (effect === 'minimal') {
+            const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#6366f1';
+            const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, canvas.width * 0.5);
+            grad.addColorStop(0, accent + '0c');
+            grad.addColorStop(1, 'transparent');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+        
+        bgAnimationId = requestAnimationFrame(loop);
+    }
+    
+    if (bgAnimationId) cancelAnimationFrame(bgAnimationId);
+    loop();
+}
+
+function exportLocalSettingsData() {
+    const data = {};
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        data[key] = localStorage.getItem(key);
+    }
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'multiai-settings-export.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showSuccessToast("Workspace settings data exported!");
+}
+
+function clearChatHistory() {
+    if (confirm("Are you sure you want to clear your conversation history? This cannot be undone.")) {
+        localStorage.removeItem('chatHistory');
+        const viewHistory = document.getElementById('view-history');
+        if (viewHistory) {
+            const listContainer = viewHistory.querySelector('.history-list');
+            if (listContainer) listContainer.innerHTML = '<div class="no-history">No past debates found.</div>';
+        }
+        showSuccessToast("Conversation history cleared!");
+    }
+}
+
+function deleteSavedNotepadNotes() {
+    if (confirm("Delete all scratchpad content?")) {
+        const notepad = document.getElementById("notepad-textarea");
+        if (notepad) notepad.value = "";
+        localStorage.removeItem("workspaceScratchpadText");
+        showSuccessToast("Scratchpad notes deleted!");
+    }
+}
+
+function resetSettingsToDefault() {
+    if (confirm("Reset all workspace visuals, theme, and AI settings back to default? Your credentials will remain.")) {
+        const keysToKeep = ['neuralUser', 'neuralEmail', 'isLoggedIn', 'userAvatar', 'profileMobile', 'profileRole', 'profileBio'];
+        const values = {};
+        keysToKeep.forEach(k => {
+            values[k] = localStorage.getItem(k);
+        });
+        
+        localStorage.clear();
+        
+        for (const [k, v] of Object.entries(values)) {
+            if (v !== null) localStorage.setItem(k, v);
+        }
+        
+        applyTheme('midnight');
+        localStorage.setItem('sidebarPos', 'left');
+        localStorage.setItem('promptPos', 'bottom');
+        localStorage.setItem('responseGridCols', 'auto');
+        localStorage.setItem('cardSize', 'comfortable');
+        localStorage.setItem('cardDensity', 'comfortable');
+        localStorage.setItem('glassmorphismEnabled', 'true');
+        localStorage.setItem('borderRadius', '20');
+        localStorage.setItem('fontSize', '14');
+        localStorage.setItem('animSpeed', '0.3');
+        localStorage.setItem('backgroundEffect', 'gradient');
+        localStorage.setItem('bgBlur', '16');
+        
+        applyWorkspaceLayout();
+        initBackgroundEffects();
+        
+        showSuccessToast("Settings reset to defaults!");
+        
+        openSettingsWithTab('appearance');
+    }
+}
+
+// Expose all visual functions to the global window scope to prevent DOM onclick handler failures
+window.switchSettingsTab = switchSettingsTab;
+window.selectAvatarOption = selectAvatarOption;
+window.updateProfileAvatar = updateProfileAvatar;
+window.saveProfileDetails = saveProfileDetails;
+window.selectThemeName = selectThemeName;
+window.handleCustomColorInput = handleCustomColorInput;
+window.handleCustomColorRgbInput = handleCustomColorRgbInput;
+window.updateAccentColor = updateAccentColor;
+window.saveAppearanceSetting = saveAppearanceSetting;
+window.saveWorkspaceSetting = saveWorkspaceSetting;
+window.saveAISetting = saveAISetting;
+window.saveNotifSetting = saveNotifSetting;
+window.toggleQuickSetting = toggleQuickSetting;
+window.showSuccessToast = showSuccessToast;
+window.triggerFileUpload = triggerFileUpload;
+window.handlePromptFileUpload = handlePromptFileUpload;
+window.updateActiveModelsCountBadge = updateActiveModelsCountBadge;
+window.openSettingsWithTab = openSettingsWithTab;
+window.applyWorkspaceLayout = applyWorkspaceLayout;
+window.initBackgroundEffects = initBackgroundEffects;
+window.exportLocalSettingsData = exportLocalSettingsData;
+window.clearChatHistory = clearChatHistory;
+window.deleteSavedNotepadNotes = deleteSavedNotepadNotes;
+window.resetSettingsToDefault = resetSettingsToDefault;
+window.applyTheme = applyTheme;
+
+
 });
 </script>
 <div id="floating-notepad" class="floating-notepad">
