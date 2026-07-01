@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-<link rel="stylesheet" href="style.css?v=1.0.5">
+<link rel="stylesheet" href="style.css?v=1.0.6">
 <link rel="stylesheet" href="mobile.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Multi AI - all Ai meetup</title>
@@ -2794,13 +2794,15 @@ window.addEventListener('DOMContentLoaded', () => {
                 card.style.gridRow = '';
                 card.style.height = '100%';
             });
+            const promptPos = localStorage.getItem('promptPos') || 'bottom';
+            const workspacePadding = promptPos === 'top' ? '110px 30px 24px 30px' : '24px 30px 110px 30px';
             workspace.style.setProperty('display', 'grid', 'important');
             workspace.style.setProperty('grid-template-columns', `repeat(${gridColsSetting}, 1fr)`, 'important');
             workspace.style.setProperty('grid-template-rows', 'auto', 'important');
             workspace.style.setProperty('grid-auto-rows', '1fr', 'important');
             workspace.style.setProperty('align-content', 'stretch', 'important');
-            workspace.style.setProperty('height', availableHeight, 'important');
-            workspace.style.setProperty('padding', '16px 20px', 'important');
+            workspace.style.setProperty('height', '100%', 'important');
+            workspace.style.setProperty('padding', workspacePadding, 'important');
             return;
         }
 
@@ -2822,21 +2824,16 @@ window.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Calculate exact available height dynamically (viewport height minus header, dock, and banner)
-        const banner = document.getElementById('active-persona-banner');
-        const bannerVisible = banner && !banner.classList.contains('hidden');
-        const headerHeight = 100; // Header size
-        const dockHeight = 110;   // Dock space
-        const bannerHeight = bannerVisible ? 48 : 0;
-        const paddingHeight = 32; // Top/bottom padding total inside workspace
-        const availableHeight = `calc(100vh - ${headerHeight + dockHeight + bannerHeight + paddingHeight}px)`;
+        // Dynamically compute padding based on prompt position setting
+        const promptPos = localStorage.getItem('promptPos') || 'bottom';
+        const workspacePadding = promptPos === 'top' ? '110px 30px 24px 30px' : '24px 30px 110px 30px';
 
-        // Set layout variables
+        // Set layout variables letting the workspace stretch naturally to fill 100% height of the grid cell
         workspace.style.setProperty('display', 'grid', 'important');
         workspace.style.setProperty('grid-template-columns', 'repeat(6, 1fr)', 'important');
         workspace.style.setProperty('align-content', 'stretch', 'important');
-        workspace.style.setProperty('height', availableHeight, 'important');
-        workspace.style.setProperty('padding', '16px 20px', 'important'); // Remove large bottom padding
+        workspace.style.setProperty('height', '100%', 'important');
+        workspace.style.setProperty('padding', workspacePadding, 'important');
         workspace.style.setProperty('grid-auto-rows', '1fr', 'important');
 
         if (activeCards.length === 1) {
