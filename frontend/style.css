@@ -3410,9 +3410,32 @@ body, header, aside, .ai-card, .dock-area, .input-bar, .consensus-card, .circle-
     margin-bottom: 30px;
 }
 
+
+/* =======================================================
+   PREMIUM VARIABLE-MAPPED SETTINGS & FORMS SYSTEM OVERRIDES
+   ======================================================= */
+/* Decouple settings panels from hardcoded dark backgrounds */
+.settings-workspace-layout {
+    background: var(--sidebar-bg) !important;
+    border: 1px solid var(--border) !important;
+}
+
+.settings-nav-sidebar {
+    background: var(--bg) !important;
+    border-right: 1px solid var(--border) !important;
+}
+
+.settings-nav-item:hover {
+    background: rgba(99, 102, 241, 0.04) !important;
+}
+
+.settings-content-panel {
+    background: var(--sidebar-bg) !important;
+}
+
 .settings-workspace-layout .ui-info-card {
     display: block !important;
-    background: rgba(0, 0, 0, 0.12) !important;
+    background: var(--bg) !important;
     border: 1px solid var(--border) !important;
     border-radius: 16px !important;
     padding: 24px !important;
@@ -3426,9 +3449,13 @@ body, header, aside, .ai-card, .dock-area, .input-bar, .consensus-card, .circle-
     gap: 24px !important;
 }
 
-/* =======================================================
-   PREMIUM CUSTOM SELECT & FORM CONTROL CONTROLS
-   ======================================================= */
+/* Stat box backgrounds mapped to soft gray/bg in light theme */
+.stat-box {
+    background: var(--bg) !important;
+    border: 1px solid var(--border) !important;
+}
+
+/* Forms layout controls styling */
 .settings-tab-content label {
     display: block !important; 
     font-size: 0.75rem !important; 
@@ -3444,41 +3471,12 @@ body, header, aside, .ai-card, .dock-area, .input-bar, .consensus-card, .circle-
     margin-top: 0 !important;
 }
 
+/* Form inputs & custom selects backgrounds mapped to pure card/sidebar white on light modes */
+.settings-tab-content input[type="text"],
+.settings-tab-content input[type="email"],
 .custom-select {
     width: 100% !important;
-    background: var(--input-bg, #050812) !important;
-    border: 1px solid var(--border) !important;
-    padding: 12px 16px !important;
-    border-radius: 12px !important;
-    color: var(--text) !important;
-    outline: none !important;
-    font-size: 0.95rem !important;
-    font-weight: 600 !important;
-    cursor: pointer !important;
-    appearance: none !important;
-    -webkit-appearance: none !important;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") !important;
-    background-repeat: no-repeat !important;
-    background-position: right 16px center !important;
-    background-size: 16px !important;
-    transition: all var(--transition-speed, 0.3s) ease !important;
-}
-
-.custom-select:focus {
-    border-color: var(--accent) !important;
-    box-shadow: 0 0 0 3px var(--glow) !important;
-}
-
-.custom-select option {
     background: var(--sidebar-bg, #090d1a) !important;
-    color: var(--text) !important;
-    padding: 12px !important;
-}
-
-.settings-tab-content input[type="text"],
-.settings-tab-content input[type="email"] {
-    width: 100% !important;
-    background: var(--input-bg, #050812) !important;
     border: 1px solid var(--border) !important;
     padding: 12px 16px !important;
     border-radius: 12px !important;
@@ -3490,16 +3488,32 @@ body, header, aside, .ai-card, .dock-area, .input-bar, .consensus-card, .circle-
 }
 
 .settings-tab-content input[type="text"]:focus,
-.settings-tab-content input[type="email"]:focus {
+.settings-tab-content input[type="email"]:focus,
+.custom-select:focus {
     border-color: var(--accent) !important;
     box-shadow: 0 0 0 3px var(--glow) !important;
 }
 
-/* =======================================================
-   GLOBAL SELECT DROPDOWNS UNIFICATION STYLES
-   ======================================================= */
+/* Dropdown arrow settings for select tags */
+.custom-select {
+    cursor: pointer !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 16px center !important;
+    background-size: 16px !important;
+}
+
+.custom-select option {
+    background: var(--sidebar-bg, #090d1a) !important;
+    color: var(--text) !important;
+    padding: 12px !important;
+}
+
+/* Global Select tags unification */
 select {
-    background-color: var(--input-bg, #050812) !important;
+    background-color: var(--sidebar-bg, #090d1a) !important;
     border: 1px solid var(--border) !important;
     color: var(--text) !important;
     padding: 8px 32px 8px 12px !important;
