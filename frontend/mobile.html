@@ -2,329 +2,177 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MultiAI - Mobile Workspace</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <title>MultiAI · Mobile</title>
     <style>
-        /* ============================================================
-           MOBILE‑FIRST STYLES – Everything from scratch
-           ============================================================ */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
         :root {
-            --bg: #020617;
-            --card-bg: #0f172a;
-            --text: #ffffff;
-            --accent: #6366f1;
+            --bg: #0B0F19;
+            --sidebar-bg: #0F172A;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text: #F8FAFC;
+            --accent: #6366F1;
+            --accent-glow: rgba(99, 102, 241, 0.4);
             --border: rgba(99, 102, 241, 0.2);
-            --glow: rgba(99, 102, 241, 0.5);
-            --dock-bg: rgba(15, 23, 42, 0.85);
+            --glow: rgba(99, 102, 241, 0.2);
+            --dock-bg: rgba(15, 23, 42, 0.9);
             --radius: 16px;
-            --safe-bottom: env(safe-area-inset-bottom, 0px);
         }
 
         body.light-mode {
-            --bg: #f8fafc;
-            --card-bg: #f1f5f9;
-            --text: #0f172a;
-            --accent: #4f46e5;
-            --border: rgba(0, 0, 0, 0.15);
-            --glow: rgba(79, 70, 229, 0.2);
-            --dock-bg: rgba(255, 255, 255, 0.9);
+            --bg: #F4F8FC;
+            --sidebar-bg: #FFFFFF;
+            --card-bg: #ECF3FA;
+            --text: #111827;
+            --accent: #0099CC;
+            --border: rgba(0, 153, 204, 0.18);
+            --glow: rgba(0, 153, 204, 0.18);
+            --dock-bg: rgba(255, 255, 255, 0.92);
         }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+            font-family: 'Inter', sans-serif;
             background: var(--bg);
             color: var(--text);
             transition: background 0.3s, color 0.3s;
-            padding-bottom: calc(80px + var(--safe-bottom));
-            overflow-x: hidden;
-            -webkit-text-size-adjust: 100%;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
-        ::-webkit-scrollbar { width: 0; height: 0; }
-        * { scrollbar-width: none; -ms-overflow-style: none; }
-
-        /* ---------- HEADER ---------- */
+        /* ====== HEADER ====== */
         header {
-            position: sticky;
-            top: 0;
-            z-index: 100;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 16px;
-            background: var(--bg);
-            border-bottom: 1px solid var(--border);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            min-height: 56px;
+            height: 70px;
+            padding: 0 16px;
+            border-bottom: 2px solid var(--border);
+            background: var(--sidebar-bg);
+            flex-shrink: 0;
+            z-index: 100;
         }
-
-        .logo {
-            font-size: 1.2rem;
-            font-weight: 900;
-            letter-spacing: -0.5px;
-        }
+        .logo { font-weight: 800; font-size: 1.3rem; letter-spacing: 1px; color: var(--text); }
         .logo span { color: var(--accent); }
 
-        /* Hamburger */
-        .hamburger-toggle {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            background: transparent;
-            border: none;
-            padding: 6px;
-            cursor: pointer;
-            z-index: 101;
-        }
-        .hamburger-toggle span {
-            display: block;
-            width: 24px;
-            height: 2.5px;
-            background: var(--text);
-            border-radius: 2px;
-            transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            transform-origin: center;
-        }
-        .hamburger-toggle.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
-        .hamburger-toggle.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
-        .hamburger-toggle.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .theme-toggle-container {
-            width: 36px;
-            height: 36px;
+        .header-actions { display: flex; align-items: center; gap: 14px; }
+        .theme-toggle-container { cursor: pointer; }
+        .bulb {
+            width: 32px;
+            height: 32px;
+            background: rgba(128, 128, 128, 0.1);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-        .theme-toggle-container .wire { display: none; }
-        .bulb {
-            width: 20px;
-            height: 20px;
-            background: #444;
-            border-radius: 50%;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            cursor: pointer;
-            position: relative;
-        }
-        .bulb::before {
-            content: "";
-            position: absolute;
-            left: 4px;
-            top: -14px;
-            width: 10px;
-            height: 16px;
-            background: #444;
-            border-top: 6px solid var(--accent);
-            border-radius: 3px;
-        }
-        .bulb span { display: none; }
-        body.light-mode .bulb {
-            background: #facc15;
-            border-color: rgba(180, 83, 9, 0.2);
-            box-shadow: 0 0 18px rgba(250, 204, 21, 0.55);
-        }
-        body.light-mode .bulb::before { background: #facc15; }
-        body.light-mode .bulb::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 44px;
-            height: 44px;
-            background: rgba(250, 204, 21, 0.28);
-            border-radius: 50%;
-            filter: blur(12px);
-            z-index: -1;
+            border: 1px solid var(--border);
+            font-size: 1.1rem;
         }
 
         .profile-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
+            width: 36px;
+            height: 36px;
             background: var(--accent);
+            color: white;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 800;
-            font-size: 0.8rem;
-            color: white;
+            font-weight: 700;
+            font-size: 0.95rem;
             cursor: pointer;
-            border: 1px solid var(--border);
+            box-shadow: 0 0 10px var(--accent-glow);
         }
 
-        /* ---------- SLIDE MENU ---------- */
-        .nav-links {
-            display: none;
-            position: fixed;
-            top: 56px;
-            left: 0;
-            right: 0;
-            background: var(--card-bg);
+        /* ====== NAVIGATION BAR (Horizontal Swiper) ====== */
+        .nav-swiper-container {
+            background: var(--sidebar-bg);
             border-bottom: 1px solid var(--border);
-            flex-direction: column;
-            padding: 12px 16px;
-            gap: 4px;
-            z-index: 200;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            border-radius: 0 0 20px 20px;
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            max-height: 80vh;
-            overflow-y: auto;
+            padding: 8px 12px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            flex-shrink: 0;
         }
-        .nav-links.open { display: flex; }
-
+        .nav-swiper-container::-webkit-scrollbar { display: none; }
+        .nav-swiper { display: flex; gap: 8px; }
         .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 0 12px;
-            height: 48px;
-            border-radius: 10px;
+            flex-shrink: 0;
+            padding: 8px 14px;
+            border-radius: 20px;
+            background: rgba(128, 128, 128, 0.08);
             font-size: 0.8rem;
             font-weight: 600;
-            opacity: 0.7;
-            cursor: pointer;
             color: var(--text);
+            cursor: pointer;
+            list-style: none;
             transition: 0.2s;
-            min-height: 48px;
         }
-        .nav-item i, .nav-item svg { width: 20px; text-align: center; }
         .nav-item.active {
-            opacity: 1;
-            background: rgba(99, 102, 241, 0.08);
-            color: var(--accent);
-        }
-        .nav-item.active::after { display: none; }
-
-        #profile-gate .nav-item span { display: none; }
-        #profile-node {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
             background: var(--accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            color: white;
+            box-shadow: 0 0 8px var(--accent-glow);
         }
 
-        #logout-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            padding: 0;
-            justify-content: center;
-        }
-        #logout-btn span { display: none; }
-
-        /* ---------- MAIN WRAPPER ---------- */
+        /* ====== MAIN CONTENT VIEW WRAPPERS ====== */
         .main-wrapper {
-            display: grid;
-            grid-template-columns: 1fr;
-            grid-template-rows: auto 1fr;
-            min-height: calc(100vh - 56px);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
         }
 
-        /* ---------- SIDEBAR → BOTTOM NAV ---------- */
-        .sidebar-container { display: none; }
+        .view-container {
+            flex: 1;
+            display: none;
+            flex-direction: column;
+            overflow-y: auto;
+            padding-bottom: 150px;
+        }
+        .view-container.active { display: flex; }
 
+        .scroll-view { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+        .page-title { font-size: 1.3rem; font-weight: 800; }
+        .page-sub { font-size: 0.8rem; opacity: 0.6; margin-bottom: 10px; }
+
+        /* ====== SIDEBAR / DOCK FOOTER ====== */
         .sidebar {
             position: fixed;
             bottom: 0;
             left: 0;
-            right: 0;
-            height: 72px;
-            background: var(--dock-bg);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            border-top: 1px solid var(--border);
+            width: 100%;
+            height: 60px;
+            background: var(--sidebar-bg);
+            border-top: 2px solid var(--border);
             display: flex;
-            align-items: center;
             justify-content: space-around;
-            padding: 0 8px;
-            z-index: 500;
-            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            padding-bottom: var(--safe-bottom);
+            align-items: center;
+            z-index: 1000;
         }
-
         .sb-icon, .pf-icon {
-            flex: 0 0 50px;
-            height: 50px;
-            border-radius: 14px;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: transparent;
-            border: none;
             color: var(--text);
-            opacity: 0.5;
-            transition: 0.2s;
+            opacity: 0.6;
             cursor: pointer;
-            position: relative;
+            transition: 0.2s;
         }
-        .sb-icon.active {
-            opacity: 1;
-            background: rgba(99, 102, 241, 0.15);
-            border: 1px solid var(--accent);
-            box-shadow: 0 0 20px var(--glow);
-        }
-        .sb-icon.active::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 6px;
-            height: 6px;
-            background: var(--accent);
-            border-radius: 50%;
-            box-shadow: 0 0 12px var(--accent);
-        }
-        .sb-icon svg, .pf-icon svg {
-            width: 24px;
-            height: 24px;
-        }
+        .sb-icon.active, .pf-icon.active { opacity: 1; color: var(--accent); background: rgba(99, 102, 241, 0.08); }
 
-        .user-control-area { display: none; }
-
-        /* ---------- VIEW CONTAINERS ---------- */
-        .view-container {
-            display: none;
-            padding: 16px;
-            animation: fadeSlide 0.3s ease;
-        }
-        .view-container.active { display: block; }
-        @keyframes fadeSlide {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* ---------- WORKSPACE ---------- */
+        /* ====== WORKSPACE & AI CARDS ====== */
         .workspace {
             display: flex;
             flex-direction: column;
             gap: 16px;
+            padding: 16px;
         }
-
         .ai-card {
             background: var(--card-bg);
             border: 1px solid var(--border);
@@ -332,53 +180,47 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
         .ai-card.hidden { display: none; }
-
         .ai-header {
-            padding: 14px 16px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            padding: 12px 16px;
+            background: rgba(128, 128, 128, 0.04);
             border-bottom: 1px solid var(--border);
             font-weight: 700;
             font-size: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .ai-header svg {
-            width: 24px;
-            height: 24px;
-            flex-shrink: 0;
-        }
-
         .ai-content {
-            padding: 16px;
+            padding: 14px;
+            min-height: 180px;
+            max-height: 320px;
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
             gap: 10px;
-            max-height: 400px;
-            overflow-y: auto;
         }
-
         .bubble {
             padding: 10px 14px;
             border-radius: 12px;
             font-size: 0.85rem;
             line-height: 1.5;
-            max-width: 92%;
-            align-self: flex-start;
-            background: rgba(128, 128, 128, 0.08);
-            border: 1px solid var(--border);
-            border-bottom-left-radius: 4px;
+            max-width: 90%;
+            word-wrap: break-word;
         }
         .bubble.user {
             align-self: flex-end;
             background: var(--accent);
             color: white;
             border-bottom-right-radius: 4px;
-            border-color: var(--accent);
         }
         .bubble.ai {
-            background: rgba(128, 128, 128, 0.06);
+            align-self: flex-start;
+            background: rgba(128, 128, 128, 0.08);
+            border: 1px solid var(--border);
+            border-bottom-left-radius: 4px;
         }
 
         .card-actions {
@@ -387,60 +229,49 @@
             padding: 8px 12px;
             gap: 6px;
             border-top: 1px solid var(--border);
-            background: rgba(0, 0, 0, 0.05);
-            flex-wrap: wrap;
+            background: rgba(128, 128, 128, 0.02);
         }
         .card-actions .action-btn {
             background: transparent;
             border: none;
             color: var(--text);
             opacity: 0.6;
-            padding: 6px 8px;
+            width: 36px;
+            height: 36px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 0.9rem;
-            transition: 0.2s;
-            min-width: 40px;
-            min-height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 0.85rem;
         }
-        .card-actions .action-btn:hover { opacity: 1; background: rgba(99, 102, 241, 0.1); }
-        .card-actions .action-btn.like-trigger.active { color: #10b981; }
-        .card-actions .action-btn.dislike-trigger.active { color: #ef4444; }
-        .card-telemetry {
-            font-size: 0.65rem;
-            opacity: 0.5;
-            margin-right: auto;
-        }
+        .card-actions .action-btn:hover { opacity: 1; background: rgba(99, 102, 241, 0.08); }
+        .card-actions .action-btn.like-trigger.active { color: #10b981; opacity: 1; }
+        .card-actions .action-btn.dislike-trigger.active { color: #ef4444; opacity: 1; }
+        .card-telemetry { font-size: 0.65rem; opacity: 0.5; margin-right: auto; }
 
-        /* ---------- INPUT BAR (fixed) ---------- */
+        /* ====== FLOATING INPUT AREA ====== */
         .dock-area {
             position: fixed;
-            bottom: 72px;
+            bottom: 74px;
             left: 0;
-            right: 0;
-            padding: 8px 12px;
-            background: linear-gradient(to top, var(--bg) 60%, transparent);
-            z-index: 50;
+            width: 100%;
+            padding: 0 12px;
+            z-index: 500;
             display: flex;
             gap: 8px;
             align-items: center;
-            flex-wrap: nowrap;
         }
-
         .input-bar {
             flex: 1;
             display: flex;
             background: var(--dock-bg);
             border: 1px solid var(--border);
-            border-radius: 60px;
+            border-radius: 30px;
             padding: 4px 4px 4px 12px;
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             align-items: center;
-            min-width: 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
         .input-bar input {
             flex: 1;
@@ -448,119 +279,63 @@
             border: none;
             outline: none;
             color: var(--text);
-            font-size: 0.9rem;
-            padding: 10px 0;
-            min-height: 44px;
-            min-width: 60px;
+            font-size: 0.85rem;
+            padding: 8px 0;
         }
-        .input-bar input::placeholder { opacity: 0.5; }
-
-        .prompt-type-select {
-            appearance: none;
-            -webkit-appearance: none;
-            background: rgba(99, 102, 241, 0.14);
-            border: 1px solid rgba(99, 102, 241, 0.34);
-            border-radius: 999px;
-            color: var(--text);
-            padding: 4px 24px 4px 10px;
-            margin-right: 6px;
-            font-size: 0.6rem;
-            font-weight: 700;
-            outline: none;
-            cursor: pointer;
-            min-height: 30px;
-            background-image: linear-gradient(45deg, transparent 50%, var(--accent) 50%), linear-gradient(135deg, var(--accent) 50%, transparent 50%);
-            background-position: calc(100% - 14px) 50%, calc(100% - 10px) 50%;
-            background-size: 4px 4px, 4px 4px;
-            background-repeat: no-repeat;
-            flex-shrink: 0;
-            width: 90px;
-            max-width: 90px;
-        }
-
         .send-pill {
             background: var(--accent);
             border: none;
             border-radius: 50%;
-            width: 44px;
-            height: 44px;
+            width: 36px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             cursor: pointer;
-            font-size: 1.2rem;
-            transition: 0.2s;
-            flex-shrink: 0;
         }
-        .send-pill:active { transform: scale(0.92); }
-
         .circle-tool {
-            width: 44px;
-            height: 44px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
             background: var(--dock-bg);
             border: 1px solid var(--border);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 1rem;
             color: var(--text);
-            transition: 0.2s;
-            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
-        .circle-tool:active { transform: scale(0.92); }
-        .circle-tool#best-response-btn { color: #10b981; }
-        .circle-tool#ai-consensus-btn { color: #eab308; }
-        .circle-tool#voice-input-btn { color: var(--accent); }
-        .circle-tool#optimize-prompt-btn { color: var(--accent); }
 
-        /* ---------- NOTEPAD ---------- */
+        /* ====== NOTEPAD ====== */
         .floating-notepad {
             position: fixed;
-            top: 10%;
+            top: 15%;
             left: 5%;
             width: 90%;
-            max-width: 90vw;
-            height: 60vh;
-            min-height: 280px;
-            max-height: 80vh;
-            background: var(--card-bg);
+            height: 55vh;
+            background: var(--sidebar-bg);
             border: 1px solid var(--border);
             border-radius: 16px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
             z-index: 9999;
             display: none;
             flex-direction: column;
             overflow: hidden;
-            backdrop-filter: blur(18px);
         }
-        .floating-notepad.is-open { display: flex !important; }
-        .floating-notepad .notepad-header {
-            padding: 12px 16px;
-            background: rgba(99, 102, 241, 0.05);
+        .floating-notepad.is-open { display: flex; }
+        .notepad-header {
+            padding: 12px;
+            background: rgba(128, 128, 128, 0.04);
             border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            flex-shrink: 0;
-            cursor: default;
         }
-        .floating-notepad .notepad-title {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 700;
-            font-size: 0.8rem;
-        }
-        .floating-notepad .notepad-actions {
-            display: flex;
-            gap: 6px;
-        }
-        .floating-notepad .notepad-btn {
+        .notepad-title { font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; gap: 6px; }
+        .notepad-actions { display: flex; gap: 4px; }
+        .notepad-btn {
             background: transparent;
             border: none;
             color: var(--text);
@@ -572,612 +347,1163 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: 0.2s;
         }
-        .floating-notepad .notepad-btn:hover { opacity: 1; background: rgba(255, 255, 255, 0.08); }
-        .floating-notepad .notepad-body {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            min-height: 0;
-        }
-        .floating-notepad .notepad-body textarea {
+        .notepad-body { flex: 1; display: flex; flex-direction: column; }
+        .notepad-body textarea {
             flex: 1;
             background: transparent;
             border: none;
             resize: none;
-            padding: 16px;
+            padding: 12px;
             color: var(--text);
-            font-family: inherit;
             font-size: 0.85rem;
-            line-height: 1.5;
             outline: none;
         }
-        .floating-notepad .notepad-body textarea::placeholder { opacity: 0.4; }
-        .floating-notepad .notepad-footer {
-            padding: 10px 16px;
+        .notepad-footer {
+            padding: 10px;
             border-top: 1px solid var(--border);
             display: flex;
             justify-content: flex-end;
-            gap: 10px;
-            flex-shrink: 0;
+            gap: 8px;
         }
-        .floating-notepad .notepad-action-btn {
-            padding: 8px 14px;
+        .notepad-action-btn {
+            padding: 6px 12px;
             border-radius: 8px;
             font-size: 0.75rem;
             font-weight: 700;
             cursor: pointer;
             border: none;
-            transition: 0.2s;
         }
-        .floating-notepad .notepad-action-btn.clear-btn {
-            background: rgba(239, 68, 68, 0.1);
-            color: #f87171;
-        }
-        .floating-notepad .notepad-action-btn.clear-btn:hover {
-            background: #ef4444;
-            color: white;
-        }
-        .floating-notepad .notepad-action-btn.save-btn {
-            background: var(--accent);
-            color: white;
-        }
-        .floating-notepad .notepad-action-btn.save-btn:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 10px var(--glow);
-        }
-        .floating-notepad.minimized {
-            height: 48px !important;
-            min-height: 48px !important;
-            overflow: hidden !important;
-            width: 160px !important;
-            bottom: 80px !important;
-            top: auto !important;
-            right: 12px !important;
-            left: auto !important;
-        }
-        .floating-notepad.minimized .notepad-body,
-        .floating-notepad.minimized .notepad-footer {
-            display: none !important;
-        }
+        .notepad-action-btn.clear-btn { background: rgba(239,68,68,0.1); color:#ef4444; }
+        .notepad-action-btn.save-btn { background: var(--accent); color: white; }
 
-        /* ---------- OTHER VIEWS ---------- */
-        .scroll-view {
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .page-title {
-            font-size: 1.5rem;
-            font-weight: 800;
-            margin-bottom: 4px;
-        }
-        .page-sub {
-            opacity: 0.6;
-            margin-bottom: 16px;
-            font-size: 0.9rem;
-        }
-
-        .expertise-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+        /* ====== PRESETS VIEW ====== */
+        .expertise-grid { display: flex; flex-direction: column; gap: 10px; }
         .expertise-card {
             background: var(--card-bg);
             border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 16px;
+            border-radius: 12px;
+            padding: 12px;
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
             cursor: pointer;
         }
-        .expertise-card.active { border-color: var(--accent); background: rgba(99, 102, 241, 0.06); }
-        .expertise-card .icon { font-size: 1.4rem; width: 40px; text-align: center; }
-        .expertise-card .info h4 { font-weight: 700; font-size: 0.95rem; }
-        .expertise-card .info p { font-size: 0.75rem; opacity: 0.6; }
+        .expertise-card.active { border-color: var(--accent); background: rgba(99,102,241,0.06); }
+        .expertise-card .icon { font-size: 1.3rem; }
+        .expertise-card .info h4 { font-size: 0.85rem; font-weight: 700; }
+        .expertise-card .info p { font-size: 0.7rem; opacity: 0.6; margin-top: 2px; }
 
-        .history-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
+        /* ====== HISTORY VIEW ====== */
+        .history-list { display: flex; flex-direction: column; gap: 8px; }
         .history-item {
             background: var(--card-bg);
             border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 14px 16px;
+            border-radius: 10px;
+            padding: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .history-item .title { font-weight: 600; }
-        .history-item .date { font-size: 0.7rem; opacity: 0.5; }
-
-        .insights-stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 16px;
+        .history-item .info { display: flex; flex-direction: column; gap: 2px; }
+        .history-item .title { font-size: 0.8rem; font-weight: 600; }
+        .history-item .meta { font-size: 0.65rem; opacity: 0.5; }
+        .history-item-btn {
+            background: transparent;
+            border: none;
+            color: var(--text);
+            opacity: 0.6;
+            cursor: pointer;
+            padding: 6px;
         }
-        .insight-stat {
+
+        /* ====== DEBATE VIEW ====== */
+        .debate-setup {
             background: var(--card-bg);
             border: 1px solid var(--border);
-            border-radius: var(--radius);
+            border-radius: 12px;
             padding: 14px;
-            text-align: center;
-        }
-        .insight-stat .value { font-size: 1.5rem; font-weight: 800; }
-        .insight-stat .label { font-size: 0.7rem; opacity: 0.5; }
-
-        .debate-setup {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 16px;
-            margin-bottom: 16px;
+            gap: 10px;
         }
-        .debate-setup select, .debate-setup input {
-            background: rgba(15, 23, 42, 0.4);
+        .debate-setup input, .debate-setup select {
+            width: 100%;
+            background: rgba(0,0,0,0.3);
             border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 12px;
+            border-radius: 8px;
+            padding: 10px;
             color: var(--text);
             outline: none;
-            font-size: 0.9rem;
-            width: 100%;
+            font-size: 0.8rem;
         }
         .debate-setup button {
             background: var(--accent);
-            border: none;
-            border-radius: 10px;
-            padding: 12px;
             color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
             font-weight: 700;
             cursor: pointer;
         }
         .debate-arena {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: rgba(0,0,0,0.2);
+            padding: 12px;
+            min-height: 180px;
+            max-height: 320px;
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 16px;
-            background: rgba(0, 0, 0, 0.15);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 16px;
-            min-height: 200px;
+            gap: 10px;
+            margin-top: 14px;
         }
-        .debate-bubble {
-            padding: 12px 16px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            max-width: 90%;
-        }
-        .debate-bubble.positive { align-self: flex-start; background: rgba(99, 102, 241, 0.08); border-color: var(--accent); }
-        .debate-bubble.negative { align-self: flex-end; background: rgba(244, 63, 94, 0.08); border-color: #f43f5e; }
+        .debate-bubble { padding: 10px; border-radius: 10px; font-size: 0.8rem; max-width: 85%; }
+        .debate-bubble.proponent { align-self: flex-start; background: rgba(99, 102, 241, 0.08); border: 1px solid var(--accent); }
+        .debate-bubble.opponent { align-self: flex-end; background: rgba(244, 63, 94, 0.08); border: 1px solid #f43f5e; }
 
-        /* ---------- UTILITY ---------- */
+        /* ====== ANALYTICS VIEW ====== */
+        .insights-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .insight-stat {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            text-align: center;
+        }
+        .insight-stat .value { font-size: 1.3rem; font-weight: 800; color: var(--accent); }
+        .insight-stat .label { font-size: 0.65rem; opacity: 0.5; margin-top: 2px; }
+
+        /* ====== UTILITY ====== */
         .hidden { display: none !important; }
-
-        /* ---------- RESPONSIVE TWEAKS ---------- */
-        @media (max-width: 420px) {
-            .input-bar input { font-size: 0.8rem; }
-            .sb-icon, .pf-icon { flex: 0 0 40px; height: 40px; }
-            .sb-icon svg, .pf-icon svg { width: 20px; height: 20px; }
-            .prompt-type-select {
-                width: 70px;
-                max-width: 70px;
-                font-size: 0.55rem;
-                padding: 2px 18px 2px 6px;
-                background-size: 3px 3px, 3px 3px;
-                background-position: calc(100% - 10px) 50%, calc(100% - 7px) 50%;
-            }
-            .circle-tool { width: 30px; height: 30px; font-size: 0.8rem; }
-            .send-pill { width: 30px; height: 30px; }
-        }
     </style>
 </head>
 <body>
 
-<!-- ====== HEADER ====== -->
-<header>
-    <div class="logo">MULTI<span>AI</span></div>
+    <canvas id="app-bg-effects" style="position: fixed; inset: 0; pointer-events: none; z-index: -1;"></canvas>
 
-    <!-- Hamburger toggle -->
-    <button class="hamburger-toggle" id="hamburger-toggle" aria-label="Toggle navigation">
-        <span></span>
-        <span></span>
-        <span></span>
-    </button>
+    <!-- ====== HEADER ====== -->
+    <header>
+        <div class="logo">MULTI<span>AI</span></div>
+        <div class="header-actions">
+            <div class="theme-toggle-container" id="theme-toggle">
+                <div class="bulb" id="theme-bulb"><i class="fa-regular fa-lightbulb"></i></div>
+            </div>
+            <div class="profile-avatar" id="profile-avatar" onclick="switchView('setting')">G</div>
+        </div>
+    </header>
 
-    <ul class="nav-links" id="nav-links">
-        <li class="nav-item" onclick="switchView('workspace')"><span>Workspace</span></li>
-        <li class="nav-item" onclick="switchView('expertise')"><span>Expertise</span></li>
-        <li class="nav-item" onclick="switchView('history')"><span>History</span></li>
-        <li class="nav-item" onclick="switchView('insights')"><span>Insights</span></li>
-        <li class="nav-item" onclick="switchView('debate')"><span>Debate</span></li>
-        <li class="nav-item" onclick="switchView('about-us')"><span>About</span></li>
-        <li class="nav-item" onclick="switchView('setting')"><span>Settings</span></li>
-        <li id="profile-gate" class="nav-item" onclick="window.location.href='profile.html'">
-            <div id="profile-node">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            </div>
-            <span id="user-label">GUEST</span>
-        </li>
-        <li id="logout-btn" onclick="handleLogout()" class="nav-item" style="display: none;">
-            <i class="fa-solid fa-right-from-bracket"></i><span>Log out</span>
-        </li>
-    </ul>
-
-    <div class="header-actions">
-        <div class="theme-toggle-container" id="theme-toggle">
-            <div class="bulb" id="theme-bulb"><span></span><span></span></div>
-        </div>
-        <div class="profile-avatar" id="profile-avatar" onclick="switchView('profile')">G</div>
-    </div>
-</header>
-
-<div class="main-wrapper">
-    <!-- ====== SIDEBAR (becomes bottom nav) ====== -->
-    <aside class="sidebar" id="sidebar">
-        <div class="sb-icon" id="btn-gemini" onclick="toggleAI(0)">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81"/></svg>
-        </div>
-        <div class="sb-icon" id="btn-gpt" onclick="toggleAI(1)">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2.5C8.7 6.9 6 10.2 6 14.1a6 6 0 0 0 12 0c0-3.9-2.7-7.2-6-11.6z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9.1 14.3c.4 1.7 1.5 2.8 3.5 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        </div>
-        <div class="sb-icon" id="btn-grok" onclick="toggleAI(2)">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"/><path d="M15.5 15.5l2.2 2.2M9 12a3 3 0 1 1 6 0a3 3 0 0 1-6 0z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        </div>
-        <div class="sb-icon" id="btn-claude" onclick="toggleAI(3)">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M13.3 2L6 13.2h5.1L10.7 22L18 10.8h-5.1z" fill="currentColor"/></svg>
-        </div>
-        <div class="sb-icon" id="btn-cohere" onclick="toggleAI(4)">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="12" r="4" stroke="currentColor" stroke-width="2"/><circle cx="15" cy="12" r="4" stroke="currentColor" stroke-width="2"/></svg>
-        </div>
-        <!-- Notepad button in bottom nav -->
-        <div class="pf-icon notepad-long-btn" onclick="launchNotepad(event)" title="Notepad">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 16 16"><path fill="currentColor" d="M4.5 2A2.5 2.5 0 0 0 2 4.5v7A2.5 2.5 0 0 0 4.5 14h3.672a2.5 2.5 0 0 0 1.767-.732l3.329-3.329A2.5 2.5 0 0 0 14 8.172V4.5A2.5 2.5 0 0 0 11.5 2zM3 4.5A1.5 1.5 0 0 1 4.5 3h7A1.5 1.5 0 0 1 13 4.5V8h-2.5A2.5 2.5 0 0 0 8 10.5V13H4.5A1.5 1.5 0 0 1 3 11.5zm6 8.25V10.5A1.5 1.5 0 0 1 10.5 9h2.25q-.082.124-.19.232l-3.328 3.329q-.107.106-.232.19"/></svg>
-        </div>
-    </aside>
-
-    <!-- ====== VIEW: WORKSPACE ====== -->
-    <div id="view-workspace" class="view-container active">
-        <div class="workspace">
-            <!-- Cards will be populated by JavaScript -->
-            <div id="intro-overlay" style="text-align:center;padding:40px 20px;opacity:0.7;">
-                <h2 style="color:var(--accent);font-size:1.8rem;">Welcome</h2>
-                <p style="margin-top:10px;line-height:1.6;">Toggle models below, then type a prompt.</p>
-            </div>
-            <!-- AI cards (same IDs as desktop) -->
-            <div class="ai-card hidden" id="card-gemini">
-                <div class="ai-header"><b>Gemini Flash</b></div>
-                <div class="ai-content" id="chat-gemini"><div class="bubble ai">Gemini Flash is ready.</div></div>
-                <div class="card-actions">
-                    <span class="card-telemetry">0 tokens</span>
-                    <button class="action-btn" onclick="copyCardChat(this)"><i class="fa-regular fa-copy"></i></button>
-                    <button class="action-btn" onclick="downloadCardChat(this)"><i class="fa-regular fa-file-lines"></i></button>
-                    <button class="action-btn like-trigger" onclick="likeAIResponse(this)"><i class="fa-regular fa-thumbs-up"></i></button>
-                    <button class="action-btn dislike-trigger" onclick="dislikeAIResponse(this)"><i class="fa-regular fa-thumbs-down"></i></button>
-                </div>
-            </div>
-            <div class="ai-card hidden" id="card-gpt">
-                <div class="ai-header"><b>Liquid LFM</b></div>
-                <div class="ai-content" id="chat-gpt"><div class="bubble ai">Liquid LFM is ready.</div></div>
-                <div class="card-actions">
-                    <span class="card-telemetry">0 tokens</span>
-                    <button class="action-btn" onclick="copyCardChat(this)"><i class="fa-regular fa-copy"></i></button>
-                    <button class="action-btn" onclick="downloadCardChat(this)"><i class="fa-regular fa-file-lines"></i></button>
-                    <button class="action-btn like-trigger" onclick="likeAIResponse(this)"><i class="fa-regular fa-thumbs-up"></i></button>
-                    <button class="action-btn dislike-trigger" onclick="dislikeAIResponse(this)"><i class="fa-regular fa-thumbs-down"></i></button>
-                </div>
-            </div>
-            <div class="ai-card hidden" id="card-grok">
-                <div class="ai-header"><b>Qwen HF</b></div>
-                <div class="ai-content" id="chat-grok"><div class="bubble ai">Qwen HF is ready.</div></div>
-                <div class="card-actions">
-                    <span class="card-telemetry">0 tokens</span>
-                    <button class="action-btn" onclick="copyCardChat(this)"><i class="fa-regular fa-copy"></i></button>
-                    <button class="action-btn" onclick="downloadCardChat(this)"><i class="fa-regular fa-file-lines"></i></button>
-                    <button class="action-btn like-trigger" onclick="likeAIResponse(this)"><i class="fa-regular fa-thumbs-up"></i></button>
-                    <button class="action-btn dislike-trigger" onclick="dislikeAIResponse(this)"><i class="fa-regular fa-thumbs-down"></i></button>
-                </div>
-            </div>
-            <div class="ai-card hidden" id="card-claude">
-                <div class="ai-header"><b>GROQ LLAMA</b></div>
-                <div class="ai-content" id="chat-claude"><div class="bubble ai">Groq is ready.</div></div>
-                <div class="card-actions">
-                    <span class="card-telemetry">0 tokens</span>
-                    <button class="action-btn" onclick="copyCardChat(this)"><i class="fa-regular fa-copy"></i></button>
-                    <button class="action-btn" onclick="downloadCardChat(this)"><i class="fa-regular fa-file-lines"></i></button>
-                    <button class="action-btn like-trigger" onclick="likeAIResponse(this)"><i class="fa-regular fa-thumbs-up"></i></button>
-                    <button class="action-btn dislike-trigger" onclick="dislikeAIResponse(this)"><i class="fa-regular fa-thumbs-down"></i></button>
-                </div>
-            </div>
-            <div class="ai-card hidden" id="card-cohere">
-                <div class="ai-header"><b>COHERE</b></div>
-                <div class="ai-content" id="chat-cohere"><div class="bubble ai">Cohere is ready.</div></div>
-                <div class="card-actions">
-                    <span class="card-telemetry">0 tokens</span>
-                    <button class="action-btn" onclick="copyCardChat(this)"><i class="fa-regular fa-copy"></i></button>
-                    <button class="action-btn" onclick="downloadCardChat(this)"><i class="fa-regular fa-file-lines"></i></button>
-                    <button class="action-btn like-trigger" onclick="likeAIResponse(this)"><i class="fa-regular fa-thumbs-up"></i></button>
-                    <button class="action-btn dislike-trigger" onclick="dislikeAIResponse(this)"><i class="fa-regular fa-thumbs-down"></i></button>
-                </div>
-            </div>
-        </div>
+    <!-- ====== NAVIGATION SWIPER ====== -->
+    <div class="nav-swiper-container">
+        <ul class="nav-swiper" id="nav-swiper">
+            <li class="nav-item active" onclick="switchView('workspace')">Workspace</li>
+            <li class="nav-item" onclick="switchView('expertise')">Expertise</li>
+            <li class="nav-item" onclick="switchView('history')">History</li>
+            <li class="nav-item" onclick="switchView('insights')">Insights</li>
+            <li class="nav-item" onclick="switchView('debate')">Debate</li>
+            <li class="nav-item" onclick="switchView('setting')">Settings</li>
+        </ul>
     </div>
 
-    <!-- ====== OTHER VIEWS (stubs – you can paste full content) ====== -->
-    <div id="view-expertise" class="view-container hidden"><div class="scroll-view"><div class="page-title">Expertise</div><p class="page-sub">Coming soon</p></div></div>
-    <div id="view-history" class="view-container hidden"><div class="scroll-view"><div class="page-title">History</div><p class="page-sub">Coming soon</p></div></div>
-    <div id="view-insights" class="view-container hidden"><div class="scroll-view"><div class="page-title">Insights</div><p class="page-sub">Coming soon</p></div></div>
-    <div id="view-debate" class="view-container hidden"><div class="scroll-view"><div class="page-title">Debate</div><p class="page-sub">Coming soon</p></div></div>
-    <div id="view-setting" class="view-container hidden"><div class="scroll-view"><div class="page-title">Settings</div><p class="page-sub">Coming soon</p></div></div>
-    <div id="view-about-us" class="view-container hidden"><div class="scroll-view"><div class="page-title">About</div><p class="page-sub">MultiAI mobile</p></div></div>
-    <div id="view-profile" class="view-container hidden"><div class="scroll-view"><div class="page-title">Profile</div><p class="page-sub">Guest</p></div></div>
+    <div class="main-wrapper">
+        <!-- ====== VIEW: WORKSPACE ====== -->
+        <div id="view-workspace" class="view-container active">
+            <div class="workspace">
+                <div id="intro-overlay" style="text-align:center;padding:30px 10px;opacity:0.7;">
+                    <h3 style="color:var(--accent);font-size:1.3rem;margin-bottom:6px;">Welcome to MultiAI</h3>
+                    <p style="font-size:0.8rem;line-height:1.4;">Select models below, write a command, and compare their responses side-by-side.</p>
+                </div>
 
-</div>
+                <!-- AI cards -->
+                <div class="ai-card hidden" id="card-gemini">
+                    <div class="ai-header">
+                        <b>Gemini Flash</b>
+                        <span class="card-telemetry">0 tokens</span>
+                    </div>
+                    <div class="ai-content" id="chat-gemini">
+                        <div class="bubble ai">Gemini Flash is ready.</div>
+                    </div>
+                    <div class="card-actions">
+                        <button class="action-btn" onclick="copyCardChat(this)" title="Copy"><i class="fa-regular fa-copy"></i></button>
+                        <button class="action-btn" onclick="downloadCardChat(this)" title="Download"><i class="fa-regular fa-file-lines"></i></button>
+                        <button class="action-btn like-trigger" onclick="likeAIResponse(this)" title="Like"><i class="fa-regular fa-thumbs-up"></i></button>
+                        <button class="action-btn dislike-trigger" onclick="dislikeAIResponse(this)" title="Dislike"><i class="fa-regular fa-thumbs-down"></i></button>
+                    </div>
+                </div>
 
-<!-- ====== FLOATING NOTEPAD ====== -->
-<div id="floating-notepad" class="floating-notepad">
-    <div class="notepad-header" id="notepad-drag-handle">
-        <div class="notepad-title"><i class="fa-regular fa-note-sticky"></i> Scratchpad</div>
-        <div class="notepad-actions">
-            <button class="notepad-btn" onclick="toggleNotepadMinimize()"><i class="fa-regular fa-window-minimize"></i></button>
-            <button class="notepad-btn close-trigger" onclick="closeNotepad()"><i class="fa-regular fa-xmark"></i></button>
+                <div class="ai-card hidden" id="card-gpt">
+                    <div class="ai-header">
+                        <b>Liquid LFM</b>
+                        <span class="card-telemetry">0 tokens</span>
+                    </div>
+                    <div class="ai-content" id="chat-gpt">
+                        <div class="bubble ai">Liquid LFM is ready.</div>
+                    </div>
+                    <div class="card-actions">
+                        <button class="action-btn" onclick="copyCardChat(this)" title="Copy"><i class="fa-regular fa-copy"></i></button>
+                        <button class="action-btn" onclick="downloadCardChat(this)" title="Download"><i class="fa-regular fa-file-lines"></i></button>
+                        <button class="action-btn like-trigger" onclick="likeAIResponse(this)" title="Like"><i class="fa-regular fa-thumbs-up"></i></button>
+                        <button class="action-btn dislike-trigger" onclick="dislikeAIResponse(this)" title="Dislike"><i class="fa-regular fa-thumbs-down"></i></button>
+                    </div>
+                </div>
+
+                <div class="ai-card hidden" id="card-grok">
+                    <div class="ai-header">
+                        <b>Qwen HF</b>
+                        <span class="card-telemetry">0 tokens</span>
+                    </div>
+                    <div class="ai-content" id="chat-grok">
+                        <div class="bubble ai">Qwen HF is ready.</div>
+                    </div>
+                    <div class="card-actions">
+                        <button class="action-btn" onclick="copyCardChat(this)" title="Copy"><i class="fa-regular fa-copy"></i></button>
+                        <button class="action-btn" onclick="downloadCardChat(this)" title="Download"><i class="fa-regular fa-file-lines"></i></button>
+                        <button class="action-btn like-trigger" onclick="likeAIResponse(this)" title="Like"><i class="fa-regular fa-thumbs-up"></i></button>
+                        <button class="action-btn dislike-trigger" onclick="dislikeAIResponse(this)" title="Dislike"><i class="fa-regular fa-thumbs-down"></i></button>
+                    </div>
+                </div>
+
+                <div class="ai-card hidden" id="card-claude">
+                    <div class="ai-header">
+                        <b>GROQ LLAMA</b>
+                        <span class="card-telemetry">0 tokens</span>
+                    </div>
+                    <div class="ai-content" id="chat-claude">
+                        <div class="bubble ai">Groq is ready.</div>
+                    </div>
+                    <div class="card-actions">
+                        <button class="action-btn" onclick="copyCardChat(this)" title="Copy"><i class="fa-regular fa-copy"></i></button>
+                        <button class="action-btn" onclick="downloadCardChat(this)" title="Download"><i class="fa-regular fa-file-lines"></i></button>
+                        <button class="action-btn like-trigger" onclick="likeAIResponse(this)" title="Like"><i class="fa-regular fa-thumbs-up"></i></button>
+                        <button class="action-btn dislike-trigger" onclick="dislikeAIResponse(this)" title="Dislike"><i class="fa-regular fa-thumbs-down"></i></button>
+                    </div>
+                </div>
+
+                <div class="ai-card hidden" id="card-cohere">
+                    <div class="ai-header">
+                        <b>COHERE</b>
+                        <span class="card-telemetry">0 tokens</span>
+                    </div>
+                    <div class="ai-content" id="chat-cohere">
+                        <div class="bubble ai">Cohere is ready.</div>
+                    </div>
+                    <div class="card-actions">
+                        <button class="action-btn" onclick="copyCardChat(this)" title="Copy"><i class="fa-regular fa-copy"></i></button>
+                        <button class="action-btn" onclick="downloadCardChat(this)" title="Download"><i class="fa-regular fa-file-lines"></i></button>
+                        <button class="action-btn like-trigger" onclick="likeAIResponse(this)" title="Like"><i class="fa-regular fa-thumbs-up"></i></button>
+                        <button class="action-btn dislike-trigger" onclick="dislikeAIResponse(this)" title="Dislike"><i class="fa-regular fa-thumbs-down"></i></button>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="notepad-body">
-        <textarea id="notepad-textarea" placeholder="Write your notes here…"></textarea>
-        <div class="notepad-footer">
-            <button class="notepad-action-btn clear-btn" onclick="clearNotepad()">Clear</button>
-            <button class="notepad-action-btn save-btn" onclick="downloadNotepadText()">Download</button>
+
+        <!-- ====== VIEW: EXPERTISE ====== -->
+        <div id="view-expertise" class="view-container hidden">
+            <div class="scroll-view">
+                <div class="page-title">Expertise Presets</div>
+                <p class="page-sub">Configure instructions to guide response flow.</p>
+                <div class="expertise-grid" id="mobile-presets-container">
+                    <!-- Presets will be active here -->
+                </div>
+            </div>
         </div>
-    </div>
-</div>
 
-<!-- ====== SCRIPTS ====== -->
-<script>
-    // ============================================================
-    // CORE MOBILE LOGIC (minimal but functional)
-    // ============================================================
+        <!-- ====== VIEW: HISTORY ====== -->
+        <div id="view-history" class="view-container hidden">
+            <div class="scroll-view">
+                <div class="page-title">Conversation Logs</div>
+                <p class="page-sub">Review and restore past debates and chat logs.</p>
+                <div class="history-list" id="mobile-history-list">
+                    <!-- Loaded dynamically -->
+                </div>
+                <button class="notepad-action-btn clear-btn" onclick="clearAllHistory()" style="margin-top:20px;padding:12px;width:100%;height:44px;">Clear All History</button>
+            </div>
+        </div>
 
-    // ---------- MODEL TOGGLES ----------
-    function toggleAI(index) {
-        const cards = ['card-gemini','card-gpt','card-grok','card-claude','card-cohere'];
-        const btns = ['btn-gemini','btn-gpt','btn-grok','btn-claude','btn-cohere'];
-        const card = document.getElementById(cards[index]);
-        const btn = document.getElementById(btns[index]);
-        if (card && btn) {
-            card.classList.toggle('hidden');
-            btn.classList.toggle('active');
-            // Show intro overlay if no cards active
-            const overlay = document.getElementById('intro-overlay');
-            const anyVisible = document.querySelectorAll('.ai-card:not(.hidden)').length > 0;
-            overlay.style.display = anyVisible ? 'none' : 'block';
-        }
-    }
+        <!-- ====== VIEW: INSIGHTS ====== -->
+        <div id="view-insights" class="view-container hidden">
+            <div class="scroll-view">
+                <div class="page-title">Analytics</div>
+                <p class="page-sub">Feedback preference stats and model usage.</p>
+                <div class="insights-stats">
+                    <div class="insight-stat">
+                        <div class="value" id="stat-total-queries">0</div>
+                        <div class="label">Total Votes Saved</div>
+                    </div>
+                    <div class="insight-stat">
+                        <div class="value" id="stat-favorite-model">-</div>
+                        <div class="label">Top Liked Model</div>
+                    </div>
+                </div>
+                <div style="background:var(--card-bg);padding:14px;border-radius:12px;border:1px solid var(--border);margin-top:10px;">
+                    <h4 style="font-size:0.8rem;margin-bottom:12px;font-weight:700;">Model Preferences</h4>
+                    <canvas id="mobile-insights-chart" style="width:100%;height:200px;"></canvas>
+                </div>
+            </div>
+        </div>
 
-    // ---------- BROADCAST (mock) ----------
-    function broadcast() {
-        const input = document.getElementById('main-in');
-        const text = input.value.trim();
-        if (!text) return;
-        const activeCards = document.querySelectorAll('.ai-card:not(.hidden)');
-        activeCards.forEach(card => {
-            const content = card.querySelector('.ai-content');
-            const userBubble = document.createElement('div');
-            userBubble.className = 'bubble user';
-            userBubble.textContent = text;
-            content.appendChild(userBubble);
-            const aiBubble = document.createElement('div');
-            aiBubble.className = 'bubble ai';
-            aiBubble.textContent = 'Processing…';
-            content.appendChild(aiBubble);
-            // Simulate response
-            setTimeout(() => {
-                aiBubble.textContent = `Mock response to: "${text}"`;
-            }, 800);
-            content.scrollTop = content.scrollHeight;
-        });
-        input.value = '';
-    }
+        <!-- ====== VIEW: DEBATE ====== -->
+        <div id="view-debate" class="view-container hidden">
+            <div class="scroll-view">
+                <div class="page-title">Debate Arena</div>
+                <p class="page-sub">Run automated comparative debates between models.</p>
+                <div class="debate-setup">
+                    <label style="font-size:0.75rem;opacity:0.7;">Debate Subject</label>
+                    <input type="text" id="debate-topic" placeholder="e.g. Is remote work more efficient?">
 
-    // ---------- NOTEPAD ----------
-    function launchNotepad(e) {
-        if (e) e.stopPropagation();
-        const notepad = document.getElementById('floating-notepad');
-        notepad.classList.toggle('is-open');
-        if (notepad.classList.contains('is-open')) {
-            notepad.classList.remove('minimized');
-            document.getElementById('notepad-textarea').focus();
-        }
-    }
-    function closeNotepad() {
-        document.getElementById('floating-notepad').classList.remove('is-open');
-    }
-    function toggleNotepadMinimize() {
-        document.getElementById('floating-notepad').classList.toggle('minimized');
-    }
-    function clearNotepad() {
-        if (confirm('Clear scratchpad?')) {
-            document.getElementById('notepad-textarea').value = '';
-            localStorage.removeItem('workspaceScratchpadText');
-        }
-    }
-    function downloadNotepadText() {
-        const text = document.getElementById('notepad-textarea').value;
-        if (!text) return alert('Empty');
-        const blob = new Blob([text], {type:'text/plain'});
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = 'scratchpad.txt';
-        a.click();
-        URL.revokeObjectURL(a.href);
-    }
+                    <label style="font-size:0.75rem;opacity:0.7;">Model A (Proponent)</label>
+                    <select id="debate-model-a">
+                        <option value="google/gemini-2.5-flash">Gemini Flash</option>
+                        <option value="liquid/lfm-40b">Liquid LFM</option>
+                        <option value="qwen/qwen-2.5-72b-instruct">Qwen HF</option>
+                        <option value="groq/llama-3.3-70b">Groq Llama</option>
+                        <option value="cohere/command-r-plus">Cohere</option>
+                    </select>
 
-    // ---------- VIEW SWITCHING ----------
-    function switchView(view) {
-        document.querySelectorAll('.view-container').forEach(el => el.classList.remove('active'));
-        const target = document.getElementById('view-'+view);
-        if (target) target.classList.add('active');
-        // Close menu
-        document.getElementById('nav-links').classList.remove('open');
-        document.getElementById('hamburger-toggle').classList.remove('open');
-    }
+                    <label style="font-size:0.75rem;opacity:0.7;">Model B (Opponent)</label>
+                    <select id="debate-model-b">
+                        <option value="qwen/qwen-2.5-72b-instruct" selected>Qwen HF</option>
+                        <option value="google/gemini-2.5-flash">Gemini Flash</option>
+                        <option value="liquid/lfm-40b">Liquid LFM</option>
+                        <option value="groq/llama-3.3-70b">Groq Llama</option>
+                        <option value="cohere/command-r-plus">Cohere</option>
+                    </select>
 
-    // ---------- THEME TOGGLE ----------
-    document.getElementById('theme-bulb').addEventListener('click', function() {
-        const isLight = document.body.classList.contains('light-mode');
-        const nextTheme = isLight ? 'midnight' : 'light';
-        document.body.classList.toggle('light-mode', nextTheme === 'light');
-        localStorage.setItem('themeName', nextTheme);
-        localStorage.setItem('theme', nextTheme === 'light' ? 'light' : 'dark');
-    });
-    const savedMobileTheme = localStorage.getItem('themeName') || localStorage.getItem('theme') || 'midnight';
-    if (savedMobileTheme === 'light') {
-        document.body.classList.add('light-mode');
-    } else {
-        document.body.classList.remove('light-mode');
-    }
+                    <label style="font-size:0.75rem;opacity:0.7;">Debate Rounds</label>
+                    <select id="debate-rounds">
+                        <option value="1">1 Round</option>
+                        <option value="2" selected>2 Rounds</option>
+                        <option value="3">3 Rounds</option>
+                    </select>
 
-    // ---------- HAMBURGER TOGGLE ----------
-    document.getElementById('hamburger-toggle').addEventListener('click', function(e) {
-        e.stopPropagation();
-        this.classList.toggle('open');
-        document.getElementById('nav-links').classList.toggle('open');
-    });
-    document.addEventListener('click', function(e) {
-        const nav = document.getElementById('nav-links');
-        const hamburger = document.getElementById('hamburger-toggle');
-        if (!nav.contains(e.target) && !hamburger.contains(e.target)) {
-            nav.classList.remove('open');
-            hamburger.classList.remove('open');
-        }
-    });
+                    <button type="button" onclick="startDebateProcess()">Start Debate Match</button>
+                </div>
 
-    // ---------- INPUT BAR ----------
-    // We need to create the input bar dynamically because it's not in the HTML
-    // Let's inject it now
-    (function createInputBar() {
-        const dock = document.createElement('div');
-        dock.className = 'dock-area';
-        dock.id = 'dock-area';
-        dock.innerHTML = `
-            <div class="circle-tool" id="best-response-btn" onclick="selectBestResponse()" title="Best Response"><i class="fa-solid fa-star" style="color:#10b981;"></i></div>
-            <div class="circle-tool" id="optimize-prompt-btn" onclick="optimizePrompt()" title="Optimize"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
-            <div class="input-bar">
+                <div class="debate-arena hidden" id="mobile-debate-arena"></div>
+
+                <div class="consensus-card hidden" id="mobile-debate-summary-card" style="background:var(--card-bg);padding:14px;border-radius:12px;border:1px solid var(--border);margin-top:14px;">
+                    <h4 style="color:var(--accent);font-size:0.8rem;margin-bottom:6px;font-weight:700;">Debate Verdict Summary</h4>
+                    <div id="mobile-debate-summary-text" style="font-size:0.75rem;line-height:1.5;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====== VIEW: SETTINGS ====== -->
+        <div id="view-setting" class="view-container hidden">
+            <div class="scroll-view">
+                <div class="page-title">Settings & Keys</div>
+                <p class="page-sub">Configure secure credentials and clear session files.</p>
                 
+                <div style="background:var(--card-bg);padding:16px;border-radius:12px;border:1px solid var(--border);display:flex;flex-direction:column;gap:12px;">
+                    <h4 style="font-size:0.8rem;font-weight:700;">Secure BYOK Keys</h4>
+                    <div>
+                        <label style="font-size:0.7rem;opacity:0.7;">Gemini API Key</label>
+                        <input type="password" id="byok-gemini" placeholder="Enter key..." style="width:100%;margin-top:4px;padding:10px;border-radius:8px;background:rgba(0,0,0,0.3);border:1px solid var(--border);color:#fff;outline:none;">
+                    </div>
+                    <div>
+                        <label style="font-size:0.7rem;opacity:0.7;">OpenRouter Key</label>
+                        <input type="password" id="byok-openrouter" placeholder="Enter key..." style="width:100%;margin-top:4px;padding:10px;border-radius:8px;background:rgba(0,0,0,0.3);border:1px solid var(--border);color:#fff;outline:none;">
+                    </div>
+                    <div>
+                        <label style="font-size:0.7rem;opacity:0.7;">Groq API Key</label>
+                        <input type="password" id="byok-groq" placeholder="Enter key..." style="width:100%;margin-top:4px;padding:10px;border-radius:8px;background:rgba(0,0,0,0.3);border:1px solid var(--border);color:#fff;outline:none;">
+                    </div>
+                    <button class="notepad-action-btn save-btn" onclick="saveBYOKKeys()" style="width:100%;height:38px;padding:0;margin-top:6px;">Save Secure Keys</button>
+                </div>
+
+                <div style="background:var(--card-bg);padding:16px;border-radius:12px;border:1px solid var(--border);display:flex;flex-direction:column;gap:12px;margin-top:12px;">
+                    <h4 style="font-size:0.8rem;font-weight:700;">Account Actions</h4>
+                    <button class="notepad-action-btn clear-btn" onclick="handleLogout()" style="width:100%;height:38px;padding:0;">Log Out Session</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====== FLOATING INPUT AREA ====== -->
+        <div class="dock-area" id="mobile-dock-area">
+            <button class="circle-tool" onclick="selectBestResponse()" title="Best Response"><i class="fa-solid fa-star" style="color:#10b981;"></i></button>
+            <button class="circle-tool" onclick="optimizePrompt()" title="Optimize"><i class="fa-solid fa-wand-magic-sparkles" style="color:#a855f7;"></i></button>
+            <div class="input-bar">
                 <input type="text" id="main-in" placeholder="Command the system..." onkeypress="if(event.key==='Enter') broadcast()">
                 <div class="send-pill" onclick="broadcast()"><i class="fa-solid fa-paper-plane"></i></div>
             </div>
-            <div class="circle-tool" id="voice-input-btn" onclick="startVoiceRecognition()" title="Voice"><i class="fa-solid fa-microphone"></i></div>
-            <div class="circle-tool" id="ai-consensus-btn" onclick="generateConsensus()" title="Consensus"><i class="fa-solid fa-brain" style="color:#eab308;"></i></div>
-        `;
-        document.body.appendChild(dock);
-    })();
+            <button class="circle-tool" onclick="startVoiceRecognition()" title="Voice"><i class="fa-solid fa-microphone" style="color:#ef4444;"></i></button>
+            <button class="circle-tool" onclick="generateConsensus()" title="Consensus"><i class="fa-solid fa-brain" style="color:#eab308;"></i></button>
+        </div>
+    </div>
 
-    // Stub functions for buttons
-    function selectBestResponse() { alert('Best response (mock)'); }
-    function optimizePrompt() { alert('Optimize prompt (mock)'); }
-    function startVoiceRecognition() { alert('Voice input (mock)'); }
-    function generateConsensus() { alert('Consensus (mock)'); }
-    function handleLogout() {
-        if (confirm("Log Out of this Session?")) {
-            localStorage.setItem('isLoggedIn', 'false');
-            localStorage.setItem('neuralUser', 'Guest');
-            localStorage.setItem('neuralEmail', 'guest@multiai.system');
-            localStorage.removeItem('token');
-            localStorage.removeItem('modelLikes');
-            localStorage.removeItem('modelDislikes');
-            localStorage.removeItem('responseVotes');
+    <!-- ====== SIDEBAR BOTTOM NAVIGATION ====== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sb-icon" id="btn-gemini" onclick="toggleAI(0)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81"/></svg>
+        </div>
+        <div class="sb-icon" id="btn-gpt" onclick="toggleAI(1)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2.5C8.7 6.9 6 10.2 6 14.1a6 6 0 0 0 12 0c0-3.9-2.7-7.2-6-11.6z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9.1 14.3c.4 1.7 1.5 2.8 3.5 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <div class="sb-icon" id="btn-grok" onclick="toggleAI(2)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"/><path d="M15.5 15.5l2.2 2.2M9 12a3 3 0 1 1 6 0a3 3 0 0 1-6 0z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <div class="sb-icon" id="btn-claude" onclick="toggleAI(3)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M13.3 2L6 13.2h5.1L10.7 22L18 10.8h-5.1z" fill="currentColor"/></svg>
+        </div>
+        <div class="sb-icon" id="btn-cohere" onclick="toggleAI(4)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="12" r="4" stroke="currentColor" stroke-width="2"/><circle cx="15" cy="12" r="4" stroke="currentColor" stroke-width="2"/></svg>
+        </div>
+        <div class="pf-icon" onclick="launchNotepad(event)" title="Notepad">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 16 16"><path fill="currentColor" d="M4.5 2A2.5 2.5 0 0 0 2 4.5v7A2.5 2.5 0 0 0 4.5 14h3.672a2.5 2.5 0 0 0 1.767-.732l3.329-3.329A2.5 2.5 0 0 0 14 8.172V4.5A2.5 2.5 0 0 0 11.5 2zM3 4.5A1.5 1.5 0 0 1 4.5 3h7A1.5 1.5 0 0 1 13 4.5V8h-2.5A2.5 2.5 0 0 0 8 10.5V13H4.5A1.5 1.5 0 0 1 3 11.5zm6 8.25V10.5A1.5 1.5 0 0 1 10.5 9h2.25q-.082.124-.19.232l-3.328 3.329q-.107.106-.232.19"/></svg>
+        </div>
+    </aside>
+
+    <!-- ====== FLOATING NOTEPAD ====== -->
+    <div id="floating-notepad" class="floating-notepad">
+        <div class="notepad-header">
+            <div class="notepad-title"><i class="fa-regular fa-note-sticky"></i> Mobile Scratchpad</div>
+            <div class="notepad-actions">
+                <button class="notepad-btn" onclick="closeNotepad()"><i class="fa-regular fa-xmark"></i></button>
+            </div>
+        </div>
+        <div class="notepad-body">
+            <textarea id="notepad-textarea" placeholder="Write mobile notes here..."></textarea>
+            <div class="notepad-footer">
+                <button class="notepad-action-btn clear-btn" onclick="clearNotepad()">Clear</button>
+                <button class="notepad-action-btn save-btn" onclick="downloadNotepadText()">Download</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== SCRIPTS ====== -->
+    <script>
+        // Check session auth immediately
+        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+        if (!isLoggedIn) {
             window.location.href = 'login.html';
         }
-    }
 
-    // ---------- INIT: show all cards by default on first load ----------
-    document.addEventListener('DOMContentLoaded', function() {
-        // Activate all models by default
-        for (let i=0; i<5; i++) {
-            const card = document.querySelectorAll('.ai-card')[i];
-            if (card) card.classList.remove('hidden');
-            const btn = document.querySelectorAll('.sb-icon')[i];
-            if (btn) btn.classList.add('active');
+        // Setup background canvas
+        (function initCanvas() {
+            const canvas = document.getElementById('app-bg-effects');
+            const ctx = canvas.getContext('2d');
+            let width = canvas.width = window.innerWidth;
+            let height = canvas.height = window.innerHeight;
+
+            const particles = [];
+            for (let i = 0; i < 20; i++) {
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    vx: (Math.random() - 0.5) * 0.4,
+                    vy: (Math.random() - 0.5) * 0.4,
+                    r: Math.random() * 40 + 20
+                });
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, width, height);
+                ctx.fillStyle = document.body.classList.contains('light-mode') 
+                    ? 'rgba(0, 153, 204, 0.02)' 
+                    : 'rgba(99, 102, 241, 0.02)';
+                
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    if (p.x < -p.r) p.x = width + p.r;
+                    if (p.x > width + p.r) p.x = -p.r;
+                    if (p.y < -p.r) p.y = height + p.r;
+                    if (p.y > height + p.r) p.y = -p.r;
+
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+                requestAnimationFrame(draw);
+            }
+            draw();
+
+            window.addEventListener('resize', () => {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            });
+        })();
+
+        // Global states
+        const modelsConfig = [
+            { name: 'Gemini Flash', card: 'card-gemini', id: 'chat-gemini', key: 'google/gemini-2.5-flash' },
+            { name: 'Liquid LFM', card: 'card-gpt', id: 'chat-gpt', key: 'liquid/lfm-40b' },
+            { name: 'Qwen HF', card: 'card-grok', id: 'chat-grok', key: 'qwen/qwen-2.5-72b-instruct' },
+            { name: 'Groq', card: 'card-claude', id: 'chat-claude', key: 'groq/llama-3.3-70b' },
+            { name: 'Cohere', card: 'card-cohere', id: 'chat-cohere', key: 'cohere/command-r-plus' }
+        ];
+
+        let activePreset = localStorage.getItem('activeExpertise') || 'Neutral';
+        let feedbackChart = null;
+
+        // Header and loading
+        const userName = localStorage.getItem('neuralUser') || 'Guest';
+        document.getElementById('profile-avatar').textContent = userName.charAt(0).toUpperCase();
+
+        // Safe auth token
+        function getAuthHeaders() {
+            const token = localStorage.getItem('token');
+            return token ? { Authorization: `Bearer ${token}` } : {};
         }
-        document.getElementById('intro-overlay').style.display = 'none';
-        // Load saved notepad text
-        const saved = localStorage.getItem('workspaceScratchpadText');
-        if (saved) document.getElementById('notepad-textarea').value = saved;
-        document.getElementById('notepad-textarea').addEventListener('input', function() {
-            localStorage.setItem('workspaceScratchpadText', this.value);
+
+        function getFeedbackClientId() {
+            let cid = localStorage.getItem('feedbackClientId');
+            if(!cid) {
+                cid = 'mb-' + Math.random().toString(36).substring(2, 11);
+                localStorage.setItem('feedbackClientId', cid);
+            }
+            return cid;
+        }
+
+        // Toggle model activation
+        function toggleAI(index) {
+            const config = modelsConfig[index];
+            if (!config) return;
+            
+            const card = document.getElementById(config.card);
+            const btn = document.querySelectorAll('.sidebar .sb-icon')[index];
+            if (card && btn) {
+                card.classList.toggle('hidden');
+                btn.classList.toggle('active');
+                
+                const overlay = document.getElementById('intro-overlay');
+                const anyActive = document.querySelectorAll('.ai-card:not(.hidden)').length > 0;
+                overlay.style.display = anyActive ? 'none' : 'block';
+            }
+        }
+
+        // Switch screen view
+        function switchView(viewName) {
+            document.querySelectorAll('.view-container').forEach(el => el.classList.remove('active'));
+            const target = document.getElementById('view-' + viewName);
+            if (target) target.classList.add('active');
+
+            // Swiper active highlight
+            document.querySelectorAll('.nav-swiper .nav-item').forEach(item => {
+                const targetText = item.textContent.toLowerCase();
+                item.classList.toggle('active', targetText === viewName || (viewName==='setting' && targetText==='settings'));
+            });
+
+            // Hide/Show input bar based on view
+            const inputDock = document.getElementById('mobile-dock-area');
+            if (viewName === 'workspace') {
+                inputDock.style.display = 'flex';
+            } else {
+                inputDock.style.display = 'none';
+            }
+
+            // View-specific loaders
+            if (viewName === 'expertise') {
+                renderExpertiseGrid();
+            } else if (viewName === 'history') {
+                loadHistory();
+            } else if (viewName === 'insights') {
+                loadInsights();
+            }
+        }
+
+        // Send prompt to active backend models
+        async function broadcast() {
+            const input = document.getElementById('main-in');
+            const prompt = input.value.trim();
+            if (!prompt) return;
+
+            const activeTargets = modelsConfig.filter(cfg => {
+                const card = document.getElementById(cfg.card);
+                return card && !card.classList.contains('hidden');
+            });
+
+            if (activeTargets.length === 0) {
+                alert("Please activate at least one model from the bottom dock.");
+                return;
+            }
+
+            // Clear old best highlights
+            document.querySelectorAll('.ai-card').forEach(c => {
+                c.style.borderColor = 'var(--border)';
+            });
+
+            // Append user queries and loading status
+            activeTargets.forEach(cfg => {
+                const chatArea = document.getElementById(cfg.id);
+                
+                const uBubble = document.createElement('div');
+                uBubble.className = 'bubble user';
+                uBubble.textContent = prompt;
+                chatArea.appendChild(uBubble);
+
+                const aiBubble = document.createElement('div');
+                aiBubble.className = 'bubble ai';
+                aiBubble.textContent = 'Processing...';
+                chatArea.appendChild(aiBubble);
+
+                chatArea.scrollTop = chatArea.scrollHeight;
+            });
+
+            input.value = '';
+
+            // Handle system instruction preset
+            let systemInstruction = '';
+            if (activePreset !== 'Neutral') {
+                const prebuilts = {
+                    'Code Architect': 'Act as a world-class Code Architect. Provide highly optimized, cleanly structured, documented, and secure code.',
+                    'Creative Writer': 'Act as an award-winning Creative Writer. Write with high-quality prose, expressive language, and structural flow.',
+                    'Bug Finder & QA': 'Act as an expert QA Engineer and Bug Finder. Scan user query/code for edge-case errors, race conditions, or smell errors.',
+                    'UX/UI Critic': 'Act as a seasoned UX/UI Design Critic. Evaluate from a user experience standpoint.',
+                    'Academic Scholar': 'Act as an Academic Scholar. Answer with rigorous analysis, objective logic, and a neutral scholar tone.'
+                };
+                systemInstruction = prebuilts[activePreset] || '';
+            }
+
+            let finalPrompt = prompt;
+            if (systemInstruction) {
+                finalPrompt = `[System Instructions: ${systemInstruction}]\n\n${prompt}`;
+            }
+
+            try {
+                const payload = {
+                    clientId: getFeedbackClientId(),
+                    prompt: finalPrompt,
+                    models: activeTargets.map(cfg => cfg.key),
+                    customKeys: getCustomKeysPayload()
+                };
+
+                const res = await fetch('/api/ai/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) throw new Error("Backend server response failed");
+                const data = await res.json();
+
+                const responsesByModel = new Map((data.responses || []).map(item => [item.model, item.response]));
+
+                activeTargets.forEach(cfg => {
+                    const chatArea = document.getElementById(cfg.id);
+                    const lastBubble = chatArea.querySelector('.bubble.ai:last-child');
+                    const textAnswer = responsesByModel.get(cfg.key) || "Model unavailable or timed out.";
+                    
+                    if (lastBubble) {
+                        typewriteText(lastBubble, textAnswer);
+                    }
+                    
+                    // Update telemetry
+                    const tokenBadge = document.querySelector(`#${cfg.card} .card-telemetry`);
+                    if (tokenBadge) {
+                        tokenBadge.textContent = `${Math.round(textAnswer.length / 4)} tokens`;
+                    }
+                });
+
+            } catch (err) {
+                console.error("Chat error:", err);
+                activeTargets.forEach(cfg => {
+                    const chatArea = document.getElementById(cfg.id);
+                    const lastBubble = chatArea.querySelector('.bubble.ai:last-child');
+                    if (lastBubble) lastBubble.textContent = "Unable to connect to service.";
+                });
+            }
+        }
+
+        function typewriteText(element, text) {
+            element.textContent = '';
+            let idx = 0;
+            const interval = setInterval(() => {
+                if (idx < text.length) {
+                    element.textContent += text.charAt(idx);
+                    idx++;
+                } else {
+                    clearInterval(interval);
+                    const chatArea = element.closest('.ai-content');
+                    if (chatArea) chatArea.scrollTop = chatArea.scrollHeight;
+                }
+            }, 6);
+        }
+
+        // Best Response
+        async function selectBestResponse() {
+            const activeTargets = modelsConfig.filter(cfg => {
+                const card = document.getElementById(cfg.card);
+                return card && !card.classList.contains('hidden');
+            });
+
+            if (activeTargets.length < 2) {
+                alert("Need at least two active models to run comparisons.");
+                return;
+            }
+
+            const candidates = [];
+            activeTargets.forEach(cfg => {
+                const chatArea = document.getElementById(cfg.id);
+                const lastAi = chatArea.querySelector('.bubble.ai:last-child');
+                if (lastAi && lastAi.textContent && lastAi.textContent !== 'Processing...') {
+                    candidates.push({ model: cfg.key, response: lastAi.textContent, cardId: cfg.card });
+                }
+            });
+
+            if (candidates.length < 2) {
+                alert("Ensure models have completed answering first.");
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/ai/best-response', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+                    body: JSON.stringify({
+                        prompt: "Select the most comprehensive answer",
+                        candidates,
+                        customKeys: getCustomKeysPayload()
+                    })
+                });
+
+                const data = await res.json();
+                if (data.success && data.bestModel) {
+                    const winCfg = modelsConfig.find(c => c.key === data.bestModel);
+                    if (winCfg) {
+                        const winCard = document.getElementById(winCfg.card);
+                        if (winCard) {
+                            winCard.style.borderColor = '#10b981';
+                            alert(`Automated Judge selected: ${winCfg.name}\nReason: ${data.explanation || 'Higher response consistency.'}`);
+                        }
+                    }
+                } else {
+                    alert("Unable to reach best response service. Defaulting to first candidate.");
+                }
+            } catch (err) {
+                alert("Failed to analyze responses.");
+            }
+        }
+
+        // Optimize Prompt
+        async function optimizePrompt() {
+            const input = document.getElementById('main-in');
+            const text = input.value.trim();
+            if (!text) return alert("Write a prompt first.");
+
+            try {
+                const res = await fetch('/api/ai/optimize', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+                    body: JSON.stringify({
+                        prompt: text,
+                        customKeys: getCustomKeysPayload()
+                    })
+                });
+                const data = await res.json();
+                if (data.success && data.optimizedPrompt) {
+                    input.value = data.optimizedPrompt;
+                } else {
+                    alert("Failed to optimize. System returned fallback response.");
+                }
+            } catch (err) {
+                alert("Prompt optimizer service offline.");
+            }
+        }
+
+        // AI Consensus
+        async function generateConsensus() {
+            const activeTargets = modelsConfig.filter(cfg => {
+                const card = document.getElementById(cfg.card);
+                return card && !card.classList.contains('hidden');
+            });
+
+            const responses = [];
+            activeTargets.forEach(cfg => {
+                const chatArea = document.getElementById(cfg.id);
+                const lastAi = chatArea.querySelector('.bubble.ai:last-child');
+                if (lastAi && lastAi.textContent && lastAi.textContent !== 'Processing...') {
+                    responses.push({ model: cfg.name, response: lastAi.textContent });
+                }
+            });
+
+            if (responses.length < 2) {
+                return alert("Ask at least two active models a question first.");
+            }
+
+            try {
+                const res = await fetch('/api/ai/consensus', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+                    body: JSON.stringify({
+                        responses,
+                        customKeys: getCustomKeysPayload()
+                    })
+                });
+                const data = await res.json();
+                if (data.success && data.consensus) {
+                    // Inject consensus bubble into all chats
+                    activeTargets.forEach(cfg => {
+                        const chatArea = document.getElementById(cfg.id);
+                        const cBubble = document.createElement('div');
+                        cBubble.className = 'bubble ai';
+                        cBubble.style.border = '1px dashed #eab308';
+                        cBubble.innerHTML = `<b>🧠 Workspace Consensus:</b><br>${data.consensus}`;
+                        chatArea.appendChild(cBubble);
+                        chatArea.scrollTop = chatArea.scrollHeight;
+                    });
+                }
+            } catch (err) {
+                alert("Failed to synthesize consensus.");
+            }
+        }
+
+        // Debate Process
+        async function startDebateProcess() {
+            const topic = document.getElementById('debate-topic').value.trim();
+            const modelA = document.getElementById('debate-model-a').value;
+            const modelB = document.getElementById('debate-model-b').value;
+            const rounds = parseInt(document.getElementById('debate-rounds').value, 10);
+
+            if (!topic) return alert("Write a debate subject topic first.");
+
+            const arena = document.getElementById('mobile-debate-arena');
+            arena.classList.remove('hidden');
+            arena.innerHTML = '<div style="text-align:center;padding:12px;opacity:0.6;">Arena match starting...</div>';
+
+            try {
+                const res = await fetch('/api/ai/debate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+                    body: JSON.stringify({
+                        topic,
+                        modelA,
+                        modelB,
+                        rounds,
+                        customKeys: getCustomKeysPayload()
+                    })
+                });
+
+                const data = await res.json();
+                arena.innerHTML = '';
+
+                if (data.success && data.transcript) {
+                    data.transcript.forEach((step, index) => {
+                        const isA = String(step.model).includes(modelA.split('/')[1]) || index % 2 === 0;
+                        const bubble = document.createElement('div');
+                        bubble.className = `debate-bubble ${isA ? 'proponent' : 'opponent'}`;
+                        bubble.innerHTML = `<b>${isA ? 'Proponent' : 'Opponent'} (${step.model}):</b><br>${step.text}`;
+                        arena.appendChild(bubble);
+                    });
+                    
+                    // Show summary
+                    if (data.summary) {
+                        const sumCard = document.getElementById('mobile-debate-summary-card');
+                        const sumText = document.getElementById('mobile-debate-summary-text');
+                        sumCard.classList.remove('hidden');
+                        sumText.innerHTML = data.summary.replace(/\n/g, '<br>');
+                    }
+                }
+            } catch (err) {
+                arena.innerHTML = '<div style="color:#ef4444;text-align:center;padding:12px;">Failed to complete debate session.</div>';
+            }
+        }
+
+        // Voice speech logic
+        function startVoiceRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) return alert("Speech recognition not supported on this browser.");
+
+            const rec = new SpeechRecognition();
+            rec.lang = 'en-US';
+            rec.start();
+
+            const input = document.getElementById('main-in');
+            const micBtn = document.querySelector('.circle-tool[onclick="startVoiceRecognition()"]');
+            micBtn.style.color = '#ef4444';
+
+            rec.onresult = function(e) {
+                input.value = e.results[0][0].transcript;
+            };
+
+            rec.onend = function() {
+                micBtn.style.color = 'var(--text)';
+            };
+        }
+
+        // Custom API Keys payload helper
+        function getCustomKeysPayload() {
+            return {
+                GEMINI_API_KEY: document.getElementById('byok-gemini').value.trim() || undefined,
+                OPENROUTER_API_KEY: document.getElementById('byok-openrouter').value.trim() || undefined,
+                GROQ_API_KEY: document.getElementById('byok-groq').value.trim() || undefined
+            };
+        }
+
+        function saveBYOKKeys() {
+            const keys = getCustomKeysPayload();
+            localStorage.setItem('byok-keys', JSON.stringify(keys));
+            alert("BYOK Keys saved securely in browser storage.");
+        }
+
+        // Load settings saved keys
+        function loadBYOKKeys() {
+            const keysRaw = localStorage.getItem('byok-keys');
+            if (keysRaw) {
+                const keys = JSON.parse(keysRaw);
+                document.getElementById('byok-gemini').value = keys.GEMINI_API_KEY || '';
+                document.getElementById('byok-openrouter').value = keys.OPENROUTER_API_KEY || '';
+                document.getElementById('byok-groq').value = keys.GROQ_API_KEY || '';
+            }
+        }
+
+        // Presets view render
+        function renderExpertiseGrid() {
+            const container = document.getElementById('mobile-presets-container');
+            const presets = [
+                { name: 'Neutral', icon: '🌍', desc: 'Standard response flow without guidelines.' },
+                { name: 'Code Architect', icon: '💻', desc: 'Write optimized, secure, and clean code preset.' },
+                { name: 'Creative Writer', icon: '✍️', desc: 'Expressive Hooks, Vivid Imagery and Prose presets.' },
+                { name: 'Bug Finder & QA', icon: '🔍', desc: 'Examine code vulnerabilities and QA validation preset.' },
+                { name: 'UX/UI Critic', icon: '🎨', desc: 'Design review and accessibility hierarchy presetting.' },
+                { name: 'Academic Scholar', icon: '📖', desc: 'Objective scholarship presets, logical data tables.' }
+            ];
+
+            container.innerHTML = '';
+            presets.forEach(p => {
+                const card = document.createElement('div');
+                card.className = `expertise-card ${activePreset === p.name ? 'active' : ''}`;
+                card.onclick = function() {
+                    activePreset = p.name;
+                    localStorage.setItem('activeExpertise', p.name);
+                    renderExpertiseGrid();
+                };
+                card.innerHTML = `
+                    <div class="icon">${p.icon}</div>
+                    <div class="info">
+                        <h4>${p.name}</h4>
+                        <p>${p.desc}</p>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // History Loader
+        async function loadHistory() {
+            const list = document.getElementById('mobile-history-list');
+            list.innerHTML = '<div style="text-align:center;padding:12px;opacity:0.6;">Loading history logs...</div>';
+
+            try {
+                const res = await fetch('/api/workspace/history', {
+                    headers: getAuthHeaders()
+                });
+                const data = await res.json();
+                list.innerHTML = '';
+
+                if (data.success && data.conversations && data.conversations.length > 0) {
+                    data.conversations.forEach(c => {
+                        const item = document.createElement('div');
+                        item.className = 'history-item';
+                        item.innerHTML = `
+                            <div class="info">
+                                <span class="title">${c.title || 'Untitled Chat'}</span>
+                                <span class="meta">${new Date(c.timestamp).toLocaleDateString()}</span>
+                            </div>
+                            <button class="history-item-btn" onclick="restoreChat('${c.localId || c.id}')"><i class="fa-solid fa-cloud-arrow-down" style="color:var(--accent);"></i></button>
+                        `;
+                        list.appendChild(item);
+                    });
+                } else {
+                    list.innerHTML = '<div style="text-align:center;padding:12px;opacity:0.6;">No sync database logs found.</div>';
+                }
+            } catch (err) {
+                list.innerHTML = '<div style="text-align:center;padding:12px;opacity:0.6;">History offline.</div>';
+            }
+        }
+
+        // Insights preference stats pulling
+        async function loadInsights() {
+            try {
+                const res = await fetch(`/api/feedback/stats?clientId=${encodeURIComponent(getFeedbackClientId())}`);
+                const stats = await res.json();
+
+                if (stats.success) {
+                    // Update stats panel
+                    let total = 0;
+                    let topLiked = '-';
+                    let maxLikes = -1;
+
+                    const labels = [];
+                    const likesData = [];
+                    const dislikesData = [];
+
+                    for (const [model, counts] of Object.entries(stats.data || {})) {
+                        labels.push(model.split('/').pop() || model);
+                        likesData.push(counts.likes || 0);
+                        dislikesData.push(counts.dislikes || 0);
+                        total += (counts.likes || 0) + (counts.dislikes || 0);
+
+                        if ((counts.likes || 0) > maxLikes) {
+                            maxLikes = counts.likes || 0;
+                            topLiked = model.split('/').pop() || model;
+                        }
+                    }
+
+                    document.getElementById('stat-total-queries').textContent = total;
+                    document.getElementById('stat-favorite-model').textContent = topLiked;
+
+                    // Render chart
+                    renderPreferencesChart(labels, likesData, dislikesData);
+                }
+            } catch (err) {
+                console.error("Failed to load analytics:", err);
+            }
+        }
+
+        function renderPreferencesChart(labels, likes, dislikes) {
+            const ctx = document.getElementById('mobile-insights-chart').getContext('2d');
+            if (feedbackChart) {
+                feedbackChart.destroy();
+            }
+
+            feedbackChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels,
+                    datasets: [
+                        { label: 'Likes', data: likes, backgroundColor: '#10b981' },
+                        { label: 'Dislikes', data: dislikes, backgroundColor: '#ef4444' }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        // Notepad controls
+        function launchNotepad(e) {
+            if (e) e.stopPropagation();
+            document.getElementById('floating-notepad').classList.add('is-open');
+            document.getElementById('notepad-textarea').focus();
+        }
+        function closeNotepad() {
+            document.getElementById('floating-notepad').classList.remove('is-open');
+        }
+        function clearNotepad() {
+            if (confirm("Clear mobile notes?")) {
+                document.getElementById('notepad-textarea').value = '';
+                localStorage.removeItem('mobile_notepad_text');
+            }
+        }
+        function downloadNotepadText() {
+            const val = document.getElementById('notepad-textarea').value;
+            if(!val) return alert("Write notes first.");
+            const blob = new Blob([val], { type: 'text/plain' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'mobile-scratchpad.txt';
+            a.click();
+        }
+
+        // Likes / dislikes
+        function likeAIResponse(btn) {
+            btn.classList.toggle('active');
+            const parent = btn.closest('.card-actions');
+            parent.querySelector('.dislike-trigger')?.classList.remove('active');
+            submitVote(btn, 'like');
+        }
+        function dislikeAIResponse(btn) {
+            btn.classList.toggle('active');
+            const parent = btn.closest('.card-actions');
+            parent.querySelector('.like-trigger')?.classList.remove('active');
+            submitVote(btn, 'dislike');
+        }
+
+        async function submitVote(btn, type) {
+            const card = btn.closest('.ai-card');
+            const cfg = modelsConfig.find(c => c.card === card.id);
+            if (!cfg) return;
+
+            const chat = document.getElementById(cfg.id);
+            const lastAi = chat.querySelector('.bubble.ai:last-child');
+            if (!lastAi) return;
+
+            try {
+                await fetch('/api/feedback/vote', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+                    body: JSON.stringify({
+                        clientId: getFeedbackClientId(),
+                        model: cfg.key,
+                        prompt: "Mobile request",
+                        response: lastAi.textContent,
+                        vote: type
+                    })
+                });
+            } catch (err) {
+                console.warn("Failed to sync vote to DB");
+            }
+        }
+
+        // Theme Toggle Sync
+        document.getElementById('theme-bulb').addEventListener('click', function() {
+            const isLight = document.body.classList.contains('light-mode');
+            const nextTheme = isLight ? 'midnight' : 'light';
+            document.body.classList.toggle('light-mode', nextTheme === 'light');
+            localStorage.setItem('themeName', nextTheme);
+            localStorage.setItem('theme', nextTheme === 'light' ? 'light' : 'dark');
         });
-        // Set profile avatar
-        const name = localStorage.getItem('neuralUser') || 'Guest';
-        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-        document.getElementById('profile-avatar').textContent = name.charAt(0).toUpperCase();
-        document.getElementById('user-label').textContent = name.toUpperCase();
 
-        const logoutBtn = document.getElementById('logout-btn');
-        if (logoutBtn) {
-            logoutBtn.style.display = (isLoggedIn && name.toLowerCase() !== 'guest') ? 'flex' : 'none';
+        // Initialize Workspace Toggles
+        document.addEventListener('DOMContentLoaded', () => {
+            // Apply theme on load
+            const activeTheme = localStorage.getItem('themeName') || localStorage.getItem('theme') || 'midnight';
+            document.body.classList.toggle('light-mode', activeTheme === 'light');
+
+            // Default model activations
+            for (let i = 0; i < 3; i++) {
+                toggleAI(i);
+            }
+
+            // Sync notepad text
+            const savedNote = localStorage.getItem('mobile_notepad_text');
+            if (savedNote) {
+                document.getElementById('notepad-textarea').value = savedNote;
+            }
+            document.getElementById('notepad-textarea').addEventListener('input', function() {
+                localStorage.setItem('mobile_notepad_text', this.value);
+            });
+
+            loadBYOKKeys();
+        });
+
+        // Copy / download responses
+        function copyCardChat(btn) {
+            const card = btn.closest('.ai-card');
+            const bubbles = card.querySelectorAll('.bubble');
+            let contentText = '';
+            bubbles.forEach(b => contentText += b.textContent + '\n');
+            navigator.clipboard.writeText(contentText).then(() => alert("Copied chat log."));
         }
-    });
 
-    // Copy/Download stubs (minimal)
-    function copyCardChat(btn) {
-        const card = btn.closest('.ai-card');
-        const bubbles = card.querySelectorAll('.bubble');
-        let text = '';
-        bubbles.forEach(b => text += b.textContent + '\n');
-        navigator.clipboard.writeText(text).then(() => alert('Copied!'));
-    }
-    function downloadCardChat(btn) {
-        const card = btn.closest('.ai-card');
-        const bubbles = card.querySelectorAll('.bubble');
-        let text = '';
-        bubbles.forEach(b => text += b.textContent + '\n');
-        const blob = new Blob([text], {type:'text/plain'});
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = 'chat.txt';
-        a.click();
-        URL.revokeObjectURL(a.href);
-    }
-    function likeAIResponse(btn) {
-        btn.classList.toggle('active');
-        const parent = btn.closest('.card-actions');
-        parent.querySelector('.dislike-trigger')?.classList.remove('active');
-    }
-    function dislikeAIResponse(btn) {
-        btn.classList.toggle('active');
-        const parent = btn.closest('.card-actions');
-        parent.querySelector('.like-trigger')?.classList.remove('active');
-    }
-    // Make functions globally accessible
-    window.toggleAI = toggleAI;
-    window.broadcast = broadcast;
-    window.launchNotepad = launchNotepad;
-    window.closeNotepad = closeNotepad;
-    window.toggleNotepadMinimize = toggleNotepadMinimize;
-    window.clearNotepad = clearNotepad;
-    window.downloadNotepadText = downloadNotepadText;
-    window.switchView = switchView;
-    window.handleLogout = handleLogout;
-    window.selectBestResponse = selectBestResponse;
-    window.optimizePrompt = optimizePrompt;
-    window.startVoiceRecognition = startVoiceRecognition;
-    window.generateConsensus = generateConsensus;
-    window.copyCardChat = copyCardChat;
-    window.downloadCardChat = downloadCardChat;
-    window.likeAIResponse = likeAIResponse;
-    window.dislikeAIResponse = dislikeAIResponse;
-</script>
+        function downloadCardChat(btn) {
+            const card = btn.closest('.ai-card');
+            const bubbles = card.querySelectorAll('.bubble');
+            let contentText = '';
+            bubbles.forEach(b => contentText += b.textContent + '\n');
+            const blob = new Blob([contentText], { type: 'text/plain' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `${card.id}-history.txt`;
+            a.click();
+        }
+
+        function handleLogout() {
+            if (confirm("Log out of this session?")) {
+                localStorage.setItem('isLoggedIn', 'false');
+                localStorage.setItem('neuralUser', 'Guest');
+                localStorage.removeItem('token');
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
 </body>
 </html>
