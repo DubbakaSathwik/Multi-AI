@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-<link rel="stylesheet" href="style.css?v=1.0.11">
+<link rel="stylesheet" href="style.css?v=1.0.12">
 <link rel="stylesheet" href="mobile.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Multi AI - all Ai meetup</title>
@@ -4583,7 +4583,7 @@ function switchView(viewName, preventAutoSelectAll = false) {
 
     const views = ['workspace', 'expertise', 'history', 'insights', 'debate', 'setting', 'about-us', 'profile'];
     
-    const navItems = document.querySelectorAll('.right-nav .right-nav-item[onclick^="switchView"]');
+    const navItems = document.querySelectorAll('.nav-links .nav-item[onclick^="switchView"]');
     navItems.forEach((item) => {
         const target = item.getAttribute('onclick')?.match(/switchView\('([^']+)'/)?.[1];
         item.classList.toggle('active', target === viewName);

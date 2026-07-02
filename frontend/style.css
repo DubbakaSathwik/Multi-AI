@@ -1352,6 +1352,7 @@ body.light-mode .notepad-btn:hover { background: rgba(0,0,0,0.05); }
     height: 100%;
     overflow: hidden;
     display: none;
+    position: relative;
 }
 .view-container.active {
     display: block;

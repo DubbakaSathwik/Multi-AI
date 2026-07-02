@@ -84,23 +84,8 @@ app.use('/api', (request, response) => {
   });
 });
 
-function shouldServeMobileExperience(request) {
-  const userAgent = String(request.headers['user-agent'] || '').toLowerCase();
-  const clientHintMobile = String(request.headers['sec-ch-ua-mobile'] || '').toLowerCase();
-
-  return (
-    clientHintMobile === '?1' ||
-    /android|iphone|ipad|ipod|mobile|tablet|kindle|silk|playbook|windows phone/.test(userAgent)
-  );
-}
-
-app.get(['/', '/index.html'], (request, response) => {
-  const fileName = shouldServeMobileExperience(request) ? 'mobile.html' : 'index.html';
-  response.sendFile(join(frontPath, fileName));
-});
-
-app.get('/mobile.html', (request, response) => {
-  response.sendFile(join(frontPath, 'mobile.html'));
+app.get(['/', '/index.html', '/mobile.html'], (request, response) => {
+  response.sendFile(join(frontPath, 'index.html'));
 });
 
 app.use(
