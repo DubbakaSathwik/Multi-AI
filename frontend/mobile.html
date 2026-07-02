@@ -2,45 +2,60 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MultiAI - Mobile Workspace</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MultiAI - Premium Mobile Portal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --bg: #0B0F19;
-            --sidebar-bg: #0F172A;
-            --card-bg: rgba(30, 41, 59, 0.7);
-            --text: #F8FAFC;
-            --accent: #6366F1;
-            --accent-glow: rgba(99, 102, 241, 0.4);
-            --border: rgba(99, 102, 241, 0.2);
-            --glow: rgba(99, 102, 241, 0.2);
-            --dock-bg: rgba(15, 23, 42, 0.9);
-            --radius: 16px;
+            --bg: #030712;
+            --sidebar-bg: #090d1a;
+            --card-bg: rgba(17, 24, 39, 0.7);
+            --card-hover: rgba(31, 41, 55, 0.8);
+            --text: #f3f4f6;
+            --text-muted: #9ca3af;
+            --accent: #6366f1;
+            --accent-hover: #4f46e5;
+            --border: rgba(99, 102, 241, 0.15); 
+            --glow: rgba(99, 102, 241, 0.35);
+            --input-bg: #050812;
+            --radius: 20px;
+            --font-size: 14px;
+            --transition-speed: 0.3s;
+            --card-backdrop: blur(16px);
         }
 
         body.light-mode {
-            --bg: #F4F8FC;
-            --sidebar-bg: #FFFFFF;
-            --card-bg: #ECF3FA;
-            --text: #111827;
-            --accent: #0099CC;
-            --border: rgba(0, 153, 204, 0.18);
-            --glow: rgba(0, 153, 204, 0.18);
-            --dock-bg: rgba(255, 255, 255, 0.92);
+            --bg: #f8fafc;
+            --sidebar-bg: #ffffff;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --card-hover: rgba(241, 245, 249, 1);
+            --text: #0f172a;
+            --text-muted: #64748b;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --border: rgba(59, 130, 246, 0.2);
+            --glow: rgba(59, 130, 246, 0.15);
+            --input-bg: #f1f5f9;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            transition: background var(--transition-speed) ease, border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease, color var(--transition-speed) ease;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             background: var(--bg);
             color: var(--text);
-            transition: background 0.3s, color 0.3s;
             height: 100vh;
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            font-size: var(--font-size);
         }
 
         /* ====== HEADER ====== */
@@ -48,33 +63,35 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            height: 70px;
-            padding: 0 16px;
-            border-bottom: 2px solid var(--border);
+            height: 72px;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border);
             background: var(--sidebar-bg);
             flex-shrink: 0;
             z-index: 100;
         }
-        .logo { font-weight: 800; font-size: 1.3rem; letter-spacing: 1px; color: var(--text); }
+        .logo { font-weight: 800; font-size: 1.4rem; letter-spacing: 1px; color: var(--text); }
         .logo span { color: var(--accent); }
 
         .header-actions { display: flex; align-items: center; gap: 14px; }
         .theme-toggle-container { cursor: pointer; }
         .bulb {
-            width: 32px;
-            height: 32px;
-            background: rgba(128, 128, 128, 0.1);
+            width: 38px;
+            height: 38px;
+            background: rgba(128, 128, 128, 0.08);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             border: 1px solid var(--border);
-            font-size: 1.1rem;
+            font-size: 1.2rem;
+            color: var(--accent);
+            box-shadow: 0 0 10px var(--glow);
         }
 
         .profile-avatar {
-            width: 36px;
-            height: 36px;
+            width: 38px;
+            height: 38px;
             background: var(--accent);
             color: white;
             border-radius: 50%;
@@ -84,39 +101,39 @@
             font-weight: 700;
             font-size: 0.95rem;
             cursor: pointer;
-            box-shadow: 0 0 10px var(--accent-glow);
+            box-shadow: 0 0 12px var(--accent-glow);
         }
 
-        /* ====== NAVIGATION BAR (Horizontal Swiper) ====== */
+        /* ====== NAVIGATION SWIPER (Horizontal Tab Bar) ====== */
         .nav-swiper-container {
             background: var(--sidebar-bg);
             border-bottom: 1px solid var(--border);
-            padding: 8px 12px;
+            padding: 10px 16px;
             overflow-x: auto;
             scrollbar-width: none;
             flex-shrink: 0;
         }
         .nav-swiper-container::-webkit-scrollbar { display: none; }
-        .nav-swiper { display: flex; gap: 8px; }
+        .nav-swiper { display: flex; gap: 10px; }
         .nav-item {
             flex-shrink: 0;
-            padding: 8px 14px;
+            padding: 10px 18px;
             border-radius: 20px;
-            background: rgba(128, 128, 128, 0.08);
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--text);
+            background: rgba(128, 128, 128, 0.06);
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-muted);
             cursor: pointer;
             list-style: none;
-            transition: 0.2s;
+            transition: all var(--transition-speed);
         }
         .nav-item.active {
             background: var(--accent);
             color: white;
-            box-shadow: 0 0 8px var(--accent-glow);
+            box-shadow: 0 0 12px var(--accent-glow);
         }
 
-        /* ====== MAIN CONTENT VIEW WRAPPERS ====== */
+        /* ====== MAIN WRAPPER & SCROLL VIEWS ====== */
         .main-wrapper {
             flex: 1;
             display: flex;
@@ -130,82 +147,94 @@
             display: none;
             flex-direction: column;
             overflow-y: auto;
-            padding-bottom: 150px;
+            padding-bottom: 140px; /* leaves clean space for absolute bottom controls */
         }
         .view-container.active { display: flex; }
 
-        .scroll-view { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
-        .page-title { font-size: 1.3rem; font-weight: 800; }
-        .page-sub { font-size: 0.8rem; opacity: 0.6; margin-bottom: 10px; }
+        .scroll-view { padding: 20px 16px; display: flex; flex-direction: column; gap: 16px; }
+        .page-title { font-size: 1.5rem; font-weight: 800; color: var(--text); }
+        .page-sub { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px; line-height: 1.4; }
 
-        /* ====== SIDEBAR / DOCK FOOTER ====== */
+        /* ====== BOTTOM SIDEBAR DOCK ====== */
         .sidebar {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 60px;
+            height: 68px;
             background: var(--sidebar-bg);
-            border-top: 2px solid var(--border);
+            border-top: 1px solid var(--border);
             display: flex;
             justify-content: space-around;
             align-items: center;
             z-index: 1000;
+            padding: 0 10px;
         }
         .sb-icon, .pf-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--text);
-            opacity: 0.6;
+            color: var(--text-muted);
+            opacity: 0.7;
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.2s ease;
         }
-        .sb-icon.active, .pf-icon.active { opacity: 1; color: var(--accent); background: rgba(99, 102, 241, 0.08); }
+        .sb-icon.active, .pf-icon.active { 
+            opacity: 1; 
+            color: var(--accent); 
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid var(--border);
+            box-shadow: 0 0 10px var(--glow);
+        }
 
-        /* ====== WORKSPACE & AI CARDS ====== */
+        /* ====== WORKSPACE & CARDS ====== */
         .workspace {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 20px;
             padding: 16px;
         }
         .ai-card {
             background: var(--card-bg);
+            backdrop-filter: var(--card-backdrop);
+            -webkit-backdrop-filter: var(--card-backdrop);
             border: 1px solid var(--border);
             border-radius: var(--radius);
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25);
+            transition: transform 0.3s ease;
         }
+        .ai-card:active { transform: scale(0.99); }
         .ai-card.hidden { display: none; }
         .ai-header {
-            padding: 12px 16px;
-            background: rgba(128, 128, 128, 0.04);
+            padding: 14px 18px;
+            background: rgba(128, 128, 128, 0.03);
             border-bottom: 1px solid var(--border);
             font-weight: 700;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         .ai-content {
-            padding: 14px;
-            min-height: 180px;
-            max-height: 320px;
+            padding: 16px;
+            min-height: 200px;
+            max-height: 360px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
+            background: rgba(0, 0, 0, 0.1);
         }
         .bubble {
-            padding: 10px 14px;
-            border-radius: 12px;
-            font-size: 0.85rem;
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 0.88rem;
             line-height: 1.5;
             max-width: 90%;
             word-wrap: break-word;
@@ -215,6 +244,7 @@
             background: var(--accent);
             color: white;
             border-bottom-right-radius: 4px;
+            box-shadow: 0 4px 12px var(--accent-glow);
         }
         .bubble.ai {
             align-self: flex-start;
@@ -226,40 +256,49 @@
         .card-actions {
             display: flex;
             align-items: center;
-            padding: 8px 12px;
-            gap: 6px;
+            padding: 10px 18px;
+            gap: 8px;
             border-top: 1px solid var(--border);
             background: rgba(128, 128, 128, 0.02);
         }
         .card-actions .action-btn {
             background: transparent;
             border: none;
-            color: var(--text);
-            opacity: 0.6;
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
+            color: var(--text-muted);
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.85rem;
+            font-size: 0.95rem;
         }
-        .card-actions .action-btn:hover { opacity: 1; background: rgba(99, 102, 241, 0.08); }
-        .card-actions .action-btn.like-trigger.active { color: #10b981; opacity: 1; }
-        .card-actions .action-btn.dislike-trigger.active { color: #ef4444; opacity: 1; }
-        .card-telemetry { font-size: 0.65rem; opacity: 0.5; margin-right: auto; }
+        .card-actions .action-btn:active { background: rgba(99, 102, 241, 0.12); color: var(--text); }
+        .card-actions .action-btn.like-trigger.active { color: #10b981; }
+        .card-actions .action-btn.dislike-trigger.active { color: #ef4444; }
+        
+        .card-telemetry { 
+            font-size: 0.72rem; 
+            font-weight: 700;
+            background: rgba(99, 102, 241, 0.1); 
+            border: 1px solid var(--border); 
+            padding: 4px 10px; 
+            border-radius: 12px; 
+            color: #a5b4fc; 
+            margin-right: auto;
+        }
 
         /* ====== FLOATING INPUT AREA ====== */
         .dock-area {
             position: fixed;
-            bottom: 74px;
+            bottom: 80px;
             left: 0;
             width: 100%;
-            padding: 0 12px;
+            padding: 0 16px;
             z-index: 500;
             display: flex;
-            gap: 8px;
+            gap: 10px;
             align-items: center;
         }
         .input-bar {
@@ -268,10 +307,10 @@
             background: var(--dock-bg);
             border: 1px solid var(--border);
             border-radius: 30px;
-            padding: 4px 4px 4px 12px;
-            backdrop-filter: blur(12px);
+            padding: 6px 6px 6px 16px;
+            backdrop-filter: blur(18px);
             align-items: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
         }
         .input-bar input {
             flex: 1;
@@ -279,24 +318,27 @@
             border: none;
             outline: none;
             color: var(--text);
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             padding: 8px 0;
         }
         .send-pill {
             background: var(--accent);
             border: none;
             border-radius: 50%;
-            width: 36px;
-            height: 36px;
+            width: 38px;
+            height: 38px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             cursor: pointer;
+            box-shadow: 0 4px 10px var(--accent-glow);
         }
+        .send-pill:active { transform: scale(0.92); }
+        
         .circle-tool {
-            width: 38px;
-            height: 38px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             background: var(--dock-bg);
             border: 1px solid var(--border);
@@ -305,45 +347,48 @@
             justify-content: center;
             cursor: pointer;
             color: var(--text);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+            font-size: 1.05rem;
         }
+        .circle-tool:active { transform: scale(0.92); }
 
-        /* ====== NOTEPAD ====== */
+        /* ====== FLOATING NOTEPAD ====== */
         .floating-notepad {
             position: fixed;
             top: 15%;
             left: 5%;
             width: 90%;
-            height: 55vh;
+            height: 52vh;
             background: var(--sidebar-bg);
             border: 1px solid var(--border);
-            border-radius: 16px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            border-radius: var(--radius);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
             z-index: 9999;
             display: none;
             flex-direction: column;
             overflow: hidden;
+            backdrop-filter: blur(20px);
         }
         .floating-notepad.is-open { display: flex; }
         .notepad-header {
-            padding: 12px;
+            padding: 14px 18px;
             background: rgba(128, 128, 128, 0.04);
             border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
-        .notepad-title { font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; gap: 6px; }
-        .notepad-actions { display: flex; gap: 4px; }
+        .notepad-title { font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; }
+        .notepad-actions { display: flex; gap: 6px; }
         .notepad-btn {
             background: transparent;
             border: none;
             color: var(--text);
             opacity: 0.6;
             cursor: pointer;
-            width: 28px;
-            height: 28px;
-            border-radius: 6px;
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -354,128 +399,146 @@
             background: transparent;
             border: none;
             resize: none;
-            padding: 12px;
+            padding: 16px;
             color: var(--text);
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             outline: none;
+            line-height: 1.5;
+            font-family: inherit;
         }
         .notepad-footer {
-            padding: 10px;
+            padding: 12px 18px;
             border-top: 1px solid var(--border);
             display: flex;
             justify-content: flex-end;
-            gap: 8px;
+            gap: 10px;
         }
         .notepad-action-btn {
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 0.75rem;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 0.8rem;
             font-weight: 700;
             cursor: pointer;
             border: none;
         }
-        .notepad-action-btn.clear-btn { background: rgba(239,68,68,0.1); color:#ef4444; }
-        .notepad-action-btn.save-btn { background: var(--accent); color: white; }
+        .notepad-action-btn.clear-btn { background: rgba(239,68,68,0.12); color:#f87171; }
+        .notepad-action-btn.save-btn { background: var(--accent); color: white; box-shadow: 0 4px 10px var(--accent-glow); }
 
-        /* ====== PRESETS VIEW ====== */
-        .expertise-grid { display: flex; flex-direction: column; gap: 10px; }
+        /* ====== PRESETS (EXPERTISE) ====== */
+        .expertise-grid { display: flex; flex-direction: column; gap: 12px; }
         .expertise-card {
             background: var(--card-bg);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 12px;
+            border-radius: 14px;
+            padding: 16px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
             cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-        .expertise-card.active { border-color: var(--accent); background: rgba(99,102,241,0.06); }
-        .expertise-card .icon { font-size: 1.3rem; }
-        .expertise-card .info h4 { font-size: 0.85rem; font-weight: 700; }
-        .expertise-card .info p { font-size: 0.7rem; opacity: 0.6; margin-top: 2px; }
+        .expertise-card.active { 
+            border-color: var(--accent); 
+            background: rgba(99,102,241,0.08); 
+            box-shadow: 0 0 12px var(--glow);
+        }
+        .expertise-card .icon { font-size: 1.6rem; }
+        .expertise-card .info h4 { font-size: 0.95rem; font-weight: 700; color: var(--text); }
+        .expertise-card .info p { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; line-height: 1.4; }
 
-        /* ====== HISTORY VIEW ====== */
-        .history-list { display: flex; flex-direction: column; gap: 8px; }
+        /* ====== HISTORY ====== */
+        .history-list { display: flex; flex-direction: column; gap: 10px; }
         .history-item {
             background: var(--card-bg);
             border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 12px;
+            border-radius: 14px;
+            padding: 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-        .history-item .info { display: flex; flex-direction: column; gap: 2px; }
-        .history-item .title { font-size: 0.8rem; font-weight: 600; }
-        .history-item .meta { font-size: 0.65rem; opacity: 0.5; }
+        .history-item .info { display: flex; flex-direction: column; gap: 4px; }
+        .history-item .title { font-size: 0.9rem; font-weight: 700; color: var(--text); }
+        .history-item .meta { font-size: 0.72rem; color: var(--text-muted); }
         .history-item-btn {
             background: transparent;
             border: none;
-            color: var(--text);
-            opacity: 0.6;
+            color: var(--accent);
             cursor: pointer;
-            padding: 6px;
+            padding: 8px;
+            font-size: 1.1rem;
         }
 
-        /* ====== DEBATE VIEW ====== */
+        /* ====== DEBATE ====== */
         .debate-setup {
             background: var(--card-bg);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 14px;
+            border-radius: 16px;
+            padding: 18px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
         }
         .debate-setup input, .debate-setup select {
             width: 100%;
-            background: rgba(0,0,0,0.3);
+            background: var(--input-bg);
             border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 10px;
+            border-radius: 10px;
+            padding: 12px;
             color: var(--text);
             outline: none;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .debate-setup input:focus, .debate-setup select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 10px var(--glow);
         }
         .debate-setup button {
             background: var(--accent);
             color: white;
             border: none;
-            border-radius: 8px;
-            padding: 12px;
+            border-radius: 10px;
+            padding: 14px;
             font-weight: 700;
             cursor: pointer;
+            box-shadow: 0 4px 12px var(--accent-glow);
+            margin-top: 8px;
+            font-size: 0.9rem;
         }
         .debate-arena {
             border: 1px solid var(--border);
-            border-radius: 12px;
-            background: rgba(0,0,0,0.2);
-            padding: 12px;
-            min-height: 180px;
-            max-height: 320px;
+            border-radius: 16px;
+            background: rgba(0,0,0,0.15);
+            padding: 16px;
+            min-height: 220px;
+            max-height: 380px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin-top: 14px;
+            gap: 12px;
+            margin-top: 20px;
         }
-        .debate-bubble { padding: 10px; border-radius: 10px; font-size: 0.8rem; max-width: 85%; }
-        .debate-bubble.proponent { align-self: flex-start; background: rgba(99, 102, 241, 0.08); border: 1px solid var(--accent); }
-        .debate-bubble.opponent { align-self: flex-end; background: rgba(244, 63, 94, 0.08); border: 1px solid #f43f5e; }
+        .debate-bubble { padding: 12px 16px; border-radius: 14px; font-size: 0.85rem; max-width: 85%; line-height: 1.5; }
+        .debate-bubble.proponent { align-self: flex-start; background: rgba(99, 102, 241, 0.08); border: 1px solid var(--accent); box-shadow: 0 0 8px var(--glow); }
+        .debate-bubble.opponent { align-self: flex-end; background: rgba(244, 63, 94, 0.08); border: 1px solid #f43f5e; box-shadow: 0 0 8px rgba(244,63,94,0.15); }
 
-        /* ====== ANALYTICS VIEW ====== */
-        .insights-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        /* ====== ANALYTICS ====== */
+        .insights-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .insight-stat {
             background: var(--card-bg);
             border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 14px;
+            border-radius: 14px;
+            padding: 16px;
             text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-        .insight-stat .value { font-size: 1.3rem; font-weight: 800; color: var(--accent); }
-        .insight-stat .label { font-size: 0.65rem; opacity: 0.5; margin-top: 2px; }
+        .insight-stat .value { font-size: 1.6rem; font-weight: 800; color: var(--accent); }
+        .insight-stat .label { font-size: 0.72rem; color: var(--text-muted); margin-top: 4px; font-weight: 700; }
 
-        /* ====== UTILITY ====== */
+        /* ====== UTILITY & MISC ====== */
         .hidden { display: none !important; }
     </style>
 </head>
@@ -494,7 +557,7 @@
         </div>
     </header>
 
-    <!-- ====== NAVIGATION SWIPER ====== -->
+    <!-- ====== NAV SWIPER TAB BAR ====== -->
     <div class="nav-swiper-container">
         <ul class="nav-swiper" id="nav-swiper">
             <li class="nav-item active" onclick="switchView('workspace')">Workspace</li>
@@ -511,8 +574,8 @@
         <div id="view-workspace" class="view-container active">
             <div class="workspace">
                 <div id="intro-overlay" style="text-align:center;padding:30px 10px;opacity:0.7;">
-                    <h3 style="color:var(--accent);font-size:1.3rem;margin-bottom:6px;">Welcome to MultiAI</h3>
-                    <p style="font-size:0.8rem;line-height:1.4;">Select models below, write a command, and compare their responses side-by-side.</p>
+                    <h3 style="color:var(--accent);font-size:1.3rem;margin-bottom:6px;font-weight:700;">Welcome to MultiAI</h3>
+                    <p style="font-size:0.85rem;line-height:1.4;">Select models below, write a command, and compare their responses side-by-side.</p>
                 </div>
 
                 <!-- AI cards -->
@@ -602,9 +665,9 @@
         <div id="view-expertise" class="view-container hidden">
             <div class="scroll-view">
                 <div class="page-title">Expertise Presets</div>
-                <p class="page-sub">Configure instructions to guide response flow.</p>
+                <p class="page-sub">Configure instructions to guide model response logic flow.</p>
                 <div class="expertise-grid" id="mobile-presets-container">
-                    <!-- Presets will be active here -->
+                    <!-- Loaded dynamically -->
                 </div>
             </div>
         </div>
@@ -612,12 +675,12 @@
         <!-- ====== VIEW: HISTORY ====== -->
         <div id="view-history" class="view-container hidden">
             <div class="scroll-view">
-                <div class="page-title">Conversation Logs</div>
-                <p class="page-sub">Review and restore past debates and chat logs.</p>
+                <div class="page-title">Session History</div>
+                <p class="page-sub">Review and load past conversation history database logs.</p>
                 <div class="history-list" id="mobile-history-list">
                     <!-- Loaded dynamically -->
                 </div>
-                <button class="notepad-action-btn clear-btn" onclick="clearAllHistory()" style="margin-top:20px;padding:12px;width:100%;height:44px;">Clear All History</button>
+                <button class="notepad-action-btn clear-btn" onclick="clearAllHistory()" style="margin-top:20px;height:46px;width:100%;">Clear All History</button>
             </div>
         </div>
 
@@ -625,20 +688,22 @@
         <div id="view-insights" class="view-container hidden">
             <div class="scroll-view">
                 <div class="page-title">Analytics</div>
-                <p class="page-sub">Feedback preference stats and model usage.</p>
+                <p class="page-sub">User preference stats and query parameters statistics.</p>
                 <div class="insights-stats">
                     <div class="insight-stat">
                         <div class="value" id="stat-total-queries">0</div>
-                        <div class="label">Total Votes Saved</div>
+                        <div class="label">Total Feedback Votes</div>
                     </div>
                     <div class="insight-stat">
                         <div class="value" id="stat-favorite-model">-</div>
                         <div class="label">Top Liked Model</div>
                     </div>
                 </div>
-                <div style="background:var(--card-bg);padding:14px;border-radius:12px;border:1px solid var(--border);margin-top:10px;">
-                    <h4 style="font-size:0.8rem;margin-bottom:12px;font-weight:700;">Model Preferences</h4>
-                    <canvas id="mobile-insights-chart" style="width:100%;height:200px;"></canvas>
+                <div style="background:var(--card-bg);padding:18px;border-radius:16px;border:1px solid var(--border);margin-top:14px;box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                    <h4 style="font-size:0.85rem;margin-bottom:14px;font-weight:700;">Model Comparative Preference Chart</h4>
+                    <div style="position:relative;height:240px;width:100%;">
+                        <canvas id="mobile-insights-chart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
@@ -646,45 +711,45 @@
         <!-- ====== VIEW: DEBATE ====== -->
         <div id="view-debate" class="view-container hidden">
             <div class="scroll-view">
-                <div class="page-title">Debate Arena</div>
-                <p class="page-sub">Run automated comparative debates between models.</p>
+                <div class="page-title">Debate Simulator</div>
+                <p class="page-sub">Establish automated debate rounds between models.</p>
                 <div class="debate-setup">
-                    <label style="font-size:0.75rem;opacity:0.7;">Debate Subject</label>
-                    <input type="text" id="debate-topic" placeholder="e.g. Is remote work more efficient?">
+                    <label style="font-size:0.75rem;opacity:0.8;font-weight:700;">Debate Topic</label>
+                    <input type="text" id="debate-topic" placeholder="e.g. Is Web3 really the future of database technology?">
 
-                    <label style="font-size:0.75rem;opacity:0.7;">Model A (Proponent)</label>
+                    <label style="font-size:0.75rem;opacity:0.8;font-weight:700;">Model A (Proponent)</label>
                     <select id="debate-model-a">
-                        <option value="google/gemini-2.5-flash">Gemini Flash</option>
-                        <option value="liquid/lfm-40b">Liquid LFM</option>
-                        <option value="qwen/qwen-2.5-72b-instruct">Qwen HF</option>
-                        <option value="groq/llama-3.3-70b">Groq Llama</option>
-                        <option value="cohere/command-r-plus">Cohere</option>
+                        <option value="Gemini Flash">Gemini Flash</option>
+                        <option value="Liquid LFM">Liquid LFM</option>
+                        <option value="Qwen HF">Qwen HF</option>
+                        <option value="Groq">Groq Llama</option>
+                        <option value="Cohere">Cohere</option>
                     </select>
 
-                    <label style="font-size:0.75rem;opacity:0.7;">Model B (Opponent)</label>
+                    <label style="font-size:0.75rem;opacity:0.8;font-weight:700;">Model B (Opponent)</label>
                     <select id="debate-model-b">
-                        <option value="qwen/qwen-2.5-72b-instruct" selected>Qwen HF</option>
-                        <option value="google/gemini-2.5-flash">Gemini Flash</option>
-                        <option value="liquid/lfm-40b">Liquid LFM</option>
-                        <option value="groq/llama-3.3-70b">Groq Llama</option>
-                        <option value="cohere/command-r-plus">Cohere</option>
+                        <option value="Qwen HF" selected>Qwen HF</option>
+                        <option value="Gemini Flash">Gemini Flash</option>
+                        <option value="Liquid LFM">Liquid LFM</option>
+                        <option value="Groq">Groq Llama</option>
+                        <option value="Cohere">Cohere</option>
                     </select>
 
-                    <label style="font-size:0.75rem;opacity:0.7;">Debate Rounds</label>
+                    <label style="font-size:0.75rem;opacity:0.8;font-weight:700;">Debate Rounds</label>
                     <select id="debate-rounds">
                         <option value="1">1 Round</option>
                         <option value="2" selected>2 Rounds</option>
                         <option value="3">3 Rounds</option>
                     </select>
 
-                    <button type="button" onclick="startDebateProcess()">Start Debate Match</button>
+                    <button type="button" onclick="startDebateProcess()">Trigger Arena Match</button>
                 </div>
 
                 <div class="debate-arena hidden" id="mobile-debate-arena"></div>
 
-                <div class="consensus-card hidden" id="mobile-debate-summary-card" style="background:var(--card-bg);padding:14px;border-radius:12px;border:1px solid var(--border);margin-top:14px;">
-                    <h4 style="color:var(--accent);font-size:0.8rem;margin-bottom:6px;font-weight:700;">Debate Verdict Summary</h4>
-                    <div id="mobile-debate-summary-text" style="font-size:0.75rem;line-height:1.5;"></div>
+                <div class="consensus-card hidden" id="mobile-debate-summary-card" style="background:var(--card-bg);padding:18px;border-radius:16px;border:1px solid var(--border);margin-top:16px;">
+                    <h4 style="color:var(--accent);font-size:0.9rem;margin-bottom:8px;font-weight:700;">Arena Verdict Summary</h4>
+                    <div id="mobile-debate-summary-text" style="font-size:0.8rem;line-height:1.6;color:var(--text);"></div>
                 </div>
             </div>
         </div>
@@ -692,29 +757,29 @@
         <!-- ====== VIEW: SETTINGS ====== -->
         <div id="view-setting" class="view-container hidden">
             <div class="scroll-view">
-                <div class="page-title">Settings & Keys</div>
-                <p class="page-sub">Configure secure credentials and clear session files.</p>
+                <div class="page-title">System Settings</div>
+                <p class="page-sub">Custom parameters configurations and BYOK secure credentials.</p>
                 
-                <div style="background:var(--card-bg);padding:16px;border-radius:12px;border:1px solid var(--border);display:flex;flex-direction:column;gap:12px;">
-                    <h4 style="font-size:0.8rem;font-weight:700;">Secure BYOK Keys</h4>
+                <div style="background:var(--card-bg);padding:18px;border-radius:16px;border:1px solid var(--border);display:flex;flex-direction:column;gap:14px;box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                    <h4 style="font-size:0.9rem;font-weight:700;">Secure BYOK Key inputs</h4>
                     <div>
-                        <label style="font-size:0.7rem;opacity:0.7;">Gemini API Key</label>
-                        <input type="password" id="byok-gemini" placeholder="Enter key..." style="width:100%;margin-top:4px;padding:10px;border-radius:8px;background:rgba(0,0,0,0.3);border:1px solid var(--border);color:#fff;outline:none;">
+                        <label style="font-size:0.72rem;opacity:0.7;">Gemini API Key</label>
+                        <input type="password" id="byok-gemini" placeholder="Enter key..." style="width:100%;margin-top:4px;padding:12px;border-radius:10px;background:var(--input-bg);border:1px solid var(--border);color:#fff;outline:none;">
                     </div>
                     <div>
-                        <label style="font-size:0.7rem;opacity:0.7;">OpenRouter Key</label>
-                        <input type="password" id="byok-openrouter" placeholder="Enter key..." style="width:100%;margin-top:4px;padding:10px;border-radius:8px;background:rgba(0,0,0,0.3);border:1px solid var(--border);color:#fff;outline:none;">
+                        <label style="font-size:0.72rem;opacity:0.7;">OpenRouter Key</label>
+                        <input type="password" id="byok-openrouter" placeholder="Enter key..." style="width:100%;margin-top:4px;padding:12px;border-radius:10px;background:var(--input-bg);border:1px solid var(--border);color:#fff;outline:none;">
                     </div>
                     <div>
-                        <label style="font-size:0.7rem;opacity:0.7;">Groq API Key</label>
-                        <input type="password" id="byok-groq" placeholder="Enter key..." style="width:100%;margin-top:4px;padding:10px;border-radius:8px;background:rgba(0,0,0,0.3);border:1px solid var(--border);color:#fff;outline:none;">
+                        <label style="font-size:0.72rem;opacity:0.7;">Groq API Key</label>
+                        <input type="password" id="byok-groq" placeholder="Enter key..." style="width:100%;margin-top:4px;padding:12px;border-radius:10px;background:var(--input-bg);border:1px solid var(--border);color:#fff;outline:none;">
                     </div>
-                    <button class="notepad-action-btn save-btn" onclick="saveBYOKKeys()" style="width:100%;height:38px;padding:0;margin-top:6px;">Save Secure Keys</button>
+                    <button class="notepad-action-btn save-btn" onclick="saveBYOKKeys()" style="width:100%;height:44px;padding:0;margin-top:6px;">Save Keys Globally</button>
                 </div>
 
-                <div style="background:var(--card-bg);padding:16px;border-radius:12px;border:1px solid var(--border);display:flex;flex-direction:column;gap:12px;margin-top:12px;">
-                    <h4 style="font-size:0.8rem;font-weight:700;">Account Actions</h4>
-                    <button class="notepad-action-btn clear-btn" onclick="handleLogout()" style="width:100%;height:38px;padding:0;">Log Out Session</button>
+                <div style="background:var(--card-bg);padding:18px;border-radius:16px;border:1px solid var(--border);display:flex;flex-direction:column;gap:12px;margin-top:16px;">
+                    <h4 style="font-size:0.9rem;font-weight:700;">Account Actions</h4>
+                    <button class="notepad-action-btn clear-btn" onclick="handleLogout()" style="width:100%;height:44px;padding:0;">Log Out Session</button>
                 </div>
             </div>
         </div>
@@ -732,7 +797,7 @@
         </div>
     </div>
 
-    <!-- ====== SIDEBAR BOTTOM NAVIGATION ====== -->
+    <!-- ====== SIDEBAR BOTTOM NAVIGATION DOCK ====== -->
     <aside class="sidebar" id="sidebar">
         <div class="sb-icon" id="btn-gemini" onclick="toggleAI(0)">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81"/></svg>
@@ -825,23 +890,22 @@
             });
         })();
 
-        // Global states
+        // Backend expects exact short names of models
         const modelsConfig = [
-            { name: 'Gemini Flash', card: 'card-gemini', id: 'chat-gemini', key: 'google/gemini-2.5-flash' },
-            { name: 'Liquid LFM', card: 'card-gpt', id: 'chat-gpt', key: 'liquid/lfm-40b' },
-            { name: 'Qwen HF', card: 'card-grok', id: 'chat-grok', key: 'qwen/qwen-2.5-72b-instruct' },
-            { name: 'Groq', card: 'card-claude', id: 'chat-claude', key: 'groq/llama-3.3-70b' },
-            { name: 'Cohere', card: 'card-cohere', id: 'chat-cohere', key: 'cohere/command-r-plus' }
+            { name: 'Gemini Flash', card: 'card-gemini', id: 'chat-gemini', key: 'Gemini Flash' },
+            { name: 'Liquid LFM', card: 'card-gpt', id: 'chat-gpt', key: 'Liquid LFM' },
+            { name: 'Qwen HF', card: 'card-grok', id: 'chat-grok', key: 'Qwen HF' },
+            { name: 'Groq', card: 'card-claude', id: 'chat-claude', key: 'Groq' },
+            { name: 'Cohere', card: 'card-cohere', id: 'chat-cohere', key: 'Cohere' }
         ];
 
         let activePreset = localStorage.getItem('activeExpertise') || 'Neutral';
         let feedbackChart = null;
 
-        // Header and loading
+        // Header and avatar loading
         const userName = localStorage.getItem('neuralUser') || 'Guest';
         document.getElementById('profile-avatar').textContent = userName.charAt(0).toUpperCase();
 
-        // Safe auth token
         function getAuthHeaders() {
             const token = localStorage.getItem('token');
             return token ? { Authorization: `Bearer ${token}` } : {};
@@ -856,7 +920,7 @@
             return cid;
         }
 
-        // Toggle model activation
+        // Toggle model card activation
         function toggleAI(index) {
             const config = modelsConfig[index];
             if (!config) return;
@@ -873,19 +937,17 @@
             }
         }
 
-        // Switch screen view
+        // Switch workspace tabs
         function switchView(viewName) {
             document.querySelectorAll('.view-container').forEach(el => el.classList.remove('active'));
             const target = document.getElementById('view-' + viewName);
             if (target) target.classList.add('active');
 
-            // Swiper active highlight
             document.querySelectorAll('.nav-swiper .nav-item').forEach(item => {
                 const targetText = item.textContent.toLowerCase();
                 item.classList.toggle('active', targetText === viewName || (viewName==='setting' && targetText==='settings'));
             });
 
-            // Hide/Show input bar based on view
             const inputDock = document.getElementById('mobile-dock-area');
             if (viewName === 'workspace') {
                 inputDock.style.display = 'flex';
@@ -893,7 +955,6 @@
                 inputDock.style.display = 'none';
             }
 
-            // View-specific loaders
             if (viewName === 'expertise') {
                 renderExpertiseGrid();
             } else if (viewName === 'history') {
@@ -903,7 +964,7 @@
             }
         }
 
-        // Send prompt to active backend models
+        // Broadcast prompt to backend
         async function broadcast() {
             const input = document.getElementById('main-in');
             const prompt = input.value.trim();
@@ -919,12 +980,10 @@
                 return;
             }
 
-            // Clear old best highlights
             document.querySelectorAll('.ai-card').forEach(c => {
                 c.style.borderColor = 'var(--border)';
             });
 
-            // Append user queries and loading status
             activeTargets.forEach(cfg => {
                 const chatArea = document.getElementById(cfg.id);
                 
@@ -943,7 +1002,6 @@
 
             input.value = '';
 
-            // Handle system instruction preset
             let systemInstruction = '';
             if (activePreset !== 'Neutral') {
                 const prebuilts = {
@@ -989,7 +1047,6 @@
                         typewriteText(lastBubble, textAnswer);
                     }
                     
-                    // Update telemetry
                     const tokenBadge = document.querySelector(`#${cfg.card} .card-telemetry`);
                     if (tokenBadge) {
                         tokenBadge.textContent = `${Math.round(textAnswer.length / 4)} tokens`;
@@ -1021,7 +1078,7 @@
             }, 6);
         }
 
-        // Best Response
+        // Judge Best Response
         async function selectBestResponse() {
             const activeTargets = modelsConfig.filter(cfg => {
                 const card = document.getElementById(cfg.card);
@@ -1029,7 +1086,7 @@
             });
 
             if (activeTargets.length < 2) {
-                alert("Need at least two active models to run comparisons.");
+                alert("Need at least two active models to run comparison.");
                 return;
             }
 
@@ -1069,7 +1126,7 @@
                         }
                     }
                 } else {
-                    alert("Unable to reach best response service. Defaulting to first candidate.");
+                    alert("Unable to reach best response judge service.");
                 }
             } catch (err) {
                 alert("Failed to analyze responses.");
@@ -1102,7 +1159,7 @@
             }
         }
 
-        // AI Consensus
+        // Consensus Synthesis
         async function generateConsensus() {
             const activeTargets = modelsConfig.filter(cfg => {
                 const card = document.getElementById(cfg.card);
@@ -1133,7 +1190,6 @@
                 });
                 const data = await res.json();
                 if (data.success && data.consensus) {
-                    // Inject consensus bubble into all chats
                     activeTargets.forEach(cfg => {
                         const chatArea = document.getElementById(cfg.id);
                         const cBubble = document.createElement('div');
@@ -1156,7 +1212,7 @@
             const modelB = document.getElementById('debate-model-b').value;
             const rounds = parseInt(document.getElementById('debate-rounds').value, 10);
 
-            if (!topic) return alert("Write a debate subject topic first.");
+            if (!topic) return alert("Write a debate topic subject first.");
 
             const arena = document.getElementById('mobile-debate-arena');
             arena.classList.remove('hidden');
@@ -1180,14 +1236,13 @@
 
                 if (data.success && data.transcript) {
                     data.transcript.forEach((step, index) => {
-                        const isA = String(step.model).includes(modelA.split('/')[1]) || index % 2 === 0;
+                        const isA = String(step.model).includes(modelA) || index % 2 === 0;
                         const bubble = document.createElement('div');
                         bubble.className = `debate-bubble ${isA ? 'proponent' : 'opponent'}`;
                         bubble.innerHTML = `<b>${isA ? 'Proponent' : 'Opponent'} (${step.model}):</b><br>${step.text}`;
                         arena.appendChild(bubble);
                     });
                     
-                    // Show summary
                     if (data.summary) {
                         const sumCard = document.getElementById('mobile-debate-summary-card');
                         const sumText = document.getElementById('mobile-debate-summary-text');
@@ -1200,7 +1255,7 @@
             }
         }
 
-        // Voice speech logic
+        // Voice recognizer
         function startVoiceRecognition() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) return alert("Speech recognition not supported on this browser.");
@@ -1222,7 +1277,7 @@
             };
         }
 
-        // Custom API Keys payload helper
+        // BYOK Credentials payload loader
         function getCustomKeysPayload() {
             return {
                 GEMINI_API_KEY: document.getElementById('byok-gemini').value.trim() || undefined,
@@ -1237,7 +1292,6 @@
             alert("BYOK Keys saved securely in browser storage.");
         }
 
-        // Load settings saved keys
         function loadBYOKKeys() {
             const keysRaw = localStorage.getItem('byok-keys');
             if (keysRaw) {
@@ -1248,16 +1302,16 @@
             }
         }
 
-        // Presets view render
+        // Expertise presets render
         function renderExpertiseGrid() {
             const container = document.getElementById('mobile-presets-container');
             const presets = [
-                { name: 'Neutral', icon: '🌍', desc: 'Standard response flow without guidelines.' },
-                { name: 'Code Architect', icon: '💻', desc: 'Write optimized, secure, and clean code preset.' },
-                { name: 'Creative Writer', icon: '✍️', desc: 'Expressive Hooks, Vivid Imagery and Prose presets.' },
-                { name: 'Bug Finder & QA', icon: '🔍', desc: 'Examine code vulnerabilities and QA validation preset.' },
-                { name: 'UX/UI Critic', icon: '🎨', desc: 'Design review and accessibility hierarchy presetting.' },
-                { name: 'Academic Scholar', icon: '📖', desc: 'Objective scholarship presets, logical data tables.' }
+                { name: 'Neutral', icon: '🌍', desc: 'Standard response flow without additional parameters.' },
+                { name: 'Code Architect', icon: '💻', desc: 'Optimized, structured and documented code complexity presets.' },
+                { name: 'Creative Writer', icon: '✍️', desc: 'Dynamic Hook, expressiveness prose variations.' },
+                { name: 'Bug Finder & QA', icon: '🔍', desc: 'Vulnerability scanners, robustness verification parameters.' },
+                { name: 'UX/UI Critic', icon: '🎨', desc: 'Visual spacing, alignment review, dark theme metrics.' },
+                { name: 'Academic Scholar', icon: '📖', desc: 'Scholar logic presets, comparative data tables.' }
             ];
 
             container.innerHTML = '';
@@ -1280,7 +1334,7 @@
             });
         }
 
-        // History Loader
+        // History page loader
         async function loadHistory() {
             const list = document.getElementById('mobile-history-list');
             list.innerHTML = '<div style="text-align:center;padding:12px;opacity:0.6;">Loading history logs...</div>';
@@ -1313,14 +1367,13 @@
             }
         }
 
-        // Insights preference stats pulling
+        // Insights chart configurations
         async function loadInsights() {
             try {
                 const res = await fetch(`/api/feedback/stats?clientId=${encodeURIComponent(getFeedbackClientId())}`);
                 const stats = await res.json();
 
                 if (stats.success) {
-                    // Update stats panel
                     let total = 0;
                     let topLiked = '-';
                     let maxLikes = -1;
@@ -1344,7 +1397,6 @@
                     document.getElementById('stat-total-queries').textContent = total;
                     document.getElementById('stat-favorite-model').textContent = topLiked;
 
-                    // Render chart
                     renderPreferencesChart(labels, likesData, dislikesData);
                 }
             } catch (err) {
@@ -1363,22 +1415,25 @@
                 data: {
                     labels,
                     datasets: [
-                        { label: 'Likes', data: likes, backgroundColor: '#10b981' },
-                        { label: 'Dislikes', data: dislikes, backgroundColor: '#ef4444' }
+                        { label: 'Likes', data: likes, backgroundColor: '#10b981', borderRadius: 6 },
+                        { label: 'Dislikes', data: dislikes, backgroundColor: '#ef4444', borderRadius: 6 }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: 'var(--text)', font: { family: 'Plus Jakarta Sans', weight: 'bold' } } }
+                    },
                     scales: {
-                        x: { grid: { display: false } },
-                        y: { beginAtZero: true }
+                        x: { grid: { display: false }, ticks: { color: 'var(--text-muted)' } },
+                        y: { beginAtZero: true, grid: { color: 'var(--border)' }, ticks: { color: 'var(--text-muted)' } }
                     }
                 }
             });
         }
 
-        // Notepad controls
+        // Notepad
         function launchNotepad(e) {
             if (e) e.stopPropagation();
             document.getElementById('floating-notepad').classList.add('is-open');
@@ -1433,7 +1488,7 @@
                     body: JSON.stringify({
                         clientId: getFeedbackClientId(),
                         model: cfg.key,
-                        prompt: "Mobile request",
+                        prompt: "Mobile query",
                         response: lastAi.textContent,
                         vote: type
                     })
@@ -1443,7 +1498,7 @@
             }
         }
 
-        // Theme Toggle Sync
+        // Theme sync toggle
         document.getElementById('theme-bulb').addEventListener('click', function() {
             const isLight = document.body.classList.contains('light-mode');
             const nextTheme = isLight ? 'midnight' : 'light';
@@ -1452,9 +1507,8 @@
             localStorage.setItem('theme', nextTheme === 'light' ? 'light' : 'dark');
         });
 
-        // Initialize Workspace Toggles
+        // Initialize Workspace values
         document.addEventListener('DOMContentLoaded', () => {
-            // Apply theme on load
             const activeTheme = localStorage.getItem('themeName') || localStorage.getItem('theme') || 'midnight';
             document.body.classList.toggle('light-mode', activeTheme === 'light');
 
@@ -1463,7 +1517,6 @@
                 toggleAI(i);
             }
 
-            // Sync notepad text
             const savedNote = localStorage.getItem('mobile_notepad_text');
             if (savedNote) {
                 document.getElementById('notepad-textarea').value = savedNote;
@@ -1475,7 +1528,7 @@
             loadBYOKKeys();
         });
 
-        // Copy / download responses
+        // Copy/download
         function copyCardChat(btn) {
             const card = btn.closest('.ai-card');
             const bubbles = card.querySelectorAll('.bubble');
