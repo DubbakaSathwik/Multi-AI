@@ -810,7 +810,7 @@
             </div>
             <span id="user-label">GUEST</span>
         </li>
-        <a id="logout-btn" onclick="handleLogout()" href="login.html" class="nav-item"></a>
+        <li id="logout-btn" onclick="handleLogout()" class="nav-item" style="display: none;">
             <i class="fa-solid fa-right-from-bracket"></i><span>Log out</span>
         </li>
     </ul>
@@ -1035,12 +1035,17 @@
 
     // ---------- THEME TOGGLE ----------
     document.getElementById('theme-bulb').addEventListener('click', function() {
-        document.body.classList.toggle('light-mode');
         const isLight = document.body.classList.contains('light-mode');
-        localStorage.setItem('theme', isLight ? 'light' : 'dark');
+        const nextTheme = isLight ? 'midnight' : 'light';
+        document.body.classList.toggle('light-mode', nextTheme === 'light');
+        localStorage.setItem('themeName', nextTheme);
+        localStorage.setItem('theme', nextTheme === 'light' ? 'light' : 'dark');
     });
-    if (localStorage.getItem('theme') === 'light') {
+    const savedMobileTheme = localStorage.getItem('themeName') || localStorage.getItem('theme') || 'midnight';
+    if (savedMobileTheme === 'light') {
         document.body.classList.add('light-mode');
+    } else {
+        document.body.classList.remove('light-mode');
     }
 
     // ---------- HAMBURGER TOGGLE ----------
@@ -1084,7 +1089,18 @@
     function optimizePrompt() { alert('Optimize prompt (mock)'); }
     function startVoiceRecognition() { alert('Voice input (mock)'); }
     function generateConsensus() { alert('Consensus (mock)'); }
-    function handleLogout() { if(confirm('Logout?')) { localStorage.clear(); location.reload(); } }
+    function handleLogout() {
+        if (confirm("Log Out of this Session?")) {
+            localStorage.setItem('isLoggedIn', 'false');
+            localStorage.setItem('neuralUser', 'Guest');
+            localStorage.setItem('neuralEmail', 'guest@multiai.system');
+            localStorage.removeItem('token');
+            localStorage.removeItem('modelLikes');
+            localStorage.removeItem('modelDislikes');
+            localStorage.removeItem('responseVotes');
+            window.location.href = 'login.html';
+        }
+    }
 
     // ---------- INIT: show all cards by default on first load ----------
     document.addEventListener('DOMContentLoaded', function() {
@@ -1104,8 +1120,14 @@
         });
         // Set profile avatar
         const name = localStorage.getItem('neuralUser') || 'Guest';
+        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
         document.getElementById('profile-avatar').textContent = name.charAt(0).toUpperCase();
         document.getElementById('user-label').textContent = name.toUpperCase();
+
+        const logoutBtn = document.getElementById('logout-btn');
+        if (logoutBtn) {
+            logoutBtn.style.display = (isLoggedIn && name.toLowerCase() !== 'guest') ? 'flex' : 'none';
+        }
     });
 
     // Copy/Download stubs (minimal)
