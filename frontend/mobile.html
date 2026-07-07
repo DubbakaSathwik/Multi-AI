@@ -4592,6 +4592,25 @@ function loadChatStream(id) {
 // 7. MULTI-PAGE SWITCH VIEWS CONTROLLER
 let isSwitchingView = false;
 function switchView(viewName, preventAutoSelectAll = false) {
+    // Dynamically show/hide bottom model selector and prompt docks based on Workspace view activity!
+    const isWorkspace = (viewName === 'workspace');
+    const sidebar = document.querySelector('.sidebar');
+    const dockArea = document.querySelector('.dock-area');
+    const modelNav = document.getElementById('mobile-model-nav-bar');
+    
+    if (sidebar) {
+        sidebar.style.setProperty('display', isWorkspace ? 'flex' : 'none', 'important');
+    }
+    if (dockArea) {
+        dockArea.style.setProperty('display', isWorkspace ? 'flex' : 'none', 'important');
+    }
+    if (modelNav) {
+        if (!isWorkspace) {
+            modelNav.style.setProperty('display', 'none', 'important');
+        } else {
+            if (typeof updateModelNav === 'function') updateModelNav();
+        }
+    }
     if (isSwitchingView) return;
     isSwitchingView = true;
 
