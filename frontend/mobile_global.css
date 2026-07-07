@@ -232,7 +232,8 @@
     html, body {
         overflow-x: hidden !important;
         overflow-y: auto !important; /* Restores standard native scrolling down the page viewports */
-        height: 100% !important;
+        height: auto !important;
+        min-height: 100% !important;
     }
 
     .main-wrapper {
@@ -1134,7 +1135,9 @@
     
     .main-wrapper {
         margin-top: 60px !important; /* Make space for fixed header */
-        height: calc(100vh - 60px) !important;
+        height: auto !important;
+        min-height: calc(100vh - 60px) !important;
+        overflow: visible !important;
         display: block !important; /* Remove desktop columns layout */
     }
 
@@ -1159,10 +1162,12 @@
 
     /* Force view containers to expand vertically, avoiding layout heights collapse */
     .view-container {
-        height: 100% !important;
+        height: auto !important;
+        min-height: calc(100vh - 60px) !important;
         width: 100% !important;
         flex: 1 1 auto !important;
         box-sizing: border-box !important;
+        overflow: visible !important;
         display: none;
     }
     .view-container.active {
