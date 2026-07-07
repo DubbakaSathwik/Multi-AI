@@ -522,313 +522,6 @@
 
 
 
-
-    /* ---------------------------------------------------
-       MOBILE COMPRESSION & TOGGLE TOOLS LAYOUT OVERRIDES
-       --------------------------------------------------- */
-       
-    /* 1. Remove Top Nav Horizontal Scroll & Compress */
-    .nav-links {
-        display: flex !important;
-        flex-direction: row !important;
-        justify-content: space-between !important;
-        width: 100% !important;
-        padding: 4px 6px !important;
-        gap: 2px !important;
-        overflow-x: hidden !important; /* Disable horizontal scroll */
-        white-space: normal !important;
-        flex-wrap: nowrap !important;
-    }
-    
-    .nav-links li {
-        flex: 1 !important;
-        text-align: center !important;
-        font-size: 0.68rem !important; /* Slightly smaller to fit perfectly */
-        padding: 6px 2px !important;
-        border-radius: 8px !important;
-        background: rgba(255,255,255,0.02) !important;
-        margin: 0 !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        font-weight: 700 !important;
-    }
-    
-    /* Hide non-essential links to save space */
-    .nav-links li[onclick*="about-us"],
-    .nav-links li[onclick*="about"],
-    #logout-btn {
-        display: none !important;
-    }
-    
-    /* Hide profile label text on mobile, showing only circular avatar */
-    #profile-gate span, #user-label {
-        display: none !important;
-    }
-    
-    #profile-gate {
-        padding: 4px !important;
-        flex: 0 0 34px !important;
-        height: 34px !important;
-        border-radius: 50% !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        background: none !important;
-        border: none !important;
-    }
-    
-    #profile-node {
-        margin: 0 !important;
-        width: 28px !important;
-        height: 28px !important;
-    }
-    
-    /* 2. Style Reorganized Prompt Dock & Toggle Panel */
-    .prompt-bar-container {
-        display: flex !important;
-        flex-direction: row !important;
-        align-items: center !important;
-        justify-content: space-between !important;
-        width: 100% !important;
-        gap: 8px !important;
-    }
-    
-    .input-bar {
-        flex: 1 !important;
-        min-width: 0 !important;
-        width: auto !important;
-        padding: 6px 12px !important;
-    }
-    
-    .prompt-bar-container textarea {
-        flex: 1 !important;
-        width: 100% !important;
-        min-width: 0 !important;
-        height: 36px !important;
-        font-size: 0.88rem !important;
-        padding: 6px 0 !important;
-    }
-    
-    #mobile-tools-toggle, #voice-input-btn, .send-circle-btn {
-        flex-shrink: 0 !important;
-        width: 40px !important;
-        height: 40px !important;
-    }
-    
-    .mobile-tools-panel {
-        display: flex !important;
-        justify-content: space-around !important;
-        align-items: center !important;
-        width: 100% !important;
-        background: rgba(15, 23, 42, 0.95) !important;
-        backdrop-filter: blur(16px) !important;
-        -webkit-backdrop-filter: blur(16px) !important;
-        border: 1px solid var(--border) !important;
-        border-radius: 20px !important;
-        padding: 10px !important;
-        margin-bottom: 8px !important;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
-        z-index: 99999 !important;
-        gap: 8px !important;
-    }
-    
-    .mobile-tools-panel.hidden {
-        display: none !important;
-    }
-    
-    .mobile-tools-panel .circle-tool {
-        width: 38px !important;
-        height: 38px !important;
-        border-radius: 50% !important;
-        background: var(--card-bg) !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
-        flex-shrink: 0 !important;
-    }
-    
-    .mobile-tools-panel .custom-prompt-select {
-        flex: 1 !important;
-        max-width: 120px !important;
-        height: 38px !important;
-        margin: 0 !important;
-        font-size: 0.75rem !important;
-    }
-    
-    /* 3. Form Row & Form Group Stacking Fix */
-    .form-row {
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 12px !important;
-        width: 100% !important;
-    }
-    
-    .form-group {
-        width: 100% !important;
-        margin: 0 !important;
-    }
-    
-    /* Adjust quick settings items layout on mobile */
-    .quick-settings-row {
-        flex-direction: column !important;
-        align-items: stretch !important;
-        gap: 12px !important;
-    }
-    
-    .quick-settings-item {
-        width: 100% !important;
-    }
-
-
-    /* ---------------------------------------------------
-       MOBILE SPLIT-PANE & OVERFLOW ELIMINATION OVERRIDES
-       --------------------------------------------------- */
-       
-    /* Global scroll-view adjustments to prevent nested scrolls */
-    .scroll-view {
-        height: auto !important;
-        overflow-y: visible !important;
-        padding: 16px 12px !important;
-        gap: 16px !important;
-        width: 100% !important;
-        box-sizing: border-box !important;
-    }
-
-    /* 1. History Page Stack Layout */
-    .history-page-layout {
-        display: flex !important;
-        flex-direction: column !important;
-        height: auto !important;
-        gap: 20px !important;
-        width: 100% !important;
-    }
-    
-    .history-sidebar {
-        width: 100% !important;
-        border-right: none !important;
-        padding-right: 0 !important;
-        overflow-y: visible !important;
-        max-height: none !important;
-    }
-    
-    .history-content-pane {
-        width: 100% !important;
-        padding: 15px !important;
-        min-height: 250px !important;
-        overflow-y: visible !important;
-        box-sizing: border-box !important;
-    }
-
-    /* 2. Settings Page Stack Layout & Tab Menu */
-    .settings-workspace-layout {
-        display: flex !important;
-        flex-direction: column !important;
-        height: auto !important;
-        overflow-y: visible !important;
-        width: 100% !important;
-    }
-    
-    .settings-nav-sidebar {
-        width: 100% !important;
-        border-right: none !important;
-        border-bottom: 1px solid var(--border) !important;
-        padding: 10px 6px !important;
-        display: flex !important;
-        flex-direction: row !important; /* Horizontal swipe tab menu */
-        overflow-x: auto !important;
-        white-space: nowrap !important;
-        gap: 8px !important;
-        scrollbar-width: none !important;
-    }
-    
-    .settings-nav-sidebar::-webkit-scrollbar {
-        display: none !important;
-    }
-    
-    .settings-nav-item {
-        flex-shrink: 0 !important;
-        margin: 0 !important;
-        padding: 8px 12px !important;
-        font-size: 0.8rem !important;
-        display: inline-flex !important;
-        align-items: center;
-        gap: 6px;
-    }
-    
-    .settings-tab-content {
-        width: 100% !important;
-        padding: 16px 12px !important;
-        overflow-y: visible !important;
-        box-sizing: border-box !important;
-    }
-    
-    .profile-form-grid {
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 12px !important;
-        width: 100% !important;
-    }
-
-    /* 3. Debate Arena Setup Stack */
-    .debate-setup-panel > div {
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 12px !important;
-        width: 100% !important;
-    }
-    
-    .debate-setup-panel .form-group {
-        width: 100% !important;
-        margin: 0 !important;
-    }
-    
-    .debate-setup-panel input,
-    .debate-setup-panel select,
-    .debate-setup-panel button {
-        width: 100% !important;
-        box-sizing: border-box !important;
-    }
-
-    /* 4. Insights Stats & Charts Grid Stack */
-    .insights-stats-row {
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 12px !important;
-        width: 100% !important;
-    }
-    
-    .insights-dashboard-grid {
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 20px !important;
-        width: 100% !important;
-    }
-    
-    .insights-panel-card {
-        grid-column: auto !important; /* Reset span 2 */
-        width: 100% !important;
-        box-sizing: border-box !important;
-    }
-
-    /* 5. Expertise Form Adjustments */
-    .custom-expertise-form {
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 12px !important;
-        width: 100% !important;
-    }
-    
-    .auto-persona-row {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: stretch !important;
-        gap: 8px !important;
-        width: 100% !important;
-    }
-    
-    .auto-persona-row button {
-        width: 100% !important;
-    }
-
     /* ---------------------------------------------------
        MOBILE HEADERS, DRAWERS, AND CAROUSEL OVERRIDES
        --------------------------------------------------- */
@@ -905,9 +598,6 @@
         justify-content: center !important;
         margin: 0 !important;
         top: 0 !important;
-        cursor: pointer !important;
-        pointer-events: auto !important;
-        touch-action: manipulation !important;
     }
     
     .mobile-theme-bulb .bulb {
@@ -915,9 +605,6 @@
         height: 22px !important;
         margin: 0 !important;
         top: 0 !important;
-        cursor: pointer !important;
-        pointer-events: auto !important;
-        touch-action: manipulation !important;
     }
     
     .mobile-profile-circle {
@@ -1270,6 +957,13 @@
         display: flex !important;
         flex-direction: column !important;
         justify-content: space-between !important;
+        padding: 12px 10px !important; /* Reduced padding to decrease space between card border and response */
+    }
+    
+    .ai-card .bubble {
+        padding: 8px 12px !important; /* Reduced padding inside bubble */
+        max-width: 92% !important; /* Expands width to prevent vertical words look */
+        font-size: 0.95em !important; /* Scaled relative to the response font size settings */
     }
     
     .card-actions {
@@ -1368,4 +1062,155 @@
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15) !important; /* Lighter shadow to match light themes */
         z-index: 99999 !important;
         gap: 8px !important;
+    }
+
+
+    /* ---------------------------------------------------
+       MOBILE SPLIT-PANE & OVERFLOW ELIMINATION OVERRIDES
+       --------------------------------------------------- */
+       
+    /* Global scroll-view adjustments to prevent nested scrolls */
+    .scroll-view {
+        height: auto !important;
+        overflow-y: visible !important;
+        padding: 16px 12px !important;
+        gap: 16px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 1. History Page Stack Layout */
+    .history-page-layout {
+        display: flex !important;
+        flex-direction: column !important;
+        height: auto !important;
+        gap: 20px !important;
+        width: 100% !important;
+    }
+    
+    .history-sidebar {
+        width: 100% !important;
+        border-right: none !important;
+        padding-right: 0 !important;
+        overflow-y: visible !important;
+        max-height: none !important;
+    }
+    
+    .history-content-pane {
+        width: 100% !important;
+        padding: 15px !important;
+        min-height: 250px !important;
+        overflow-y: visible !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 2. Settings Page Stack Layout & Tab Menu */
+    .settings-workspace-layout {
+        display: flex !important;
+        flex-direction: column !important;
+        height: auto !important;
+        overflow-y: visible !important;
+        width: 100% !important;
+    }
+    
+    .settings-nav-sidebar {
+        width: 100% !important;
+        border-right: none !important;
+        border-bottom: 1px solid var(--border) !important;
+        padding: 10px 6px !important;
+        display: flex !important;
+        flex-direction: row !important; /* Horizontal swipe tab menu */
+        overflow-x: auto !important;
+        white-space: nowrap !important;
+        gap: 8px !important;
+        scrollbar-width: none !important;
+    }
+    
+    .settings-nav-sidebar::-webkit-scrollbar {
+        display: none !important;
+    }
+    
+    .settings-nav-item {
+        flex-shrink: 0 !important;
+        margin: 0 !important;
+        padding: 8px 12px !important;
+        font-size: 0.8rem !important;
+        display: inline-flex !important;
+        align-items: center;
+        gap: 6px;
+    }
+    
+    .settings-tab-content {
+        width: 100% !important;
+        padding: 16px 12px !important;
+        overflow-y: visible !important;
+        box-sizing: border-box !important;
+    }
+    
+    .profile-form-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+        width: 100% !important;
+    }
+
+    /* 3. Debate Arena Setup Stack */
+    .debate-setup-panel > div {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+        width: 100% !important;
+    }
+    
+    .debate-setup-panel .form-group {
+        width: 100% !important;
+        margin: 0 !important;
+    }
+    
+    .debate-setup-panel input,
+    .debate-setup-panel select,
+    .debate-setup-panel button {
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 4. Insights Stats & Charts Grid Stack */
+    .insights-stats-row {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+        width: 100% !important;
+    }
+    
+    .insights-dashboard-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 20px !important;
+        width: 100% !important;
+    }
+    
+    .insights-panel-card {
+        grid-column: auto !important; /* Reset span 2 */
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 5. Expertise Form Adjustments */
+    .custom-expertise-form {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+        width: 100% !important;
+    }
+    
+    .auto-persona-row {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 8px !important;
+        width: 100% !important;
+    }
+    
+    .auto-persona-row button {
+        width: 100% !important;
     }

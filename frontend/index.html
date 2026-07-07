@@ -1125,6 +1125,16 @@
                             <option value="large">Large Spans</option>
                         </select>
                     </div>
+
+                    <div class="form-group">
+                        <label>Response Font Size</label>
+                        <select id="workspace-response-font-size" class="custom-select" onchange="saveWorkspaceSetting('responseFontSize', this.value)">
+                            <option value="small">Small Text</option>
+                            <option value="medium">Medium Text</option>
+                            <option value="large">Large Text</option>
+                            <option value="xlarge">Extra Large Text</option>
+                        </select>
+                    </div>
                 </div>
             </section>
 
@@ -6833,16 +6843,19 @@ function populateSettingsAndProfileData() {
     const promptPos = localStorage.getItem('promptPos') || 'bottom';
     const gridCols = localStorage.getItem('responseGridCols') || 'auto';
     const cardSize = localStorage.getItem('cardSize') || 'comfortable';
+    const responseFontSize = localStorage.getItem('responseFontSize') || 'small';
 
     const selectSide = document.getElementById('workspace-sidebar-pos');
     const selectPrompt = document.getElementById('workspace-prompt-pos');
     const selectCols = document.getElementById('workspace-grid-cols');
     const selectCardSize = document.getElementById('workspace-card-size');
+    const selectResponseFontSize = document.getElementById('workspace-response-font-size');
 
     if (selectSide) selectSide.value = sidebarPos;
     if (selectPrompt) selectPrompt.value = promptPos;
     if (selectCols) selectCols.value = gridCols;
     if (selectCardSize) selectCardSize.value = cardSize;
+    if (selectResponseFontSize) selectResponseFontSize.value = responseFontSize;
 
     const defaultAI = localStorage.getItem('defaultAI') || 'Gemini Flash';
     const defaultExp = localStorage.getItem('activeExpertise') || 'Neutral';
@@ -7229,6 +7242,7 @@ function applyWorkspaceLayout() {
     const responseGridCols = localStorage.getItem('responseGridCols') || 'auto';
     const cardSize = localStorage.getItem('cardSize') || 'comfortable';
     const cardDensity = localStorage.getItem('cardDensity') || 'comfortable';
+    const responseFontSize = localStorage.getItem('responseFontSize') || 'small';
     const glassEnabled = localStorage.getItem('glassmorphismEnabled') || 'true';
     const borderRadius = localStorage.getItem('borderRadius') || '20';
     const fontSize = localStorage.getItem('fontSize') || '14';
@@ -7346,12 +7360,14 @@ function applyWorkspaceLayout() {
         
         const content = card.querySelector('.ai-content');
         if (content) {
-            if (cardSize === 'compact') {
-                content.style.fontSize = '0.85rem';
-            } else if (cardSize === 'large') {
-                content.style.fontSize = '1.05rem';
+            if (responseFontSize === 'small') {
+                content.style.fontSize = '0.8rem';
+            } else if (responseFontSize === 'large') {
+                content.style.fontSize = '1.0rem';
+            } else if (responseFontSize === 'xlarge') {
+                content.style.fontSize = '1.15rem';
             } else {
-                content.style.fontSize = '0.95rem';
+                content.style.fontSize = '0.9rem';
             }
         }
     });
