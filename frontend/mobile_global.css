@@ -1151,6 +1151,19 @@
         width: 100% !important;
     }
 
+    /* Force view containers to expand vertically, avoiding layout heights collapse */
+    .view-container {
+        height: 100% !important;
+        width: 100% !important;
+        flex: 1 1 auto !important;
+        box-sizing: border-box !important;
+        display: none;
+    }
+    .view-container.active {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
     /* Center align welcome / workspace content and eliminate right overflows */
     .workspace {
         display: flex !important;
