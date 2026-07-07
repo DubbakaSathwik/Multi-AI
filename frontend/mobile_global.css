@@ -877,8 +877,7 @@
     
     .mobile-header-center {
         display: flex !important;
-        align-items: center !important;
-    }
+        align-items: center !}
     
     .mobile-header-right {
         display: flex !important;
@@ -1039,12 +1038,83 @@
         background: var(--accent-hover) !important;
     }
 
-    /* Hide standard desktop header elements and workspace sidebar completely */
-    header {
-        display: none !important;
+    /* Mobile Sidebar as Horizontal Bottom Dock Bar */
+    .sidebar {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-around !important;
+        position: fixed !important;
+        bottom: 12px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        width: 92vw !important;
+        max-width: 420px !important;
+        height: 64px !important;
+        background: var(--card-bg) !important;
+        border: 1px solid var(--border) !important;
+        border-radius: 50px !important;
+        padding: 0 16px !important;
+        margin: 0 !important;
+        z-index: 9999 !important;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+        backdrop-filter: blur(16px) !important;
+        gap: 0 !important;
     }
     
-    .sidebar {
+    .sidebar-header {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-family: inherit !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+    }
+    
+    .sidebar-header span {
+        margin: 0 !important;
+        line-height: 1.1 !important;
+    }
+    
+    .sidebar .sb-icon {
+        width: 42px !important;
+        height: 42px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 50% !important;
+        cursor: pointer !important;
+        color: var(--text) !important;
+        opacity: 0.5 !important;
+        transition: all 0.2s !important;
+    }
+    
+    .sidebar .sb-icon.active {
+        opacity: 1 !important;
+        color: var(--accent) !important;
+        background: rgba(255, 255, 255, 0.08) !important;
+        box-shadow: 0 0 12px var(--glow) !important;
+    }
+    
+    .sidebar .user-control-area {
+        display: none !important;
+    }
+
+    /* Position prompt bar dock-area directly above the bottom sidebar */
+    .dock-area {
+        position: fixed !important;
+        bottom: 84px !important; /* Above the 64px + 12px bottom sidebar */
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        width: 92vw !important;
+        max-width: 420px !important;
+        z-index: 9998 !important;
+    }
+
+    /* Hide standard desktop header elements and workspace sidebar completely */
+    header {
         display: none !important;
     }
     
@@ -1082,7 +1152,7 @@
         overflow-y: hidden !important;
         scroll-snap-type: x mandatory !important;
         gap: 15px !important;
-        padding: 20px 15px 120px 15px !important;
+        padding: 20px 15px 180px 15px !important; /* Padding matches double bottom dock height */
         width: 100% !important;
         box-sizing: border-box !important;
         height: calc(100% - 100px) !important;
@@ -1108,7 +1178,7 @@
         padding: 20px 10px 10px 10px !important;
         margin: 0 !important;
         flex-shrink: 0 !important;
-        scroll-snap-align: center !important;
+        scroll-snap-align: center;
     }
     
     .steps {
