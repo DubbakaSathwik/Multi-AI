@@ -7646,7 +7646,6 @@ updateActiveModelsCountBadge();
         document.querySelectorAll('.ai-card').forEach(card => {
             const header = card.querySelector('.ai-header');
             if (header) {
-                // Wrap left content (avatar + name)
                 const avatar = header.querySelector('.ai-avatar-wrapper');
                 const name = header.querySelector('b');
                 
@@ -7658,7 +7657,6 @@ updateActiveModelsCountBadge();
                 header.innerHTML = '';
                 header.appendChild(leftWrap);
                 
-                // Add header token count span
                 const tokenSpan = document.createElement('span');
                 tokenSpan.className = 'card-header-telemetry';
                 const footerTelemetry = card.querySelector('.card-telemetry');
@@ -7683,6 +7681,9 @@ updateActiveModelsCountBadge();
             dockArea.insertBefore(toolsPanel, container);
         }
     });
+    // Declare observer globally to allow updateModelNav to disconnect/reconnect safely
+    let observer;
+
     // Drawer toggling functions
     window.toggleLeftDrawer = function() {
         const leftDrawer = document.getElementById('mobile-left-drawer');
@@ -7755,83 +7756,96 @@ updateActiveModelsCountBadge();
 
     function updateModelNav() {
         if (!workspace || !navBar) return;
-        const activeCards = Array.from(workspace.querySelectorAll('.ai-card:not(.hidden)'));
-        if (activeCards.length === 0) {
-            navBar.style.display = 'none';
-            return;
-        }
-        navBar.style.display = 'flex';
-
-        // Detect which card is currently centered
-        const workspaceRect = workspace.getBoundingClientRect();
-        const workspaceCenter = workspaceRect.left + workspaceRect.width / 2;
-
-        let currentIdx = 0;
-        let minDiff = Infinity;
-
-        activeCards.forEach((card, idx) => {
-            const cardRect = card.getBoundingClientRect();
-            const cardCenter = cardRect.left + cardRect.width / 2;
-            const diff = Math.abs(cardCenter - workspaceCenter);
-            if (diff < minDiff) {
-                minDiff = diff;
-                currentIdx = idx;
-            }
-        });
-
-        const currentCard = activeCards[currentIdx];
         
-        // Dynamic Header Tokens Updates: Find card telemetry text
-        const telemetrySrc = currentCard.querySelector('.card-telemetry');
-        let headerTelemetry = currentCard.querySelector('.card-header-telemetry');
-        if (telemetrySrc) {
-            if (!headerTelemetry) {
-                headerTelemetry = document.createElement('span');
-                headerTelemetry.className = 'card-header-telemetry';
-                currentCard.querySelector('.ai-header').appendChild(headerTelemetry);
+        // DISCONNECT MutationObserver to prevent stack-overflow crashes during DOM writes!
+        if (observer) observer.disconnect();
+        
+        try {
+            const activeCards = Array.from(workspace.querySelectorAll('.ai-card:not(.hidden)'));
+            if (activeCards.length === 0) {
+                navBar.style.display = 'none';
+                return;
             }
-            headerTelemetry.innerText = telemetrySrc.innerText;
-        }
+            navBar.style.display = 'flex';
 
-        const currentName = currentCard.querySelector('.ai-header b').innerText;
+            // Detect which card is currently centered
+            const workspaceRect = workspace.getBoundingClientRect();
+            const workspaceCenter = workspaceRect.left + workspaceRect.width / 2;
 
-        // Set center text
-        centerText.innerText = currentName;
+            let currentIdx = 0;
+            let minDiff = Infinity;
 
-        // Set left text (prev card)
-        if (currentIdx > 0) {
-            const prevCard = activeCards[currentIdx - 1];
-            const prevName = prevCard.querySelector('.ai-header b').innerText;
-            leftText.innerText = `‹ ${prevName}`;
-            leftText.style.visibility = 'visible';
-            leftText.onclick = () => {
-                prevCard.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-            };
-        } else {
-            leftText.style.visibility = 'hidden';
-            leftText.onclick = null;
-        }
+            activeCards.forEach((card, idx) => {
+                const cardRect = card.getBoundingClientRect();
+                const cardCenter = cardRect.left + cardRect.width / 2;
+                const diff = Math.abs(cardCenter - workspaceCenter);
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    currentIdx = idx;
+                }
+            });
 
-        // Set right text (next card)
-        if (currentIdx < activeCards.length - 1) {
-            const nextCard = activeCards[currentIdx + 1];
-            const nextName = nextCard.querySelector('.ai-header b').innerText;
-            rightText.innerText = `${nextName} ›`;
-            rightText.style.visibility = 'visible';
-            rightText.onclick = () => {
-                nextCard.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-            };
-        } else {
-            rightText.style.visibility = 'hidden';
-            rightText.onclick = null;
+            const currentCard = activeCards[currentIdx];
+            
+            // Dynamic Header Tokens Updates: Find card telemetry text
+            const telemetrySrc = currentCard.querySelector('.card-telemetry');
+            let headerTelemetry = currentCard.querySelector('.card-header-telemetry');
+            if (telemetrySrc) {
+                if (!headerTelemetry) {
+                    headerTelemetry = document.createElement('span');
+                    headerTelemetry.className = 'card-header-telemetry';
+                    currentCard.querySelector('.ai-header').appendChild(headerTelemetry);
+                }
+                if (headerTelemetry.innerText !== telemetrySrc.innerText) {
+                    headerTelemetry.innerText = telemetrySrc.innerText;
+                }
+            }
+
+            const currentName = currentCard.querySelector('.ai-header b').innerText;
+
+            // Set center text
+            centerText.innerText = currentName;
+
+            // Set left text (prev card)
+            if (currentIdx > 0) {
+                const prevCard = activeCards[currentIdx - 1];
+                const prevName = prevCard.querySelector('.ai-header b').innerText;
+                leftText.innerText = `‹ ${prevName}`;
+                leftText.style.visibility = 'visible';
+                leftText.onclick = () => {
+                    prevCard.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                };
+            } else {
+                leftText.style.visibility = 'hidden';
+                leftText.onclick = null;
+            }
+
+            // Set right text (next card)
+            if (currentIdx < activeCards.length - 1) {
+                const nextCard = activeCards[currentIdx + 1];
+                const nextName = nextCard.querySelector('.ai-header b').innerText;
+                rightText.innerText = `${nextName} ›`;
+                rightText.style.visibility = 'visible';
+                rightText.onclick = () => {
+                    nextCard.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                };
+            } else {
+                rightText.style.visibility = 'hidden';
+                rightText.onclick = null;
+            }
+        } finally {
+            // RE-CONNECT MutationObserver after updates complete safely
+            if (observer && workspace) {
+                observer.observe(workspace, { attributes: true, subtree: true, childList: true });
+            }
         }
     }
 
     if (workspace) {
         workspace.addEventListener('scroll', updateModelNav);
         
-        // MutationObserver to update tokens and position on streaming responses
-        const observer = new MutationObserver(updateModelNav);
+        // Instantiate and initiate safe observer
+        observer = new MutationObserver(updateModelNav);
         observer.observe(workspace, { attributes: true, subtree: true, childList: true });
         
         // Initial call

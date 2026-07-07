@@ -1114,7 +1114,6 @@
         width: 92vw !important;
         max-width: 420px !important;
         z-index: 9998 !important;
-        /* ELIMINATE RECTANGULAR BACKDROP DOCK SHADE AT THE BACKGROUND OF THE PROMPT BAR DOCK AREA */
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
