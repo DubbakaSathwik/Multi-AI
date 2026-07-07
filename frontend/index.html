@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-<link rel="stylesheet" href="style.css?v=1.0.12">
+<link rel="stylesheet" href="style.css?v=1.0.14">
 <link rel="stylesheet" href="mobile.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <title>Multi AI - all Ai meetup</title>
+    <title>Nexora AI - all Ai meetup</title>
     
 </head>
 <body>
@@ -15,7 +15,7 @@
 
     
        <header>
-    <div class="logo">MULTI<span>AI</span></div>
+    <div class="logo">NEXORA <span>AI</span></div>
 
     <ul class="nav-links">
         <li class="nav-item" onclick="switchView('workspace')">
@@ -131,7 +131,7 @@
             <div class="workspace">
                 <div id="intro-overlay">
                     <div class="intro-content">
-                        <h2>Welcome to MULTIAI</h2>
+                        <h2>Welcome to Nexora AI</h2>
                         <p>A unified interface to broadcast commands across multiple AI models. Compare outputs, verify logic, and optimize your workflow in one place.</p>
                         
                         <div class="steps">
@@ -457,7 +457,7 @@
                         <div class="auto-persona-row">
                             <div class="form-group">
                                 <label for="custom-persona-idea">Auto Create Persona</label>
-                                <input type="text" id="custom-persona-idea" placeholder="Tell MultiAI what assistant you need, e.g., strict DSA tutor for beginners">
+                                <input type="text" id="custom-persona-idea" placeholder="Tell Nexora AI what assistant you need, e.g., strict DSA tutor for beginners">
                             </div>
                             <button class="cmd-btn" id="auto-persona-btn" type="button" onclick="autoCreatePersona()">
                                 <i class="fa-solid fa-wand-magic-sparkles"></i> Auto Create
@@ -781,7 +781,7 @@
                         </div>
                         <div class="profile-meta">
                             <h4 id="settings-display-name">Guest User</h4>
-                            <p id="settings-display-email">guest@multiai.system</p>
+                            <p id="settings-display-email">guest@nexoraai.system</p>
                             <div class="profile-badge-row">
                                 <span class="profile-role-badge" id="settings-display-role">Developer</span>
                                 <span class="profile-type-badge">Account: Free Tier</span>
@@ -1273,14 +1273,14 @@
             <!-- ABOUT TAB -->
             <section id="set-tab-about" class="settings-tab-content">
                 <div class="settings-section-header">
-                    <h3>About MultiAI</h3>
+                    <h3>About Nexora AI</h3>
                     <p>Premium multi-model compare and debate coding engine.</p>
                 </div>
                 
                 <div class="settings-card">
-                    <h4 style="color: var(--accent); margin-bottom: 10px;">MultiAI Workspace OS</h4>
+                    <h4 style="color: var(--accent); margin-bottom: 10px;">Nexora AI Workspace OS</h4>
                     <p style="font-size: 0.9rem; line-height: 1.6; margin-bottom: 15px;">
-                        MultiAI is a state-of-the-art single-interface compare tool. Broadcast queries, contrast word diff structures, synthesize AI consensus, and initiate rebuttal debates across 5 local and remote AI models.
+                        Nexora AI is a state-of-the-art single-interface compare tool. Broadcast queries, contrast word diff structures, synthesize AI consensus, and initiate rebuttal debates across 5 local and remote AI models.
                     </p>
                     
                     <div style="font-size: 0.85rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 8px;">
@@ -1295,9 +1295,9 @@
 </div>
 
 <div id="view-about-us" class="view-container hidden about-page">
-    <div class="page-kicker">About MultiAI</div>
+    <div class="page-kicker">About Nexora AI</div>
     <h2 class="page-heading">One workspace for comparing AI answers</h2>
-    <p class="page-subtext">MultiAI is a single-page comparison workspace. You write one prompt, send it to multiple AI models, compare the answers, continue with follow-up queries, and save useful sessions for later.</p>
+    <p class="page-subtext">Nexora AI is a single-page comparison workspace. You write one prompt, send it to multiple AI models, compare the answers, continue with follow-up queries, and save useful sessions for later.</p>
     <div class="about-grid">
         <div class="ui-info-card">
             <div class="ui-info-icon"><i class="fa-solid fa-layer-group"></i></div>
@@ -1317,7 +1317,7 @@
         </div>
         <div class="ui-info-card">
             <div class="ui-info-icon"><i class="fa-solid fa-comments"></i></div>
-            <div><h3>Debate Arena</h3><p>Choose two models, a topic, and round count. MultiAI runs the debate and keeps a toggleable summary verdict.</p></div>
+            <div><h3>Debate Arena</h3><p>Choose two models, a topic, and round count. Nexora AI runs the debate and keeps a toggleable summary verdict.</p></div>
         </div>
         <div class="ui-info-card">
             <div class="ui-info-icon"><i class="fa-solid fa-chart-line"></i></div>
@@ -1805,7 +1805,7 @@ function downloadCardChat(btn) {
         return;
     }
 
-    const payload = `====================================\n   MULTIAI SYSTEM DATA LOGS: ${modelHeader}\n====================================\n\n${systemText}`;
+    const payload = `====================================\n   NEXORA AI SYSTEM DATA LOGS: ${modelHeader}\n====================================\n\n${systemText}`;
     const fileBlob = new Blob([payload], { type: 'text/plain' });
     const dynamicAnchor = document.createElement('a');
     
@@ -1890,8 +1890,8 @@ function buildResponseKey(model, prompt, response) {
     return `${model}:${hashText(prompt)}:${hashText(response)}`;
 }
 
-const SESSION_STARTED_AT_KEY = 'multiAiSessionStartedAt';
-const MODEL_WAIT_TIME_KEY = 'multiAiModelWaitMs';
+const SESSION_STARTED_AT_KEY = 'nexoraAiSessionStartedAt';
+const MODEL_WAIT_TIME_KEY = 'nexoraAiModelWaitMs';
 
 if (!localStorage.getItem(SESSION_STARTED_AT_KEY)) {
     localStorage.setItem(SESSION_STARTED_AT_KEY, String(Date.now()));
@@ -2454,7 +2454,7 @@ function handleLogout() {
     if(confirm("Log Out of this Session?")) {
         localStorage.setItem('isLoggedIn', 'false');
         localStorage.setItem('neuralUser', 'Guest');
-        localStorage.setItem('neuralEmail', 'guest@multiai.system');
+        localStorage.setItem('neuralEmail', 'guest@nexoraai.system');
         localStorage.removeItem('token');
         localStorage.removeItem('modelLikes');
         localStorage.removeItem('modelDislikes');
@@ -2465,7 +2465,7 @@ function handleLogout() {
 
 function updateProfilePage() {
     const userName = localStorage.getItem('neuralUser') || 'Guest';
-    const email = localStorage.getItem('neuralEmail') || 'guest@multiai.system';
+    const email = localStorage.getItem('neuralEmail') || 'guest@nexoraai.system';
     const mobile = localStorage.getItem('profileMobile') || '';
     const role = localStorage.getItem('profileRole') || '';
     const bio = localStorage.getItem('profileBio') || '';
@@ -2515,7 +2515,7 @@ async function loadProfileFromServer() {
         const profile = data.profile;
         if (!profile) return;
         localStorage.setItem('neuralUser', profile.displayName || 'Guest');
-        localStorage.setItem('neuralEmail', profile.email || 'guest@multiai.system');
+        localStorage.setItem('neuralEmail', profile.email || 'guest@nexoraai.system');
         localStorage.setItem('profileMobile', profile.mobile || '');
         localStorage.setItem('profileRole', profile.role || '');
         localStorage.setItem('profileBio', profile.bio || '');
@@ -2527,7 +2527,7 @@ async function loadProfileFromServer() {
 
 async function saveProfileDetails() {
     const name = document.getElementById('profile-edit-name')?.value.trim() || 'Guest';
-    const email = document.getElementById('profile-edit-email')?.value.trim() || 'guest@multiai.system';
+    const email = document.getElementById('profile-edit-email')?.value.trim() || 'guest@nexoraai.system';
     const mobile = document.getElementById('profile-edit-mobile')?.value.trim() || '';
     const role = document.getElementById('profile-edit-role')?.value.trim() || '';
     const bio = document.getElementById('profile-edit-bio')?.value.trim() || '';
@@ -4040,7 +4040,7 @@ async function autoCreatePersona() {
     const button = document.getElementById('auto-persona-btn');
     const idea = ideaEl?.value.trim();
     if (!idea) {
-        alert("Tell MultiAI what type of assistant you need first.");
+        alert("Tell Nexora AI what type of assistant you need first.");
         return;
     }
 
@@ -5720,7 +5720,7 @@ function saveEntireSession() {
     }
     
     let currentStream = chatStreams.find(c => c.id === activeChatStreamId);
-    const defaultTitle = currentStream ? currentStream.title : "My Multi-AI Stream";
+    const defaultTitle = currentStream ? currentStream.title : "My Nexora AI Stream";
     
     const title = prompt("Enter a title for this chat stream session:", defaultTitle);
     if (title === null) return;
@@ -6711,7 +6711,7 @@ function populateSettingsAndProfileData() {
     checkAchievements();
     
     const name = localStorage.getItem('neuralUser') || "Guest";
-    const email = localStorage.getItem('neuralEmail') || "guest@multiai.system";
+    const email = localStorage.getItem('neuralEmail') || "guest@nexoraai.system";
     const role = localStorage.getItem('profileRole') || "Developer";
     const memberSince = localStorage.getItem('profileMemberSince') || "June 2026";
     
@@ -6885,7 +6885,7 @@ function updateSliderLabelDisplays() {
 
 function saveProfileDetails() {
     const inputName = document.getElementById('profile-input-name')?.value.trim() || 'Guest';
-    const inputEmail = document.getElementById('profile-input-email')?.value.trim() || 'guest@multiai.system';
+    const inputEmail = document.getElementById('profile-input-email')?.value.trim() || 'guest@nexoraai.system';
     const inputRole = document.getElementById('profile-input-role')?.value.trim() || 'Developer';
 
     localStorage.setItem('neuralUser', inputName);
@@ -7464,7 +7464,7 @@ function exportLocalSettingsData() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'multiai-settings-export.json';
+    a.download = 'nexoraai-settings-export.json';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

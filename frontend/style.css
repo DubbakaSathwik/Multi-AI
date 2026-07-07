@@ -628,7 +628,7 @@ body.light-mode .nav-item.active::after {
 .theme-toggle-container {
   position: fixed;
   top: 18px;
-  right: 280px;
+  right: 320px;
   width: 40px; 
   height: 40px;
   display: flex;
@@ -1308,41 +1308,6 @@ body.light-mode .notepad-btn:hover { background: rgba(0,0,0,0.05); }
 * {
     scrollbar-width: none;
     -ms-overflow-style: none;
-}
-
-/* Navigation tab states */
-.nav-links li {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    flex: 0 0 auto;
-    padding: 0;
-    white-space: nowrap;
-}
-.nav-links li:hover {
-    opacity: 1;
-    color: var(--accent);
-}
-.nav-links li.active {
-    opacity: 1;
-    color: var(--accent);
-}
-.nav-links li::after {
-    content: '';
-    position: absolute;
-    bottom: -4px;
-    left: 50%;
-    width: 0;
-    height: 2px;
-    background: var(--accent);
-    box-shadow: 0 0 8px var(--glow);
-    transition: all 0.3s ease;
-    transform: translateX(-50%);
-}
-.nav-links li.active::after {
-    width: 100%;
 }
 
 /* View Containers */

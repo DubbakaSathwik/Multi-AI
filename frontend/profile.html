@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <title>Multi AI - Settings & Workspace Preferences</title>
+    <title>Nexora AI - Settings & Workspace Preferences</title>
     <style>
         :root {
             --bg: #030712;
@@ -636,7 +636,7 @@
                         </div>
                         <div class="profile-meta">
                             <h4 id="settings-display-name">Guest User</h4>
-                            <p id="settings-display-email">guest@multiai.system</p>
+                            <p id="settings-display-email">guest@nexoraai.system</p>
                             <div class="profile-badge-row">
                                 <span class="profile-role-badge" id="settings-display-role">Developer</span>
                                 <span class="profile-type-badge">Account: Free Tier</span>
@@ -1123,13 +1123,13 @@
         <!-- ABOUT TAB -->
         <section id="tab-about" class="tab-content">
             <header>
-                <h1>About MultiAI</h1>
+                <h1>About Nexora AI</h1>
                 <p>Workspace details, license info, and system diagnostics.</p>
             </header>
             <div class="settings-card">
-                <h4 style="color: var(--accent); margin-bottom: 10px; font-weight: 800;">MultiAI Workspace OS</h4>
+                <h4 style="color: var(--accent); margin-bottom: 10px; font-weight: 800;">Nexora AI Workspace OS</h4>
                 <p style="font-size: 0.9rem; line-height: 1.6; margin-bottom: 15px;">
-                    MultiAI is a state-of-the-art single-interface compare tool. Broadcast queries, contrast word diff structures, synthesize AI consensus, and initiate rebuttal debates across 5 local and remote AI models.
+                    Nexora AI is a state-of-the-art single-interface compare tool. Broadcast queries, contrast word diff structures, synthesize AI consensus, and initiate rebuttal debates across 5 local and remote AI models.
                 </p>
                 
                 <div style="font-size: 0.85rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 8px;">
@@ -1235,7 +1235,7 @@
             checkAchievements();
             
             const name = localStorage.getItem('neuralUser') || "Guest";
-            const email = localStorage.getItem('neuralEmail') || "guest@multiai.system";
+            const email = localStorage.getItem('neuralEmail') || "guest@nexoraai.system";
             const role = localStorage.getItem('profileRole') || "Developer";
             const memberSince = localStorage.getItem('profileMemberSince') || "June 2026";
             
@@ -1408,7 +1408,7 @@
 
         function saveProfileDetails() {
             const inputName = document.getElementById('profile-input-name')?.value.trim() || 'Guest';
-            const inputEmail = document.getElementById('profile-input-email')?.value.trim() || 'guest@multiai.system';
+            const inputEmail = document.getElementById('profile-input-email')?.value.trim() || 'guest@nexoraai.system';
             const inputRole = document.getElementById('profile-input-role')?.value.trim() || 'Developer';
 
             localStorage.setItem('neuralUser', inputName);
@@ -1730,7 +1730,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'multiai-settings-export.json';
+            a.download = 'nexoraai-settings-export.json';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
