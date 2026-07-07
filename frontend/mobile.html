@@ -448,7 +448,14 @@
         </button>
     </div>
             </div>
+            </div
+            <!-- Model Position Indicator Bar -->
+            <div id="mobile-model-nav-bar" class="mobile-model-nav-bar" style="display: none;">
+                <span class="nav-arrow left-arrow" id="model-nav-left"></span>
+                <span class="nav-current" id="model-nav-center"></span>
+                <span class="nav-arrow right-arrow" id="model-nav-right"></span>
             </div>
+    >
             
             <!-- Collapsible Parameter Controller Drawer -->
             <div id="parameters-drawer" class="parameters-drawer hidden">
@@ -7623,15 +7630,42 @@ updateActiveModelsCountBadge();
         const consensusBtn = document.getElementById('ai-consensus-btn');
         const bestBtn = document.getElementById('best-response-btn');
         const customSelect = document.getElementById('custom-prompt-select');
+        const notepadBtn = document.querySelector('.notepad-long-btn');
         const inputBar = container.querySelector('.input-bar');
         const sendBtn = container.querySelector('.send-circle-btn');
 
         // Move extra tools and persona selector to the toolsPanel
         if (customSelect) toolsPanel.appendChild(customSelect);
+        if (notepadBtn) toolsPanel.appendChild(notepadBtn);
         if (uploadBtn) toolsPanel.appendChild(uploadBtn);
         if (optimizeBtn) toolsPanel.appendChild(optimizeBtn);
         if (consensusBtn) toolsPanel.appendChild(consensusBtn);
         if (bestBtn) toolsPanel.appendChild(bestBtn);
+        
+        // Re-structure active card headers to host token telemetry count on the right
+        document.querySelectorAll('.ai-card').forEach(card => {
+            const header = card.querySelector('.ai-header');
+            if (header) {
+                // Wrap left content (avatar + name)
+                const avatar = header.querySelector('.ai-avatar-wrapper');
+                const name = header.querySelector('b');
+                
+                const leftWrap = document.createElement('div');
+                leftWrap.className = 'ai-header-left';
+                if (avatar) leftWrap.appendChild(avatar);
+                if (name) leftWrap.appendChild(name);
+                
+                header.innerHTML = '';
+                header.appendChild(leftWrap);
+                
+                // Add header token count span
+                const tokenSpan = document.createElement('span');
+                tokenSpan.className = 'card-header-telemetry';
+                const footerTelemetry = card.querySelector('.card-telemetry');
+                tokenSpan.innerText = footerTelemetry ? footerTelemetry.innerText : '0 tokens';
+                header.appendChild(tokenSpan);
+            }
+        });
 
         // Clear container and append in the new order:
         // Left: Toggle button
@@ -7711,6 +7745,99 @@ updateActiveModelsCountBadge();
     // Initial run
     updateMobileProfileBtn();
     setInterval(updateMobileProfileBtn, 1000);
+
+    // --- Dynamic Model Position Indicator Navigation System ---
+    const workspace = document.querySelector('.workspace');
+    const navBar = document.getElementById('mobile-model-nav-bar');
+    const leftText = document.getElementById('model-nav-left');
+    const centerText = document.getElementById('model-nav-center');
+    const rightText = document.getElementById('model-nav-right');
+
+    function updateModelNav() {
+        if (!workspace || !navBar) return;
+        const activeCards = Array.from(workspace.querySelectorAll('.ai-card:not(.hidden)'));
+        if (activeCards.length === 0) {
+            navBar.style.display = 'none';
+            return;
+        }
+        navBar.style.display = 'flex';
+
+        // Detect which card is currently centered
+        const workspaceRect = workspace.getBoundingClientRect();
+        const workspaceCenter = workspaceRect.left + workspaceRect.width / 2;
+
+        let currentIdx = 0;
+        let minDiff = Infinity;
+
+        activeCards.forEach((card, idx) => {
+            const cardRect = card.getBoundingClientRect();
+            const cardCenter = cardRect.left + cardRect.width / 2;
+            const diff = Math.abs(cardCenter - workspaceCenter);
+            if (diff < minDiff) {
+                minDiff = diff;
+                currentIdx = idx;
+            }
+        });
+
+        const currentCard = activeCards[currentIdx];
+        
+        // Dynamic Header Tokens Updates: Find card telemetry text
+        const telemetrySrc = currentCard.querySelector('.card-telemetry');
+        let headerTelemetry = currentCard.querySelector('.card-header-telemetry');
+        if (telemetrySrc) {
+            if (!headerTelemetry) {
+                headerTelemetry = document.createElement('span');
+                headerTelemetry.className = 'card-header-telemetry';
+                currentCard.querySelector('.ai-header').appendChild(headerTelemetry);
+            }
+            headerTelemetry.innerText = telemetrySrc.innerText;
+        }
+
+        const currentName = currentCard.querySelector('.ai-header b').innerText;
+
+        // Set center text
+        centerText.innerText = currentName;
+
+        // Set left text (prev card)
+        if (currentIdx > 0) {
+            const prevCard = activeCards[currentIdx - 1];
+            const prevName = prevCard.querySelector('.ai-header b').innerText;
+            leftText.innerText = `‹ ${prevName}`;
+            leftText.style.visibility = 'visible';
+            leftText.onclick = () => {
+                prevCard.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            };
+        } else {
+            leftText.style.visibility = 'hidden';
+            leftText.onclick = null;
+        }
+
+        // Set right text (next card)
+        if (currentIdx < activeCards.length - 1) {
+            const nextCard = activeCards[currentIdx + 1];
+            const nextName = nextCard.querySelector('.ai-header b').innerText;
+            rightText.innerText = `${nextName} ›`;
+            rightText.style.visibility = 'visible';
+            rightText.onclick = () => {
+                nextCard.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            };
+        } else {
+            rightText.style.visibility = 'hidden';
+            rightText.onclick = null;
+        }
+    }
+
+    if (workspace) {
+        workspace.addEventListener('scroll', updateModelNav);
+        
+        // MutationObserver to update tokens and position on streaming responses
+        const observer = new MutationObserver(updateModelNav);
+        observer.observe(workspace, { attributes: true, subtree: true, childList: true });
+        
+        // Initial call
+        updateModelNav();
+        setTimeout(updateModelNav, 2000);
+    }
 
     </script>
 

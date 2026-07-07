@@ -877,7 +877,8 @@
     
     .mobile-header-center {
         display: flex !important;
-        align-items: center !}
+        align-items: center !important;
+    }
     
     .mobile-header-right {
         display: flex !important;
@@ -1032,6 +1033,8 @@
         color: #ffffff !important;
         border: none !important;
         box-shadow: 0 0 10px var(--glow) !important;
+        outline: none !important;
+        -webkit-tap-highlight-color: transparent !important;
     }
     
     #mobile-tools-toggle:hover {
@@ -1111,6 +1114,12 @@
         width: 92vw !important;
         max-width: 420px !important;
         z-index: 9998 !important;
+        /* ELIMINATE RECTANGULAR BACKDROP DOCK SHADE AT THE BACKGROUND OF THE PROMPT BAR DOCK AREA */
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+        padding: 0 !important;
     }
 
     /* Hide standard desktop header elements and workspace sidebar completely */
@@ -1152,7 +1161,7 @@
         overflow-y: hidden !important;
         scroll-snap-type: x mandatory !important;
         gap: 15px !important;
-        padding: 20px 15px 180px 15px !important; /* Padding matches double bottom dock height */
+        padding: 20px 15px 180px 15px !important; /* Padding leaves room for horizontal double-dock */
         width: 100% !important;
         box-sizing: border-box !important;
         height: calc(100% - 100px) !important;
@@ -1192,4 +1201,118 @@
     .step-card {
         width: 100% !important;
         box-sizing: border-box !important;
+    }
+    
+    /* Model Position Navigation Bar styling */
+    .mobile-model-nav-bar {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 8px 16px !important;
+        background: var(--card-bg) !important;
+        border: 1px solid var(--border) !important;
+        border-radius: 20px !important;
+        width: 90% !important;
+        max-width: 360px !important;
+        margin: -160px auto 20px auto !important; /* Positions it below the workspace swipe container but above prompt dock! */
+        z-index: 9997 !important;
+        backdrop-filter: blur(10px) !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+        box-sizing: border-box !important;
+    }
+    
+    .nav-arrow {
+        font-size: 0.75rem !important;
+        opacity: 0.6 !important;
+        color: var(--text) !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        max-width: 90px !important;
+        cursor: pointer !important;
+        user-select: none !important;
+    }
+    
+    .nav-current {
+        font-size: 0.82rem !important;
+        font-weight: 800 !important;
+        color: var(--accent) !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.5px !important;
+        white-space: nowrap !important;
+    }
+    
+    /* Compress Model Response Card Footer to 1 line with clean buttons */
+    .ai-card {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+    }
+    
+    .card-actions {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: flex-end !important;
+        gap: 12px !important;
+        padding: 8px 12px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        flex-wrap: nowrap !important; /* Force 1 line! */
+        border-top: 1px solid var(--border) !important;
+    }
+    
+    .card-actions button, .card-actions .action-btn {
+        margin: 0 !important;
+        width: 32px !important;
+        height: 32px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        flex-shrink: 0 !important;
+    }
+    
+    /* Hide telemetry label from footer */
+    .card-actions .card-telemetry {
+        display: none !important;
+    }
+    
+    /* Move token telemetry display to card header on the right side */
+    .ai-header {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    
+    .ai-header-left {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+    }
+    
+    .card-header-telemetry {
+        font-size: 10px !important;
+        opacity: 0.6 !important;
+        font-weight: 700 !important;
+        margin-left: auto !important;
+        padding-right: 4px !important;
+    }
+    
+    /* Notepad button styling inside mobile tools panel */
+    .mobile-tools-panel .notepad-long-btn {
+        width: 36px !important;
+        height: 36px !important;
+        border-radius: 50% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        background: var(--card-bg) !important;
+        border: 1px solid var(--border) !important;
+        color: var(--text) !important;
+        cursor: pointer !important;
+        padding: 0 !important;
+        flex-shrink: 0 !important;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15) !important;
     }
