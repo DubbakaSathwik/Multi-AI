@@ -1334,12 +1334,32 @@
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15) !important;
     }
     
-    /* Specific scroll override for Insights page scroll-view to enable vertical scrolling without affecting other views */
-    #view-insights .scroll-view {
+    /* Specific scroll override for Insights and Debate pages scroll-view to enable vertical scrolling without affecting other views */
+    #view-insights .scroll-view,
+    #view-debate .scroll-view {
         height: 100% !important;
         overflow-y: auto !important;
         scrollbar-width: none !important;
     }
-    #view-insights .scroll-view::-webkit-scrollbar {
+    #view-insights .scroll-view::-webkit-scrollbar,
+    #view-debate .scroll-view::-webkit-scrollbar {
         display: none !important;
+    }
+
+    /* Theme-matching styling for the mobile tools panel (.mobile-tools-panel) */
+    .mobile-tools-panel {
+        display: flex !important;
+        justify-content: space-around !important;
+        align-items: center !important;
+        width: 100% !important;
+        background: var(--card-bg) !important; /* Theme card background instead of dark color */
+        backdrop-filter: blur(16px) !important;
+        -webkit-backdrop-filter: blur(16px) !important;
+        border: 1px solid var(--border) !important;
+        border-radius: 20px !important;
+        padding: 10px !important;
+        margin-bottom: 8px !important;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15) !important; /* Lighter shadow to match light themes */
+        z-index: 99999 !important;
+        gap: 8px !important;
     }
