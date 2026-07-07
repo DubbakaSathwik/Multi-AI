@@ -450,7 +450,7 @@
             </div>
             </div>
             <!-- Model Position Indicator Bar -->
-            <div id="mobile-model-nav-bar" class="mobile-model-nav-bar" style="display: none;">
+            <div id="mobile-model-nav-bar" class="mobile-model-nav-bar" style="display: none !important;">
                 <span class="nav-arrow left-arrow" id="model-nav-left"></span>
                 <span class="nav-current" id="model-nav-center"></span>
                 <span class="nav-arrow right-arrow" id="model-nav-right"></span>
@@ -7782,10 +7782,10 @@ updateActiveModelsCountBadge();
         try {
             const activeCards = Array.from(workspace.querySelectorAll('.ai-card:not(.hidden)'));
             if (activeCards.length === 0) {
-                navBar.style.display = 'none';
+                navBar.style.setProperty('display', 'none', 'important'); // Force hide using !important
                 return;
             }
-            navBar.style.display = 'flex';
+            navBar.style.setProperty('display', 'flex', 'important'); // Force show using !important
 
             // Detect which card is currently centered
             const workspaceRect = workspace.getBoundingClientRect();

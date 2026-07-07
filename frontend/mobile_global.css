@@ -1221,7 +1221,7 @@
         bottom: 136px !important; /* Stacked directly above the prompt bar (ends at 172px) */
         left: 50% !important;
         transform: translateX(-50%) !important;
-        display: flex !important;
+        display: flex; /* Remove !important from display: flex in stylesheet to let JavaScript override it safely */
         align-items: center !important;
         justify-content: space-between !important;
         padding: 6px 16px !important;
