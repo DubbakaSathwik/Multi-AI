@@ -418,9 +418,10 @@
         padding: 0 15px !important;
         z-index: 9999 !important;
         display: flex !important;
+        flex-wrap: wrap !important; /* Allow circular tools and input bar to wrap on small viewports */
         justify-content: center !important;
         align-items: center !important;
-        gap: 10px !important;
+        gap: 8px !important;
     }
 
     .input-bar {
