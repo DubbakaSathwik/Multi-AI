@@ -828,3 +828,279 @@
     .auto-persona-row button {
         width: 100% !important;
     }
+
+    /* ---------------------------------------------------
+       MOBILE HEADERS, DRAWERS, AND CAROUSEL OVERRIDES
+       --------------------------------------------------- */
+       
+    /* Mobile Header Layout */
+    .mobile-header {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        background: var(--card-bg) !important;
+        border-bottom: 1px solid var(--border) !important;
+        height: 60px !important;
+        padding: 0 16px !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        z-index: 10000 !important;
+        backdrop-filter: blur(20px) !important;
+        color: var(--text) !important;
+    }
+    
+    .mobile-nav-toggle-btn, .mobile-profile-toggle-btn {
+        background: none !important;
+        border: none !important;
+        color: var(--text) !important;
+        font-size: 1.25rem !important;
+        cursor: pointer !important;
+        padding: 8px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    .mobile-header-center {
+        display: flex !important;
+        align-items: center !important;
+        gap: 12px !important;
+    }
+    
+    .mobile-logo {
+        font-weight: 800 !important;
+        font-size: 1.15rem !important;
+        letter-spacing: 0.5px !important;
+        background: linear-gradient(135deg, #a78bfa 0%, #3b82f6 100%) !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        text-transform: uppercase !important;
+    }
+    
+    .mobile-theme-bulb {
+        position: relative !important;
+        width: 32px !important;
+        height: 32px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin: 0 !important;
+        top: 0 !important;
+    }
+    
+    .mobile-theme-bulb .bulb {
+        width: 22px !important;
+        height: 22px !important;
+        margin: 0 !important;
+        top: 0 !important;
+    }
+    
+    .mobile-profile-circle {
+        width: 32px !important;
+        height: 32px !important;
+        border-radius: 50% !important;
+        background: var(--accent) !important;
+        color: #ffffff !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-weight: 700 !important;
+        font-size: 14px !important;
+        border: 1.5px solid var(--accent) !important;
+        text-transform: uppercase !important;
+        box-shadow: 0 0 10px var(--glow) !important;
+    }
+
+    /* Mobile Drawer Styles with Dynamic Theme Matching */
+    .mobile-drawer {
+        position: fixed !important;
+        top: 0 !important;
+        height: 100vh !important;
+        width: 280px !important;
+        background: var(--card-bg) !important; /* Theme card background */
+        backdrop-filter: blur(var(--bg-blur, 20px)) !important;
+        border: 1px solid var(--border) !important;
+        z-index: 100001 !important;
+        box-shadow: 0 0 40px rgba(0, 0, 0, 0.3) !important;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        display: flex !important;
+        flex-direction: column !important;
+        box-sizing: border-box !important;
+        color: var(--text) !important; /* Theme text */
+    }
+    
+    .left-drawer {
+        left: 0 !important;
+        transform: translateX(-100%) !important;
+        border-top-right-radius: 20px !important;
+        border-bottom-right-radius: 20px !important;
+    }
+    
+    .right-drawer {
+        right: 0 !important;
+        transform: translateX(100%) !important;
+        border-top-left-radius: 20px !important;
+        border-bottom-left-radius: 20px !important;
+    }
+    
+    .mobile-drawer.open {
+        transform: translateX(0) !important;
+    }
+    
+    .drawer-header {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 20px !important;
+        border-bottom: 1px solid var(--border) !important;
+    }
+    
+    .drawer-header h3 {
+        margin: 0 !important;
+        font-size: 1.1rem !important;
+        font-weight: 700 !important;
+        color: var(--accent) !important; /* Theme accent */
+    }
+    
+    .close-drawer-btn {
+        background: none !important;
+        border: none !important;
+        color: var(--text) !important;
+        font-size: 1.2rem !important;
+        cursor: pointer !important;
+        opacity: 0.7 !important;
+    }
+    
+    .close-drawer-btn:hover {
+        opacity: 1 !important;
+    }
+    
+    .drawer-menu-list {
+        padding: 15px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+        overflow-y: auto !important;
+    }
+    
+    .drawer-menu-item {
+        display: flex !important;
+        align-items: center !important;
+        gap: 12px !important;
+        padding: 12px 16px !important;
+        border-radius: 12px !important;
+        color: var(--text) !important;
+        cursor: pointer !important;
+        transition: background 0.2s !important;
+        font-weight: 500 !important;
+        font-size: 0.95rem !important;
+    }
+    
+    .drawer-menu-item:hover, .drawer-menu-item.active {
+        background: var(--border) !important; /* Theme border color as hover backdrop */
+        color: var(--accent) !important;
+    }
+    
+    .drawer-menu-item i {
+        font-size: 1.1rem !important;
+        width: 20px !important;
+        text-align: center !important;
+        opacity: 0.8 !important;
+    }
+
+    /* Left Toggle Button (Prompt Bar tools toggler) matches active Theme Accents */
+    #mobile-tools-toggle {
+        background: var(--accent) !important;
+        color: #ffffff !important;
+        border: none !important;
+        box-shadow: 0 0 10px var(--glow) !important;
+    }
+    
+    #mobile-tools-toggle:hover {
+        background: var(--accent-hover) !important;
+    }
+
+    /* Hide standard desktop header elements and workspace sidebar completely */
+    header {
+        display: none !important;
+    }
+    
+    .sidebar {
+        display: none !important;
+    }
+    
+    .main-wrapper {
+        margin-top: 60px !important; /* Make space for fixed header */
+        height: calc(100vh - 60px) !important;
+        display: block !important; /* Remove desktop columns layout */
+    }
+
+    /* Settings Tab content taking full width without sidebar */
+    .settings-workspace-layout {
+        display: block !important;
+        border: none !important;
+        background: none !important;
+        box-shadow: none !important;
+        height: auto !important;
+        width: 100% !important;
+    }
+    
+    .settings-nav-sidebar {
+        display: none !important; /* Hide sidebar list in Settings page completely */
+    }
+    
+    .settings-tab-content {
+        padding: 0 !important;
+        width: 100% !important;
+    }
+
+    /* Center align welcome / workspace content and eliminate right overflows */
+    .workspace {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        scroll-snap-type: x mandatory !important;
+        gap: 15px !important;
+        padding: 20px 15px 120px 15px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        height: calc(100% - 100px) !important;
+        scrollbar-width: none !important;
+    }
+    
+    .workspace::-webkit-scrollbar {
+        display: none !important;
+    }
+    
+    .intro-content {
+        padding: 10px !important;
+        text-align: center !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        margin: 0 auto !important;
+    }
+    
+    #intro-overlay {
+        width: 100% !important;
+        flex-shrink: 0 !important;
+        scroll-snap-align: center !important;
+        box-sizing: border-box !important;
+    }
+    
+    .steps {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 15px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    
+    .step-card {
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
