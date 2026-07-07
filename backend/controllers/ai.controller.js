@@ -7,15 +7,88 @@ import { askGeminiWithFallback, askGroqThenGeminiText } from '../services/auxili
 import ApiUsage from '../models/apiUsage.model.js';
 import { getOptionalUserId } from '../utils/auth.js';
 
+async function askWithResilientFallbacks(modelName, primaryAskFn, prompt, customApiKey, options = {}) {
+  try {
+    const text = await primaryAskFn(prompt, customApiKey, options);
+    if (isUsableResponseText(text)) {
+      return text;
+    }
+    throw new Error('Unusable response text');
+  } catch (primaryError) {
+    console.warn(`Primary model ${modelName} failed, initiating fallback logic:`, primaryError.message);
+    
+    // Wait 1.5 seconds (1500 ms) before performing the smart fallback route
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    
+    const cleanPrompt = String(prompt || '').trim();
+    const emulationPrompt = `You are a large language model emulating the ${modelName} model. Respond to the user's prompt exactly as ${modelName} would. User prompt: ${cleanPrompt}`;
+    
+    // Smart Fallback Route v1: Groq Llama (Skip if primary is Groq to avoid double failures)
+    const isGroq = modelName.toLowerCase().includes('groq');
+    let v1Success = false;
+    let fallbackText = '';
+
+    if (!isGroq) {
+      try {
+        console.log(`Smart Fallback Route v1 (Groq Llama) starting for model: ${modelName}`);
+        const v1Response = await askGroq(emulationPrompt, null, options);
+        if (isUsableResponseText(v1Response)) {
+          fallbackText = `${v1Response}\n\n*(Note: ${modelName} is temporarily offline; response generated via Smart Fallback Route v1 [Groq Llama])*`;
+          v1Success = true;
+        }
+      } catch (v1Error) {
+        console.error(`Smart Fallback Route v1 (Groq Llama) failed for ${modelName}:`, v1Error.message);
+      }
+    }
+
+    if (v1Success) {
+      return fallbackText;
+    }
+
+    // Smart Fallback Route v2: Gemini Flash (Skip if primary is Gemini to avoid double failures)
+    const isGemini = modelName.toLowerCase().includes('gemini');
+    if (!isGemini) {
+      try {
+        console.log(`Smart Fallback Route v2 (Gemini Flash) starting for model: ${modelName}`);
+        const v2Response = await askGemini(emulationPrompt, null, options);
+        if (isUsableResponseText(v2Response)) {
+          return `${v2Response}\n\n*(Note: ${modelName} is temporarily offline; response generated via Smart Fallback Route v2 [Gemini Flash])*`;
+        }
+      } catch (v2Error) {
+        console.error(`Smart Fallback Route v2 (Gemini Flash) failed for ${modelName}:`, v2Error.message);
+      }
+    }
+
+    // If both fallbacks failed (or were skipped), re-throw original error
+    throw primaryError;
+  }
+}
+
 const modelRequests = [
-  { model: 'Gemini Flash', aliases: ['Gemini Flash', 'Gemini', 'GeminiFlash'], ask: askGroqThenGeminiText },
-  { model: 'Liquid LFM', aliases: ['Liquid LFM', 'Liquid'], ask: askLiquid },
-  { model: 'Qwen HF', aliases: ['Qwen HF', 'Hugging Face', 'HuggingFace'], ask: askHuggingFace },
-  { model: 'Groq', aliases: ['Groq', 'Groq Llama'], ask: askGroq },
+  {
+    model: 'Gemini Flash',
+    aliases: ['Gemini Flash', 'Gemini', 'GeminiFlash'],
+    ask: (prompt, key, opt) => askWithResilientFallbacks('Gemini Flash', askGroqThenGeminiText, prompt, key, opt)
+  },
+  {
+    model: 'Liquid LFM',
+    aliases: ['Liquid LFM', 'Liquid'],
+    ask: (prompt, key, opt) => askWithResilientFallbacks('Liquid LFM', askLiquid, prompt, key, opt)
+  },
+  {
+    model: 'Qwen HF',
+    aliases: ['Qwen HF', 'Hugging Face', 'HuggingFace'],
+    ask: (prompt, key, opt) => askWithResilientFallbacks('Qwen HF', askHuggingFace, prompt, key, opt)
+  },
+  {
+    model: 'Groq',
+    aliases: ['Groq', 'Groq Llama'],
+    ask: (prompt, key, opt) => askWithResilientFallbacks('Groq', askGroq, prompt, key, opt)
+  },
   {
     model: 'Cohere',
     aliases: ['Cohere', 'Cohere Command'],
-    ask: askCohere
+    ask: (prompt, key, opt) => askWithResilientFallbacks('Cohere', askCohere, prompt, key, opt)
   }
 ];
 
