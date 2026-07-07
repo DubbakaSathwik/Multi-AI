@@ -7829,5 +7829,266 @@ updateActiveModelsCountBadge();
     <div class="history-section-label">Recent Conversations</div>
     <div class="history-list" id="recent-chats-container"></div>
 </div>
+
+    <!-- DYNAMIC MOBILE DOM REORGANIZATION -->
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const container = document.querySelector('.prompt-bar-container');
+        if (!container) return;
+
+        // Create the tools panel (row above prompt bar)
+        const toolsPanel = document.createElement('div');
+        toolsPanel.id = 'mobile-tools-panel';
+        toolsPanel.className = 'mobile-tools-panel hidden';
+        
+        // Create the tools toggle button (left side)
+        const toggleBtn = document.createElement('button');
+        toggleBtn.id = 'mobile-tools-toggle';
+        toggleBtn.className = 'circle-tool';
+        toggleBtn.innerHTML = '<i class="fa-solid fa-plus"></i>';
+        toggleBtn.style.color = 'var(--accent)';
+        
+        toggleBtn.onclick = (e) => {
+            e.preventDefault();
+            toolsPanel.classList.toggle('hidden');
+            if (toolsPanel.classList.contains('hidden')) {
+                toggleBtn.innerHTML = '<i class="fa-solid fa-plus"></i>';
+            } else {
+                toggleBtn.innerHTML = '<i class="fa-solid fa-times"></i>';
+            }
+        };
+
+        // Get references to buttons
+        const uploadBtn = document.getElementById('upload-file-btn');
+        const voiceBtn = document.getElementById('voice-input-btn');
+        const optimizeBtn = document.getElementById('optimize-prompt-btn');
+        const consensusBtn = document.getElementById('ai-consensus-btn');
+        const bestBtn = document.getElementById('best-response-btn');
+        const customSelect = document.getElementById('custom-prompt-select');
+        const notepadBtn = document.querySelector('.notepad-long-btn');
+        const inputBar = container.querySelector('.input-bar');
+        const sendBtn = container.querySelector('.send-circle-btn');
+
+        // Move extra tools and persona selector to the toolsPanel
+        if (customSelect) toolsPanel.appendChild(customSelect);
+        if (notepadBtn) toolsPanel.appendChild(notepadBtn);
+        if (uploadBtn) toolsPanel.appendChild(uploadBtn);
+        if (optimizeBtn) toolsPanel.appendChild(optimizeBtn);
+        if (consensusBtn) toolsPanel.appendChild(consensusBtn);
+        if (bestBtn) toolsPanel.appendChild(bestBtn);
+        
+        // Re-structure active card headers to host token telemetry count on the right
+        document.querySelectorAll('.ai-card').forEach(card => {
+            const header = card.querySelector('.ai-header');
+            if (header) {
+                const avatar = header.querySelector('.ai-avatar-wrapper');
+                const name = header.querySelector('b');
+                
+                const leftWrap = document.createElement('div');
+                leftWrap.className = 'ai-header-left';
+                if (avatar) leftWrap.appendChild(avatar);
+                if (name) leftWrap.appendChild(name);
+                
+                header.innerHTML = '';
+                header.appendChild(leftWrap);
+                
+                const tokenSpan = document.createElement('span');
+                tokenSpan.className = 'card-header-telemetry';
+                const footerTelemetry = card.querySelector('.card-telemetry');
+                tokenSpan.innerText = footerTelemetry ? footerTelemetry.innerText : '0 tokens';
+                header.appendChild(tokenSpan);
+            }
+        });
+
+        // Clear container and append in the new order:
+        // Left: Toggle button
+        // Middle: Input bar
+        // Right: Voice button, Send button
+        container.innerHTML = '';
+        container.appendChild(toggleBtn);
+        if (inputBar) container.appendChild(inputBar);
+        if (voiceBtn) container.appendChild(voiceBtn);
+        if (sendBtn) container.appendChild(sendBtn);
+
+        // Append the toolsPanel directly above the prompt bar (inside dock-area)
+        const dockArea = document.querySelector('.dock-area');
+        if (dockArea) {
+            dockArea.insertBefore(toolsPanel, container);
+        }
+    });
+    // Declare observer globally to allow updateModelNav to disconnect/reconnect safely
+    let observer;
+
+    // Drawer toggling functions
+    window.toggleLeftDrawer = function() {
+        const leftDrawer = document.getElementById('mobile-left-drawer');
+        const rightDrawer = document.getElementById('mobile-right-drawer');
+        if (rightDrawer) rightDrawer.classList.remove('open');
+        if (leftDrawer) leftDrawer.classList.toggle('open');
+    };
+
+    window.toggleRightDrawer = function() {
+        const leftDrawer = document.getElementById('mobile-left-drawer');
+        const rightDrawer = document.getElementById('mobile-right-drawer');
+        if (leftDrawer) leftDrawer.classList.remove('open');
+        if (rightDrawer) rightDrawer.classList.toggle('open');
+    };
+
+    window.switchMobileView = function(viewId) {
+        if (typeof switchView === 'function') {
+            switchView(viewId);
+        }
+        window.toggleLeftDrawer();
+    };
+
+    window.switchMobileSettingTab = function(tabName) {
+        if (typeof switchView === 'function') {
+            switchView('setting');
+        }
+        if (typeof switchSettingsTab === 'function') {
+            switchSettingsTab(tabName);
+        }
+        window.toggleRightDrawer();
+    };
+
+    // Forward click event from mobile theme bulb to the desktop one
+    const mobileBulb = document.getElementById('mobile-theme-bulb');
+    const desktopBulb = document.getElementById('theme-bulb');
+    if (mobileBulb && desktopBulb) {
+        mobileBulb.onclick = () => {
+            desktopBulb.click();
+            // Sync bulb class classes
+            setTimeout(() => {
+                const isLight = document.body.classList.contains('light-mode');
+                mobileBulb.parentElement.classList.toggle('active', isLight);
+            }, 100);
+        };
+    }
+
+    // Dynamic mobile avatar updater
+    window.updateMobileProfileBtn = function() {
+        const profileBtn = document.getElementById('mobile-profile-btn');
+        if (!profileBtn) return;
+        const avatar = localStorage.getItem('userAvatar');
+        const userName = localStorage.getItem('neuralUser') || "Guest";
+        if (avatar) {
+            profileBtn.innerHTML = `<img src="${avatar}" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1.5px solid var(--accent); box-shadow: 0 0 10px var(--glow);">`;
+        } else {
+            profileBtn.innerHTML = `<div class="mobile-profile-circle">${userName.charAt(0)}</div>`;
+        }
+    };
+    
+    // Initial run
+    updateMobileProfileBtn();
+    setInterval(updateMobileProfileBtn, 1000);
+
+    // --- Dynamic Model Position Indicator Navigation System ---
+    const workspace = document.querySelector('.workspace');
+    const navBar = document.getElementById('mobile-model-nav-bar');
+    const leftText = document.getElementById('model-nav-left');
+    const centerText = document.getElementById('model-nav-center');
+    const rightText = document.getElementById('model-nav-right');
+
+    function updateModelNav() {
+        if (!workspace || !navBar) return;
+        
+        // DISCONNECT MutationObserver to prevent stack-overflow crashes during DOM writes!
+        if (observer) observer.disconnect();
+        
+        try {
+            const activeCards = Array.from(workspace.querySelectorAll('.ai-card:not(.hidden)'));
+            if (activeCards.length === 0) {
+                navBar.style.setProperty('display', 'none', 'important'); // Force hide using !important
+                return;
+            }
+            navBar.style.setProperty('display', 'flex', 'important'); // Force show using !important
+
+            // Detect which card is currently centered
+            const workspaceRect = workspace.getBoundingClientRect();
+            const workspaceCenter = workspaceRect.left + workspaceRect.width / 2;
+
+            let currentIdx = 0;
+            let minDiff = Infinity;
+
+            activeCards.forEach((card, idx) => {
+                const cardRect = card.getBoundingClientRect();
+                const cardCenter = cardRect.left + cardRect.width / 2;
+                const diff = Math.abs(cardCenter - workspaceCenter);
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    currentIdx = idx;
+                }
+            });
+
+            const currentCard = activeCards[currentIdx];
+            
+            // Dynamic Header Tokens Updates: Find card telemetry text
+            const telemetrySrc = currentCard.querySelector('.card-telemetry');
+            let headerTelemetry = currentCard.querySelector('.card-header-telemetry');
+            if (telemetrySrc) {
+                if (!headerTelemetry) {
+                    headerTelemetry = document.createElement('span');
+                    headerTelemetry.className = 'card-header-telemetry';
+                    currentCard.querySelector('.ai-header').appendChild(headerTelemetry);
+                }
+                if (headerTelemetry.innerText !== telemetrySrc.innerText) {
+                    headerTelemetry.innerText = telemetrySrc.innerText;
+                }
+            }
+
+            const currentName = currentCard.querySelector('.ai-header b').innerText;
+
+            // Set center text
+            centerText.innerText = currentName;
+
+            // Set left text (prev card)
+            if (currentIdx > 0) {
+                const prevCard = activeCards[currentIdx - 1];
+                const prevName = prevCard.querySelector('.ai-header b').innerText;
+                leftText.innerText = `‹ ${prevName}`;
+                leftText.style.visibility = 'visible';
+                leftText.onclick = () => {
+                    prevCard.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                };
+            } else {
+                leftText.style.visibility = 'hidden';
+                leftText.onclick = null;
+            }
+
+            // Set right text (next card)
+            if (currentIdx < activeCards.length - 1) {
+                const nextCard = activeCards[currentIdx + 1];
+                const nextName = nextCard.querySelector('.ai-header b').innerText;
+                rightText.innerText = `${nextName} ›`;
+                rightText.style.visibility = 'visible';
+                rightText.onclick = () => {
+                    nextCard.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                };
+            } else {
+                rightText.style.visibility = 'hidden';
+                rightText.onclick = null;
+            }
+        } finally {
+            // RE-CONNECT MutationObserver after updates complete safely
+            if (observer && workspace) {
+                observer.observe(workspace, { attributes: true, subtree: true, childList: true });
+            }
+        }
+    }
+
+    if (workspace) {
+        workspace.addEventListener('scroll', updateModelNav);
+        
+        // Instantiate and initiate safe observer
+        observer = new MutationObserver(updateModelNav);
+        observer.observe(workspace, { attributes: true, subtree: true, childList: true });
+        
+        // Initial call
+        updateModelNav();
+        setTimeout(updateModelNav, 2000);
+    }
+
+    </script>
+
 </body>
 </html>
