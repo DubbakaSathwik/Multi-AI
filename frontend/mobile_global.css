@@ -1053,7 +1053,7 @@
         transform: translateX(-50%) !important;
         width: 92vw !important;
         max-width: 420px !important;
-        height: 64px !important;
+        height: 60px !important;
         background: var(--card-bg) !important;
         border: 1px solid var(--border) !important;
         border-radius: 50px !important;
@@ -1108,7 +1108,7 @@
     /* Position prompt bar dock-area directly above the bottom sidebar */
     .dock-area {
         position: fixed !important;
-        bottom: 84px !important; /* Above the 64px + 12px bottom sidebar */
+        bottom: 80px !important; /* Stacked right above the bottom selector bar */
         left: 50% !important;
         transform: translateX(-50%) !important;
         width: 92vw !important;
@@ -1160,7 +1160,7 @@
         overflow-y: hidden !important;
         scroll-snap-type: x mandatory !important;
         gap: 15px !important;
-        padding: 20px 15px 180px 15px !important; /* Padding leaves room for horizontal double-dock */
+        padding: 20px 15px 180px 15px !important; /* Card bottom (180px) lines up perfectly with indicator bar */
         width: 100% !important;
         box-sizing: border-box !important;
         height: calc(100% - 100px) !important;
@@ -1202,18 +1202,23 @@
         box-sizing: border-box !important;
     }
     
-    /* Model Position Navigation Bar styling */
+    /* Fixed Floating Model Position Navigation Bar styling */
     .mobile-model-nav-bar {
+        position: fixed !important;
+        bottom: 136px !important; /* Stacked directly above the prompt bar (ends at 172px) */
+        left: 50% !important;
+        transform: translateX(-50%) !important;
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
-        padding: 8px 16px !important;
+        padding: 6px 16px !important;
         background: var(--card-bg) !important;
         border: 1px solid var(--border) !important;
         border-radius: 20px !important;
         width: 90% !important;
         max-width: 360px !important;
-        margin: -160px auto 20px auto !important; /* Positions it below the workspace swipe container but above prompt dock! */
+        margin: 0 !important; /* Clean floating design */
+        height: 36px !important;
         z-index: 9997 !important;
         backdrop-filter: blur(10px) !important;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
