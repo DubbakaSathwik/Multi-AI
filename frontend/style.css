@@ -30,13 +30,29 @@ body {
     transition: background 0.3s, color 0.3s;
     height: 100%;
     margin: 0;
+    position: relative;
 }        .main-wrapper {
             display: grid;
             grid-template-columns: 85px 1fr;
             grid-template-rows: 1fr;
-            background-color: var(--bg);
+            background-color: transparent;
 	   height: calc(100vh - 100px);
         }
+
+#app-bg-effects {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+}
+
+header,
+.main-wrapper {
+    position: relative;
+    z-index: 1;
+}
 
         header {
            
@@ -636,6 +652,9 @@ body.light-mode .nav-item.active::after {
   align-items: center;
   margin: 0;
   z-index: 1200;
+  cursor: pointer;
+  pointer-events: auto;
+  touch-action: manipulation;
 }
 
 
@@ -658,6 +677,8 @@ body.light-mode .nav-item.active::after {
   border-radius: 50%;
   z-index: 2;
   cursor: pointer;
+  pointer-events: auto;
+  touch-action: manipulation;
   transition: 0.3s;
   border: 1px solid rgba(255,255,255,0.2); /* Visible in both modes */
 }
@@ -729,6 +750,44 @@ body.light-mode .bulb::before {
 
 body.light-mode .bulb span:nth-child(1) { box-shadow: 6px 6px 0 3px #fff200; }
 body.light-mode .bulb span:nth-child(2) { box-shadow: -6px 6px 0 3px #fff200; } 
+
+body:not(.light-mode) .bulb {
+  border-color: var(--border);
+  box-shadow: 0 0 18px var(--glow);
+}
+
+body[data-theme="cyber"] .bulb,
+body[data-theme="emerald"] .bulb,
+body[data-theme="sunset"] .bulb,
+body[data-theme="custom"] .bulb {
+  background-color: var(--accent);
+  border-color: var(--border);
+  box-shadow: 0 0 22px var(--glow);
+}
+
+body[data-theme="cyber"] .bulb::before,
+body[data-theme="emerald"] .bulb::before,
+body[data-theme="sunset"] .bulb::before,
+body[data-theme="custom"] .bulb::before {
+  background: var(--accent);
+}
+
+body[data-theme="cyber"] .bulb::after,
+body[data-theme="emerald"] .bulb::after,
+body[data-theme="sunset"] .bulb::after,
+body[data-theme="custom"] .bulb::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 52px;
+  height: 52px;
+  background: var(--glow);
+  border-radius: 50%;
+  filter: blur(15px);
+  z-index: -1;
+}
 /* Default state for Logout Button */
 #logout-btn {
     color: var(--text); /* Automatically White in Dark, Black in Light mode */
@@ -2405,7 +2464,7 @@ body.light-mode .param-slider-group input[type="range"] {
     grid-template-rows: 1fr !important;
     width: 100% !important;
     height: calc(100vh - 100px) !important;
-    background-color: var(--bg);
+    background-color: transparent !important;
     overflow: hidden !important;
     position: relative !important;
 }

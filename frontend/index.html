@@ -11,7 +11,7 @@
     
 </head>
 <body>
-    <canvas id="app-bg-effects" style="position: fixed; inset: 0; pointer-events: none; z-index: -1;"></canvas>
+    <canvas id="app-bg-effects" style="position: fixed; inset: 0; pointer-events: none; z-index: 0;"></canvas>
 
     
        <header>
@@ -2552,27 +2552,49 @@ async function saveProfileDetails() {
 const themeBulb = document.getElementById("theme-bulb");
 const audioClick = document.getElementById("audio-click");
 
-themeBulb.addEventListener("click", () => {
-    const currentTheme = localStorage.getItem('themeName') || 'midnight';
-    const newTheme = currentTheme === 'light' ? 'midnight' : 'light';
-    
-    // 1. Unify theme settings selection
+function cycleThemeFromBulb() {
+    const themeSequence = ['midnight', 'light', 'cyber', 'emerald', 'sunset', 'custom'];
+    const currentTheme = localStorage.getItem('themeName') || localStorage.getItem('theme') || 'midnight';
+    const currentIndex = themeSequence.indexOf(currentTheme);
+    const newTheme = themeSequence[(currentIndex + 1) % themeSequence.length];
     if (typeof selectThemeName === 'function') {
         selectThemeName(newTheme);
     } else if (typeof applyTheme === 'function') {
         applyTheme(newTheme);
     } else {
-        document.body.classList.toggle("light-mode", newTheme === 'light');
         localStorage.setItem('themeName', newTheme);
+        document.body.classList.toggle('light-mode', newTheme === 'light');
     }
-    localStorage.setItem('theme', newTheme === 'light' ? 'light' : 'dark');
     
-    // 2. Play the sound
     if (audioClick) {
         audioClick.currentTime = 0;
-        audioClick.play();
+        audioClick.play().catch(() => {});
     }
-});
+    return newTheme;
+}
+
+window.cycleThemeFromBulb = cycleThemeFromBulb;
+
+function bindThemeToggleElement(element) {
+    if (!element || element.dataset.themeToggleBound === 'true') return;
+    element.dataset.themeToggleBound = 'true';
+    element.setAttribute('role', 'button');
+    element.setAttribute('tabindex', '0');
+    element.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        cycleThemeFromBulb();
+    });
+    element.addEventListener('keydown', (event) => {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        event.preventDefault();
+        cycleThemeFromBulb();
+    });
+}
+
+window.bindThemeToggleElement = bindThemeToggleElement;
+bindThemeToggleElement(themeBulb);
+bindThemeToggleElement(document.getElementById("theme-toggle"));
 
 // Run on page load to check saved theme
 window.addEventListener('DOMContentLoaded', () => {
@@ -6425,6 +6447,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Global state / helper functions
 let bgAnimationId = null;
+let bgResizeHandler = null;
 let totalActiveTimeSeconds = parseFloat(localStorage.getItem('total_active_time') || '0');
 
 // Start tracking active time
@@ -6504,10 +6527,21 @@ const themesMap = {
     }
 };
 
+const THEME_SEQUENCE = ['midnight', 'light', 'cyber', 'emerald', 'sunset', 'custom'];
+
+function getNextThemeName() {
+    const currentTheme = localStorage.getItem('themeName') || 'midnight';
+    const currentIndex = THEME_SEQUENCE.indexOf(currentTheme);
+    return THEME_SEQUENCE[(currentIndex + 1) % THEME_SEQUENCE.length];
+}
+
 function applyTheme(themeName) {
     const root = document.documentElement;
     let themeObj = themesMap[themeName];
-    if (!themeObj) themeObj = themesMap['midnight'];
+    if (!themeObj) {
+        themeName = 'midnight';
+        themeObj = themesMap.midnight;
+    }
     
     if (themeName === 'custom') {
         const customHex = localStorage.getItem('accentColor') || '#7c3aed';
@@ -6544,7 +6578,13 @@ function applyTheme(themeName) {
         document.body.classList.remove('light-mode');
     }
     
+    document.body.dataset.theme = themeName;
     localStorage.setItem('themeName', themeName);
+    localStorage.setItem('theme', themeName === 'light' ? 'light' : 'dark');
+
+    if (typeof initBackgroundEffects === 'function') {
+        initBackgroundEffects();
+    }
 }
 
 function getFavoriteAIModel() {
@@ -7341,12 +7381,44 @@ function initBackgroundEffects() {
     const canvas = document.getElementById('app-bg-effects');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
+    const root = document.documentElement;
+
+    function hexToRgba(hexColor, alpha) {
+        const hex = String(hexColor || '').trim();
+        const match = hex.match(/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
+        if (!match) return `rgba(99, 102, 241, ${alpha})`;
+        const r = parseInt(match[1], 16);
+        const g = parseInt(match[2], 16);
+        const b = parseInt(match[3], 16);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+
+    function getThemeCanvasColors() {
+        const style = getComputedStyle(root);
+        const accent = style.getPropertyValue('--accent').trim() || '#6366f1';
+        const glow = style.getPropertyValue('--glow').trim();
+        const isLight = document.body.classList.contains('light-mode');
+        return {
+            accent,
+            glow: glow || hexToRgba(accent, isLight ? 0.22 : 0.35),
+            gradientInner: hexToRgba(accent, isLight ? 0.18 : 0.08),
+            gradientOuter: hexToRgba(accent, 0),
+            particle: isLight ? hexToRgba(accent, 0.38) : 'rgba(255, 255, 255, 0.18)',
+            line: hexToRgba(accent, isLight ? 0.28 : 0.16),
+            star: isLight ? hexToRgba(accent, 0.55) : 'rgba(255, 255, 255, 0.8)',
+            secondary: isLight ? 'rgba(14, 165, 233, 0.16)' : 'rgba(244, 63, 94, 0.12)'
+        };
+    }
     
     function resize() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
     }
-    window.addEventListener('resize', resize);
+    if (bgResizeHandler) {
+        window.removeEventListener('resize', bgResizeHandler);
+    }
+    bgResizeHandler = resize;
+    window.addEventListener('resize', bgResizeHandler);
     resize();
     
     let particles = [];
@@ -7364,6 +7436,7 @@ function initBackgroundEffects() {
     
     function loop() {
         const effect = localStorage.getItem('backgroundEffect') || 'gradient';
+        const colors = getThemeCanvasColors();
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
         if (effect === 'static') {
@@ -7373,16 +7446,14 @@ function initBackgroundEffects() {
             const x = canvas.width * 0.5 + Math.cos(angle) * canvas.width * 0.2;
             const y = canvas.height * 0.5 + Math.sin(angle) * canvas.height * 0.2;
             const grad = ctx.createRadialGradient(x, y, 10, x, y, canvas.width * 0.8);
-            
-            const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#6366f1';
-            grad.addColorStop(0, accent + '0b');
-            grad.addColorStop(1, 'transparent');
+
+            grad.addColorStop(0, colors.gradientInner);
+            grad.addColorStop(1, colors.gradientOuter);
             ctx.fillStyle = grad;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
         } else if (effect === 'particles' || effect === 'neural') {
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
-            const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#6366f1';
-            ctx.strokeStyle = accent + '1a';
+            ctx.fillStyle = colors.particle;
+            ctx.strokeStyle = colors.line;
             
             particles.forEach((p, idx) => {
                 p.x += p.vx;
@@ -7413,7 +7484,9 @@ function initBackgroundEffects() {
                 const x = (Math.sin(i + angle) * 0.5 + 0.5) * canvas.width;
                 const y = (Math.cos(i * 1.5 + angle * 0.5) * 0.5 + 0.5) * canvas.height;
                 const alpha = Math.abs(Math.sin(angle + i)) * 0.8;
-                ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+                ctx.fillStyle = document.body.classList.contains('light-mode')
+                    ? hexToRgba(colors.accent, Math.max(alpha * 0.7, 0.18))
+                    : `rgba(255, 255, 255, ${alpha})`;
                 ctx.fillRect(x, y, 1.5, 1.5);
             }
             angle += 0.005;
@@ -7421,28 +7494,26 @@ function initBackgroundEffects() {
             angle += 0.003;
             ctx.save();
             ctx.filter = 'blur(60px)';
-            const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#6366f1';
             
             const x1 = canvas.width * 0.3 + Math.sin(angle) * 100;
             const y1 = canvas.height * 0.3 + Math.cos(angle) * 80;
-            ctx.fillStyle = accent + '15';
+            ctx.fillStyle = colors.glow;
             ctx.beginPath();
             ctx.arc(x1, y1, 150, 0, Math.PI * 2);
             ctx.fill();
             
             const x2 = canvas.width * 0.7 + Math.cos(angle * 0.8) * 120;
             const y2 = canvas.height * 0.6 + Math.sin(angle * 1.2) * 90;
-            ctx.fillStyle = '#f43f5e10';
+            ctx.fillStyle = colors.secondary;
             ctx.beginPath();
             ctx.arc(x2, y2, 200, 0, Math.PI * 2);
             ctx.fill();
             
             ctx.restore();
         } else if (effect === 'minimal') {
-            const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#6366f1';
             const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, canvas.width * 0.5);
-            grad.addColorStop(0, accent + '0c');
-            grad.addColorStop(1, 'transparent');
+            grad.addColorStop(0, colors.gradientInner);
+            grad.addColorStop(1, colors.gradientOuter);
             ctx.fillStyle = grad;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
